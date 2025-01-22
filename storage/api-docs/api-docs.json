@@ -1,0 +1,94 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "PortalHatal Balmas API",
+        "version": "2"
+    },
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login user",
+                "description": "Authenticate and login user based on personal id",
+                "operationId": "login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "personal_id"
+                                ],
+                                "properties": {
+                                    "personal_id": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "הפעולה התבצעה בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "404": {
+                        "description": "משתמש אינו נמצא"
+                    },
+                    "500": {
+                        "description": "אירעה שגיאה"
+                    }
+                }
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get authenticated user",
+                "description": "Returns the authenticated user's details",
+                "operationId": "user",
+                "responses": {
+                    "200": {
+                        "description": "הפעולה התבצעה בהצלחה"
+                    },
+                    "401": {
+                        "description": "המשתמש לא מחובר"
+                    },
+                    "500": {
+                        "description": "אירעה שגיאה"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "bearerAuth",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
+        }
+    ]
+}

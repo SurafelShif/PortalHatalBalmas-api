@@ -20,12 +20,12 @@ class AuthController extends Controller
      *      operationId="login",
      *      tags={"Authentication"},
      *      summary="Login user",
-     *      description="Authenticate and login user based on personal number",
+     *      description="Authenticate and login user based on personal id",
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(
-     *              required={"personal_number"},
-     *              @OA\Property(property="personal_number", type="string", example="1234567")
+     *              required={"personal_id"},
+     *              @OA\Property(property="personal_id", type="string", example="123456789")
      *          )
      *      ),
      *      @OA\Response(

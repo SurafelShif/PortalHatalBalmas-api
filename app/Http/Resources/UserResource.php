@@ -12,9 +12,9 @@ class UserResource extends JsonResource
             'uuid' => $this->uuid,
             'full_name' => $this->full_name,
             'personal_id' => $this->personal_id,
-            // 'role' => [
-            //     $this->roles->first()->name ?? null,
-            // ],
+            'role' => [
+                $this->roles->first()->name ?? null,
+            ],
         ];
     }
 }
