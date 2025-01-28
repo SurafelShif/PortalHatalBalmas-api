@@ -95,7 +95,7 @@ class AuthController extends Controller
         $result = $this->AuthService->getLoggedUser();
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
-                HttpStatusEnum::ERROR => response()->json(ResponseMessages::ERROR_OCCURRED, Response::HTTP_INTERNAL_SERVER_ERROR),
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
             };
         }
         return response()->json([
