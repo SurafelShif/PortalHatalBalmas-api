@@ -17,9 +17,9 @@ class PostsSeeder extends Seeder
     {
         for ($i = 0; $i < 5; $i++) {
             $image = Image::create([
-                'image_name' => null,
-                'image_type' => null,
-                'image_path' => null
+                "image_name" => "moon.jpg",
+                "image_type" => "jpg",
+                "image_path" => "images/moon.jpg"
             ]);
             $category = Category::create([
                 'name' => 'some'
