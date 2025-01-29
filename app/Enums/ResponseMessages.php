@@ -22,4 +22,5 @@ enum ResponseMessages: string
     const FORBIDDEN = 'אין לך הרשאות כדי לבצע פעולה זו';
     const HERO_NOT_FOUND = 'הרחט"ל לא נמצא';
     const IMAGE_NOT_FOUND = 'התמונה לא נמצאה';
+    const TOO_MANY_REQUESTS = 'יותר מדי בקשות נשלחו, נסה שוב בעוד מספר רגעים';
 }

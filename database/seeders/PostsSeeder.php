@@ -6,7 +6,9 @@ use App\Models\Category;
 use App\Models\Image;
 use App\Models\Posts;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
+
+use Faker\Factory as Faker;
 
 class PostsSeeder extends Seeder
 {
@@ -15,6 +17,8 @@ class PostsSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = Faker::create();
+        $categories = ["מפקדת מחנה", 'משא"ן', "מחשב"];
         for ($i = 0; $i < 5; $i++) {
             $image = Image::create([
                 "image_name" => "moon.jpg",
@@ -22,13 +26,13 @@ class PostsSeeder extends Seeder
                 "image_path" => "images/moon.jpg"
             ]);
             $category = Category::create([
-                'name' => 'some'
+                'name' => Arr::random($categories)
             ]);
             Posts::create([
                 'image_id' => $image->id,
-                'title' => Str::random(20),
-                'description' => Str::random(20),
-                'content' => Str::random(50),
+                'title' => $faker->sentence(6),
+                'description' => $faker->sentence(10),
+                'content' => $faker->paragraph(5),
                 'category_id' => $category->id
             ]);
         }
