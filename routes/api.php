@@ -9,6 +9,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
     Route::get('/user', 'user')->middleware(['auth:api']);
 });
-Route::controller(PostsController::class)->prefix('news')->group(function () {
-    Route::get('/', 'getNews');
+Route::controller(PostsController::class)->prefix('posts')->group(function () {
+    Route::get('/', 'getPosts');
 });

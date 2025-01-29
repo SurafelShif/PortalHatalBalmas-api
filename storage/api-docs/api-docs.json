@@ -68,6 +68,66 @@
                     }
                 }
             }
+        },
+        "/api/posts": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "מביא רשימת חדשות",
+                "description": "מביא רשימת חדשות עם אפשרות לסינון לפי קטגוריה, חיפוש ודפדוף.",
+                "operationId": "getPosts",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "סינון לפי קטגוריה",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "ספורט"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "מילת חיפוש בכותרת, תיאור או תוכן",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "טכנולוגיה"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "כמות פריטים בעמוד",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 3
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "מספר עמוד לתצוגה",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -89,6 +149,10 @@
         {
             "name": "Users",
             "description": "Users"
+        },
+        {
+            "name": "Posts",
+            "description": "Posts"
         }
     ]
 }
