@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostsController;
+use App\Http\Controllers\SitesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -11,4 +12,7 @@ Route::controller(AuthController::class)->group(function () {
 });
 Route::controller(PostsController::class)->prefix('posts')->group(function () {
     Route::get('/', 'getPosts');
+});
+Route::controller(SitesController::class)->prefix('sites')->group(function () {
+    Route::get('/', 'getSites');
 });
