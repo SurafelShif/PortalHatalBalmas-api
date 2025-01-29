@@ -25,7 +25,7 @@ class RunAllCommands extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): void
     {
         $this->call('migrate:fresh', ['--seed' => true]);
         $this->call('passport:client', [

@@ -3,12 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Image;
-use App\Models\News;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Posts;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
-class NewsSeeder extends Seeder
+class PostsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,7 +20,7 @@ class NewsSeeder extends Seeder
                 'image_type' => null,
                 'image_path' => null
             ]);
-            News::create([
+            Posts::create([
                 'image_id' => $image->id,
                 'title' => Str::random(20),
                 'description' => Str::random(20),
