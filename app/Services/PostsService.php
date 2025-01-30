@@ -6,13 +6,15 @@ use App\Enums\HttpStatusEnum;
 use App\Http\Resources\PostResource;
 use App\Models\Posts;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+
 
 class PostsService
 {
     public function getPosts(string | null $category, int $perPage, int $page, string| null $search)
     {
         try {
-            $query = Posts::latest();
+            $query = Posts::latest()->select(['image_id', 'title', 'description', 'uuid']);
             if (!empty($category)) {
                 $query->whereHas('category', function ($q) use ($category) {
                     $q->where('name', $category);
@@ -32,6 +34,23 @@ class PostsService
                 $page
             );
             return PostResource::collection($posts);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+
+    public function getPostByUUid(string $uuid)
+    {
+        try {
+            // if (!Str::isUuid($uuid)) {
+            //     return HttpStatusEnum::BAD_REQUEST;
+            // }
+            $post = Posts::where('uuid', $uuid)->first();
+            if (!$post) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            return new PostResource($post);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

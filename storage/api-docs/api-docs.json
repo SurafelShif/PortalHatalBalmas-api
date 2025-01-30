@@ -128,6 +128,43 @@
                     }
                 }
             }
+        },
+        "/api/posts/{uuid}": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "מביא פוסט לפי UUID",
+                "description": "מביא פוסט בודד לפי מזהה ייחודי (UUID).",
+                "operationId": "getPostByUUid",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של הפוסט",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "404": {
+                        "description": "הפוסט לא נמצא"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
         }
     },
     "components": {

@@ -13,9 +13,7 @@ class PostResource extends JsonResource
             'uuid' => $this->uuid,
             'title' => $this->title,
             'description' => $this->description,
-            'content' => $this->content,
             'image' => $this->image->image_path ? config('filesystems.storage_path') . $this->image->image_path : null,
-            'category' => $this->category->name,
 
         ];
     }

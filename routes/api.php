@@ -11,7 +11,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('/user', 'user')->middleware(['auth:api']);
 });
 Route::controller(PostsController::class)->prefix('posts')->group(function () {
-    Route::middleware("throttle:2,1")->get('/', 'getPosts');
+    Route::get('/', 'getPosts');
+    Route::middleware("throttle:20,1")->get('/{uuid}', 'getPostByUUid');
 });
 Route::controller(SitesController::class)->prefix('sites')->group(function () {
     Route::get('/', 'getSites');
