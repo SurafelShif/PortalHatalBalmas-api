@@ -11,15 +11,15 @@ use Illuminate\Support\Facades\Log;
 
 class PostsController extends Controller
 {
-    public function __construct(private PostsService $postsService) {}
+    public function __construct(private PostsService $PostService) {}
 
     /**
      * @OA\Get(
-     *     path="/api/posts",
+     *     path="/api/Post",
      *     summary="מביא רשימת חדשות",
      *     description="מביא רשימת חדשות עם אפשרות לסינון לפי קטגוריה, חיפוש ודפדוף.",
-     *     operationId="getPosts",
-     *     tags={"Posts"},
+     *     operationId="getPost",
+     *     tags={"Post"},
      *
      *     @OA\Parameter(
      *         name="category",
@@ -60,13 +60,13 @@ class PostsController extends Controller
      *     )
      * )
      */
-    public function getPosts(Request $request)
+    public function getPost(Request $request)
     {
         $search = $request->query('search');
         $category = $request->query('category');
         $perPage = $request->query('per_page', 3);
         $page = $request->query('page', 1);
-        $result = $this->postsService->getPosts($category, $perPage, $page, $search);
+        $result = $this->PostService->getPost($category, $perPage, $page, $search);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
@@ -79,11 +79,11 @@ class PostsController extends Controller
     }
     /**
      * @OA\Get(
-     *     path="/api/posts/{uuid}",
+     *     path="/api/Post/{uuid}",
      *     summary="מביא פוסט לפי UUID",
      *     description="מביא פוסט בודד לפי מזהה ייחודי (UUID).",
      *     operationId="getPostByUUid",
-     *     tags={"Posts"},
+     *     tags={"Post"},
      *
      *     @OA\Parameter(
      *         name="uuid",
@@ -114,7 +114,7 @@ class PostsController extends Controller
 
     public function getPostByUUid($uuid)
     {
-        $result = $this->postsService->getPostByUUid($uuid);
+        $result = $this->PostService->getPostByUUid($uuid);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

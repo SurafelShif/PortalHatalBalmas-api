@@ -4,17 +4,16 @@ namespace App\Services;
 
 use App\Enums\HttpStatusEnum;
 use App\Http\Resources\PostResource;
-use App\Models\Posts;
+use App\Models\Post;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 
 class PostsService
 {
-    public function getPosts(string | null $category, int $perPage, int $page, string| null $search)
+    public function getPost(string | null $category, int $perPage, int $page, string| null $search)
     {
         try {
-            $query = Posts::latest()->select(['image_id', 'title', 'description', 'uuid']);
+            $query = Post::latest()->select(['image_id', 'title', 'description', 'uuid']);
             if (!empty($category)) {
                 $query->whereHas('category', function ($q) use ($category) {
                     $q->where('name', $category);
@@ -27,13 +26,13 @@ class PostsService
                         ->orWhere('content', 'LIKE', "%{$search}%");
                 });
             }
-            $posts = $query->paginate(
+            $Post = $query->paginate(
                 $perPage,
                 ['*'],
                 'page',
                 $page
             );
-            return PostResource::collection($posts);
+            return PostResource::collection($Post);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
@@ -46,7 +45,7 @@ class PostsService
             // if (!Str::isUuid($uuid)) {
             //     return HttpStatusEnum::BAD_REQUEST;
             // }
-            $post = Posts::where('uuid', $uuid)->first();
+            $post = Post::where('uuid', $uuid)->first();
             if (!$post) {
                 return HttpStatusEnum::NOT_FOUND;
             }

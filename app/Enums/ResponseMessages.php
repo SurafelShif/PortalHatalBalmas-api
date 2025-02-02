@@ -10,7 +10,7 @@ enum ResponseMessages: string
     const UNAUTHORIZED = 'המשתמש לא מחובר';
     const USER_NOT_FOUND = 'המשתמש לא נמצא';
     const USERS_NOT_FOUND = 'המשתמשים לא נמצאו';
-    const WEBSITES_NOT_FOUND = 'אתרים לא נמצאו';
+    const CATEGORY_NOT_FOUND = 'קטגוריה לא נמצאה';
     const POST_NOT_FOUND = 'כתבה לא נמצאה';
     const MISSING_ROLE = 'לא נמצא תפקיד';
     const NOT_ADMIN = 'המשתמש אינו מנהל מערכת';

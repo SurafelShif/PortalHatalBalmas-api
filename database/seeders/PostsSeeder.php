@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Image;
-use App\Models\Posts;
+use App\Models\Post;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 
@@ -19,21 +19,24 @@ class PostsSeeder extends Seeder
     {
         $faker = Faker::create();
         $categories = ["מפקדת מחנה", 'משא"ן', "מחשב"];
+        foreach ($categories as $category) {
+            $category = Category::create([
+                'name' => $category
+            ]);
+        }
         for ($i = 0; $i < 5; $i++) {
             $image = Image::create([
                 "image_name" => "moon.jpg",
                 "image_type" => "jpg",
                 "image_path" => "images/moon.jpg"
             ]);
-            $category = Category::create([
-                'name' => Arr::random($categories)
-            ]);
-            Posts::create([
+
+            Post::create([
                 'image_id' => $image->id,
                 'title' => $faker->sentence(6),
                 'description' => $faker->sentence(10),
                 'content' => $faker->paragraph(5),
-                'category_id' => $category->id
+                'category_id' => Arr::random([1, 2, 3])
             ]);
         }
     }

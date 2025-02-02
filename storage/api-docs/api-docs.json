@@ -69,14 +69,148 @@
                 }
             }
         },
-        "/api/posts": {
+        "/api/categories": {
             "get": {
                 "tags": [
-                    "Posts"
+                    "קטגוריות"
+                ],
+                "summary": "מביא את כל הקטגוריות",
+                "description": "מביא את כל הקטגוריות עם מספר הפוסטים בכל קטגוריה",
+                "operationId": "getCategories",
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "קטגוריות"
+                ],
+                "summary": "יוצר קטגוריה חדשה",
+                "description": "יוצר קטגוריה חדשה במערכת",
+                "operationId": "createCategory",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "קטגוריה חדשה"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "קטגוריה נוצרה בהצלחה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
+        "/api/categories/{categoryId}": {
+            "put": {
+                "tags": [
+                    "קטגוריות"
+                ],
+                "summary": "מעודכן קטגוריה",
+                "description": "מעודכן שם קטגוריה",
+                "operationId": "updateCategory",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "description": "המזהה של הקטגוריה",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "קטגוריה חדשה"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "קטגוריה עודכנה בהצלחה"
+                    },
+                    "404": {
+                        "description": "הקטגוריה לא נמצאה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "קטגוריות"
+                ],
+                "summary": "מוחק קטגוריה",
+                "description": "מוחק קטגוריה על פי מזהה ID",
+                "operationId": "deleteCategory",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "description": "המזהה של הקטגוריה",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "קטגוריה נמחקה בהצלחה"
+                    },
+                    "404": {
+                        "description": "הקטגוריה לא נמצאה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
+        "/api/Post": {
+            "get": {
+                "tags": [
+                    "Post"
                 ],
                 "summary": "מביא רשימת חדשות",
                 "description": "מביא רשימת חדשות עם אפשרות לסינון לפי קטגוריה, חיפוש ודפדוף.",
-                "operationId": "getPosts",
+                "operationId": "getPost",
                 "parameters": [
                     {
                         "name": "category",
@@ -129,10 +263,10 @@
                 }
             }
         },
-        "/api/posts/{uuid}": {
+        "/api/Post/{uuid}": {
             "get": {
                 "tags": [
-                    "Posts"
+                    "Post"
                 ],
                 "summary": "מביא פוסט לפי UUID",
                 "description": "מביא פוסט בודד לפי מזהה ייחודי (UUID).",
@@ -188,8 +322,12 @@
             "description": "Users"
         },
         {
-            "name": "Posts",
-            "description": "Posts"
+            "name": "קטגוריות",
+            "description": "קטגוריות"
+        },
+        {
+            "name": "Post",
+            "description": "Post"
         }
     ]
 }
