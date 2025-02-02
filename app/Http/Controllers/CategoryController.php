@@ -19,7 +19,7 @@ class CategoryController extends Controller
      *     summary="מביא את כל הקטגוריות",
      *     description="מביא את כל הקטגוריות עם מספר הפוסטים בכל קטגוריה",
      *     operationId="getCategories",
-     *     tags={"קטגוריות"},
+     *     tags={"Categories"},
      *     @OA\Response(
      *         response=200,
      *         description="הפעולה בוצעה בהצלחה",
@@ -50,7 +50,7 @@ class CategoryController extends Controller
      *     summary="מוחק קטגוריה",
      *     description="מוחק קטגוריה על פי מזהה ID",
      *     operationId="deleteCategory",
-     *     tags={"קטגוריות"},
+     *     tags={"Categories"},
      *     @OA\Parameter(
      *         name="categoryId",
      *         in="path",
@@ -92,7 +92,7 @@ class CategoryController extends Controller
      *     summary="מעודכן קטגוריה",
      *     description="מעודכן שם קטגוריה",
      *     operationId="updateCategory",
-     *     tags={"קטגוריות"},
+     *     tags={"Categories"},
      *     @OA\Parameter(
      *         name="categoryId",
      *         in="path",
@@ -141,7 +141,7 @@ class CategoryController extends Controller
      *     summary="יוצר קטגוריה חדשה",
      *     description="יוצר קטגוריה חדשה במערכת",
      *     operationId="createCategory",
-     *     tags={"קטגוריות"},
+     *     tags={"Categories"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(

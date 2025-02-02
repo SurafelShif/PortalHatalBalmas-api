@@ -72,7 +72,7 @@
         "/api/categories": {
             "get": {
                 "tags": [
-                    "קטגוריות"
+                    "Categories"
                 ],
                 "summary": "מביא את כל הקטגוריות",
                 "description": "מביא את כל הקטגוריות עם מספר הפוסטים בכל קטגוריה",
@@ -88,7 +88,7 @@
             },
             "post": {
                 "tags": [
-                    "קטגוריות"
+                    "Categories"
                 ],
                 "summary": "יוצר קטגוריה חדשה",
                 "description": "יוצר קטגוריה חדשה במערכת",
@@ -125,7 +125,7 @@
         "/api/categories/{categoryId}": {
             "put": {
                 "tags": [
-                    "קטגוריות"
+                    "Categories"
                 ],
                 "summary": "מעודכן קטגוריה",
                 "description": "מעודכן שם קטגוריה",
@@ -174,7 +174,7 @@
             },
             "delete": {
                 "tags": [
-                    "קטגוריות"
+                    "Categories"
                 ],
                 "summary": "מוחק קטגוריה",
                 "description": "מוחק קטגוריה על פי מזהה ID",
@@ -322,8 +322,8 @@
             "description": "Users"
         },
         {
-            "name": "קטגוריות",
-            "description": "קטגוריות"
+            "name": "Categories",
+            "description": "Categories"
         },
         {
             "name": "Post",
