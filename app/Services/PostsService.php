@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Log;
 
 class PostsService
 {
-    public function getPost(string | null $category, int $perPage, int $page, string| null $search)
+    public function getPosts(string | null $category, int $perPage, int $page, string| null $search)
     {
         try {
-            $query = Post::latest()->select(['image_id', 'title', 'description', 'uuid']);
+            $query = Post::with('category')->latest()->select(['image_id', 'title', 'description', 'uuid', 'category_id']);
             if (!empty($category)) {
                 $query->whereHas('category', function ($q) use ($category) {
                     $q->where('name', $category);
@@ -26,13 +26,13 @@ class PostsService
                         ->orWhere('content', 'LIKE', "%{$search}%");
                 });
             }
-            $Post = $query->paginate(
+            $posts = $query->paginate(
                 $perPage,
                 ['*'],
                 'page',
                 $page
             );
-            return PostResource::collection($Post);
+            return PostResource::collection($posts);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

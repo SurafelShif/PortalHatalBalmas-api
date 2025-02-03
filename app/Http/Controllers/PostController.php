@@ -15,10 +15,10 @@ class PostController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/Post",
+     *     path="/api/posts",
      *     summary="מביא רשימת חדשות",
      *     description="מביא רשימת חדשות עם אפשרות לסינון לפי קטגוריה, חיפוש ודפדוף.",
-     *     operationId="getPost",
+     *     operationId="getPosts",
      *     tags={"Post"},
      *
      *     @OA\Parameter(
@@ -36,7 +36,7 @@ class PostController extends Controller
      *         @OA\Schema(type="string", example="טכנולוגיה")
      *     ),
      *     @OA\Parameter(
-     *         name="per_page",
+     *         name="limit",
      *         in="query",
      *         description="כמות פריטים בעמוד",
      *         required=false,
@@ -60,13 +60,13 @@ class PostController extends Controller
      *     )
      * )
      */
-    public function getPost(Request $request)
+    public function getPosts(Request $request)
     {
         $search = $request->query('search');
         $category = $request->query('category');
-        $perPage = $request->query('per_page', 3);
+        $perPage = $request->query('limit', 3);
         $page = $request->query('page', 1);
-        $result = $this->PostService->getPost($category, $perPage, $page, $search);
+        $result = $this->PostService->getPosts($category, $perPage, $page, $search);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

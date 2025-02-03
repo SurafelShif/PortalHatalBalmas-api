@@ -14,6 +14,10 @@ class PostResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'image' => $this->image->image_path ? config('filesystems.storage_path') . $this->image->image_path : null,
+            'category' => [
+                'name' => $this->category?->name,
+                'id' => $this->category?->id
+            ]
 
         ];
     }
