@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Response;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -31,6 +32,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (TooManyRequestsHttpException $e) {
             return response()->json([
                 'message' => ResponseMessages::TOO_MANY_REQUESTS,
+                'exception' => class_basename($e),
+            ], Response::HTTP_FORBIDDEN);
+        });
+        $exceptions->render(function (UnauthorizedException $e) {
+            return response()->json([
+                'message' => ResponseMessages::FORBIDDEN,
                 'exception' => class_basename($e),
             ], Response::HTTP_FORBIDDEN);
         });

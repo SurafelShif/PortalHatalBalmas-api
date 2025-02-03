@@ -12,7 +12,9 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('/user', 'user')->middleware(['auth:api']);
 });
 Route::controller(UserController::class)->middleware(['auth:api', 'role:admin'])->prefix('users')->group(function () {
-    Route::post('/addAdmin', 'addAdmin');
+    Route::post('/', 'addAdmin');
+    Route::delete('/{personal_id}', 'deleteAdmin');
+    Route::get('/', 'index');
 });
 Route::controller(PostController::class)->prefix('Post')->group(function () {
     Route::get('/', 'getPost');

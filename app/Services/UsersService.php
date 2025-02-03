@@ -7,6 +7,7 @@ use App\Enums\Permission;
 use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -16,6 +17,7 @@ class UsersService
     {
         try {
             $user = User::where('personal_id', $personal_id)->first();
+
             if (!is_null($user)) {
                 if ($user->hasRole(Role::ADMIN)) {
                     return HttpStatusEnum::CONFLICT;
@@ -28,6 +30,40 @@ class UsersService
             return Response::HTTP_CREATED;
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function deleteAdmin($personal_id)
+    {
+        try {
+            $user = User::where('personal_id', $personal_id)->first();
+            $AuthenticatedUser = Auth::user();
+            if (is_null($user))
+                return HttpStatusEnum::NOT_FOUND;
+            if ($AuthenticatedUser->personal_id === $user->personal_id) {
+                return HttpStatusEnum::FORBIDDEN;
+            }
+            $user->removeRole(Role::ADMIN);
+            $user->revokePermissionTo(Permission::MANAGE_USERS);
+            return Response::HTTP_CREATED;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function getAdmins()
+    {
+        try {
+            $users = User::whereHas('roles', function ($query) {
+                $query->where('name', 'admin');
+            })
+                ->select(['full_name', 'uuid', 'personal_id'])
+                ->get();
+
+            return $users;
+        } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }

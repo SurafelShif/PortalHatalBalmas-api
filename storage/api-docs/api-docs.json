@@ -300,41 +300,237 @@
                 }
             }
         },
-        "/api/users/admins": {
+        "/api/users/": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "קבלת רשימת המנהלים",
+                "description": "מחזיר רשימה של כל המשתמשים שיש להם הרשאת מנהל",
+                "operationId": "getAdmins",
+                "responses": {
+                    "200": {
+                        "description": "רשימת המנהלים התקבלה בהצלחה",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "הפעולה התבצעה בהצלחה"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "full_name": {
+                                                        "type": "string",
+                                                        "example": "ישראל ישראלי"
+                                                    },
+                                                    "uuid": {
+                                                        "type": "string",
+                                                        "format": "uuid",
+                                                        "example": "b143c4ab-91a7-481a-ab1a-cf4a00d2fc11"
+                                                    },
+                                                    "personal_id": {
+                                                        "type": "string",
+                                                        "example": "123456789"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "שגיאת שרת פנימית",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "אירעה שגיאה"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Users"
                 ],
-                "summary": "add admins",
-                "description": "add admins",
-                "operationId": "store",
+                "summary": "הוספת מנהל חדש",
+                "description": "הוספת משתמש לרשימת המנהלים לפי מספר תעודת זהות",
+                "operationId": "addAdmin",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string",
-                                    "format": "uuid",
-                                    "example": "b143c4ab-91a7-481a-ab1a-cf4a00d2fc11"
-                                }
+                                "required": [
+                                    "fullName",
+                                    "personal_id"
+                                ],
+                                "properties": {
+                                    "fullName": {
+                                        "type": "string",
+                                        "example": "ישראל ישראלי"
+                                    },
+                                    "personal_id": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "הפעולה התבצעה בהצלחה"
-                    },
-                    "404": {
-                        "description": "משתמש אינו נמצא"
+                    "201": {
+                        "description": "המנהל נוסף בהצלחה",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "הפעולה התבצעה בהצלחה"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "409": {
-                        "description": "משתמש זה הינו מנהל מערכת"
+                        "description": "משתמש זה כבר מנהל",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "משתמש זה כבר מנהל מערכת"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "אירעה שגיאה"
+                        "description": "שגיאת שרת פנימית",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "אירעה שגיאה"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/{personal_id}": {
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "הסרת מנהל",
+                "description": "הסרת הרשאת מנהל ממשתמש לפי מספר תעודת זהות",
+                "operationId": "deleteAdmin",
+                "parameters": [
+                    {
+                        "name": "personal_id",
+                        "in": "path",
+                        "description": "מספר תעודת הזהות של המנהל להסרה",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "123456789"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "המנהל הוסר בהצלחה",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "הפעולה התבצעה בהצלחה"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "אין אפשרות להסיר את עצמך",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "אין אפשרות להסיר את עצמך"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "משתמש לא נמצא",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "משתמש אינו נמצא"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "שגיאת שרת פנימית",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "אירעה שגיאה"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
