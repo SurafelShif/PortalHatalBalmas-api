@@ -18,6 +18,7 @@ Route::controller(UserController::class)->middleware(['auth:api', 'role:admin'])
 });
 Route::controller(PostController::class)->prefix('posts')->group(function () {
     Route::get('/', 'getPosts');
+    Route::post('/', 'createPost');
     Route::middleware("throttle:20,1")->get('/{uuid}', 'getPostByUUid');
 });
 Route::controller(SiteController::class)->prefix('sites')->group(function () {

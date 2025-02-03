@@ -203,14 +203,14 @@
                 }
             }
         },
-        "/api/Post": {
+        "/api/posts": {
             "get": {
                 "tags": [
                     "Post"
                 ],
                 "summary": "מביא רשימת חדשות",
                 "description": "מביא רשימת חדשות עם אפשרות לסינון לפי קטגוריה, חיפוש ודפדוף.",
-                "operationId": "getPost",
+                "operationId": "getPosts",
                 "parameters": [
                     {
                         "name": "category",
@@ -233,7 +233,7 @@
                         }
                     },
                     {
-                        "name": "per_page",
+                        "name": "limit",
                         "in": "query",
                         "description": "כמות פריטים בעמוד",
                         "required": false,
@@ -261,9 +261,68 @@
                         "description": "שגיאה בשרת"
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "יוצר פוסט חדש",
+                "description": "יוצר פוסט חדש עם כותרת, תיאור, תוכן, קטגוריה ותמונה.",
+                "operationId": "createPost",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "content",
+                                    "category_id",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "כותרת הפוסט"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "תיאור קצר של הפוסט"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "תוכן הפוסט המלא"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "image": {
+                                        "description": "תמונה מצורפת לפוסט",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "הפוסט נוצר בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
             }
         },
-        "/api/Post/{uuid}": {
+        "/api/posts/{uuid}": {
             "get": {
                 "tags": [
                     "Post"
