@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\HttpStatusEnum;
 use App\Enums\ResponseMessages;
+use App\Http\Requests\CreatePostRequest;
 use App\Services\PostsService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -166,7 +167,7 @@ class PostController extends Controller
      */
 
 
-    public function createPost(Request $request)
+    public function createPost(CreatePostRequest $request)
     {
         $result = $this->PostService->createPosts($request->title, $request->description, $request->content, $request->category_id, $request->image);
         if ($result instanceof HttpStatusEnum) {
