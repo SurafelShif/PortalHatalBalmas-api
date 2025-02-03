@@ -19,20 +19,17 @@ class UsersSeeder extends Seeder
             'full_name' => 'משתמש רגיל חט"ל',
 
         ]);
-        $user->assignRole(Role::USER);
 
         $user2 = User::create([
             'personal_id' => '111111111',
             'full_name' => 'משתמש רגיל 1 חט"ל',
 
         ]);
-        $user2->assignRole(Role::USER);
 
         $user3 = User::create([
             'personal_id' => '222222222',
             'full_name' => 'משתמש רגיל 2 חט"ל',
         ]);
-        $user3->assignRole(Role::USER);
 
         $admin1 = User::create([
             'personal_id' => '12234567',

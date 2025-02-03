@@ -299,6 +299,45 @@
                     }
                 }
             }
+        },
+        "/api/users/admins": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "add admins",
+                "description": "add admins",
+                "operationId": "store",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "b143c4ab-91a7-481a-ab1a-cf4a00d2fc11"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "הפעולה התבצעה בהצלחה"
+                    },
+                    "404": {
+                        "description": "משתמש אינו נמצא"
+                    },
+                    "409": {
+                        "description": "משתמש זה הינו מנהל מערכת"
+                    },
+                    "500": {
+                        "description": "אירעה שגיאה"
+                    }
+                }
+            }
         }
     },
     "components": {

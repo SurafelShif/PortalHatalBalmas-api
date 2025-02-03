@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
-class PostsController extends Controller
+class PostController extends Controller
 {
     public function __construct(private PostsService $PostService) {}
 

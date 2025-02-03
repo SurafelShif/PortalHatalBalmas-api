@@ -102,4 +102,8 @@ class AuthController extends Controller
             'data' => $result,
         ], Response::HTTP_OK);
     }
+    public function addAdmin()
+    {
+        dd('fhrf');
+    }
 }

@@ -30,7 +30,7 @@ class RunAllCommands extends Command
         $this->call('migrate:fresh', ['--seed' => true]);
         $this->call('passport:client', [
             '--personal' => true,
-            '--name' => config('auth.access_token_name'),
+            '--name' => config("auth.access_token_name"),
         ]);
         $this->call('l5-swagger:generate');
         $this->call('optimize');

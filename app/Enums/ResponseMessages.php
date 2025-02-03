@@ -15,7 +15,7 @@ enum ResponseMessages: string
     const MISSING_ROLE = 'לא נמצא תפקיד';
     const NOT_ADMIN = 'המשתמש אינו מנהל מערכת';
     const NO_CONTENT = '';
-    const NOT_USER = 'המשתמש הינו מנהל מערכת';
+    const ALREADY_ADMIN = 'המשתמש הינו מנהל מערכת';
     const BAD_REQUEST = 'בקשה לא תקינה';
     const SELF_REMOVAL = 'לא ניתן להסיר הרשאה לעצמך';
     const SUCCESS_NO_ACTION_NEEDED = 'לא ניתן לבצע את הפעולה';
