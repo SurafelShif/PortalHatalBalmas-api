@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\HttpStatusEnum;
 use App\Enums\ResponseMessages;
 use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Services\PostsService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
+    //TODO if no limit then return all
+    //TODO change post filter by categories to be by id
     public function __construct(private PostsService $PostService) {}
 
     /**
@@ -27,21 +30,21 @@ class PostController extends Controller
      *         in="query",
      *         description="סינון לפי קטגוריה",
      *         required=false,
-     *         @OA\Schema(type="string", example="ספורט")
+     *         @OA\Schema(type="string", example="מחשוב")
      *     ),
      *     @OA\Parameter(
      *         name="search",
      *         in="query",
      *         description="מילת חיפוש בכותרת, תיאור או תוכן",
      *         required=false,
-     *         @OA\Schema(type="string", example="טכנולוגיה")
+     *         @OA\Schema(type="string", example="")
      *     ),
      *     @OA\Parameter(
      *         name="limit",
      *         in="query",
      *         description="כמות פריטים בעמוד",
      *         required=false,
-     *         @OA\Schema(type="integer", default=3)
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         name="page",
@@ -224,9 +227,60 @@ class PostController extends Controller
             'message' => ResponseMessages::SUCCESS_ACTION,
         ], Response::HTTP_OK);
     }
-
-    public function updatePost($uuid)
+    /**
+     * @OA\Post(
+     *     path="/api/posts/{uuid}",
+     *     summary="יוצר פוסט חדש",
+     *     description="יוצר פוסט חדש עם כותרת, תיאור, תוכן, קטגוריה ותמונה.",
+     *     operationId="updatePost",
+     *     tags={"Post"},
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         description="UUID של הפוסט",
+     *         required=true,
+     *         @OA\Schema(type="string", format="uuid", example="4a206b4-99d6-4692-915c-4935766e0420")
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="title", type="string", example="כותרת הפוסט"),
+     *                 @OA\Property(property="description", type="string", example="תיאור קצר של הפוסט"),
+     *                 @OA\Property(property="content", type="string", example="תוכן הפוסט המלא"),
+     *                 @OA\Property(property="category_id", type="integer", example=1),
+     *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת לפוסט")
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="הפוסט נוצר בהצלחה",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="בקשה לא תקינה",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="שגיאה בשרת",
+     *     )
+     * )
+     */
+    public function updatePost($uuid, UpdatePostRequest $request)
     {
-        dd($uuid);
+        $result = $this->PostService->updatePost($uuid, $request->validated());
+        if ($result instanceof HttpStatusEnum) {
+            return match ($result) {
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::POST_NOT_FOUND], Response::HTTP_NOT_FOUND),
+            };
+        }
+        return response()->json([
+            'message' => ResponseMessages::SUCCESS_ACTION,
+        ], Response::HTTP_OK);
     }
 }

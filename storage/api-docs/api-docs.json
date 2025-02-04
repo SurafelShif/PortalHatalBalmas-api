@@ -219,7 +219,7 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-                            "example": "ספורט"
+                            "example": "מחשוב"
                         }
                     },
                     {
@@ -229,7 +229,7 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-                            "example": "טכנולוגיה"
+                            "example": ""
                         }
                     },
                     {
@@ -238,8 +238,7 @@
                         "description": "כמות פריטים בעמוד",
                         "required": false,
                         "schema": {
-                            "type": "integer",
-                            "default": 3
+                            "type": "integer"
                         }
                     },
                     {
@@ -352,6 +351,71 @@
                     },
                     "404": {
                         "description": "הפוסט לא נמצא"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "יוצר פוסט חדש",
+                "description": "יוצר פוסט חדש עם כותרת, תיאור, תוכן, קטגוריה ותמונה.",
+                "operationId": "updatePost",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של הפוסט",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "כותרת הפוסט"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "תיאור קצר של הפוסט"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "תוכן הפוסט המלא"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "image": {
+                                        "description": "תמונה מצורפת לפוסט",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "הפוסט נוצר בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
                     },
                     "500": {
                         "description": "שגיאה בשרת"

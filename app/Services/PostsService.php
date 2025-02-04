@@ -90,5 +90,25 @@ class PostsService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function updatePost() {}
+    public function updatePost(string $uuid, array $updateArray)
+    {
+        try {
+            $post = Post::where('uuid', $uuid)->first();
+            if (is_null($post)) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            if (array_key_exists('image', $updateArray)) {
+                $this->imageService->updateImage($post->image->id, $updateArray['image']);
+                unset($updateArray['image']);
+            }
+            if (array_key_exists('content', $updateArray)) {
+                $updateArray['content'] = json_decode($updateArray['content'], 1);
+            }
+            $post->update($updateArray);
+            return Response::HTTP_OK;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
 }
