@@ -15,7 +15,7 @@ class PostsService
     public function getPosts(string | null $category, int $perPage, int $page, string| null $search)
     {
         try {
-            $query = Post::with('category')->latest()->select(['image_id', 'title', 'description', 'uuid', 'category_id']);
+            $query = Post::with('category')->latest()->select(['image_id', 'title', 'description', 'uuid', 'content', 'category_id']);
             if (!empty($category)) {
                 $query->whereHas('category', function ($q) use ($category) {
                     $q->where('name', $category);
@@ -64,7 +64,7 @@ class PostsService
             Post::create([
                 'title' => $title,
                 'description' => $description,
-                'content' => $content,
+                'content' => json_decode($content, 1),
                 'category_id' => $category_id,
                 'image_id' => $createdImage->id
             ]);

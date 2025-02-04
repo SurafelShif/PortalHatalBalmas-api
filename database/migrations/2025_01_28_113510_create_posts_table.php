@@ -16,7 +16,8 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->string('title');
             $table->string('description');
-            $table->text('content');
+            // $table->text('content');
+            $table->json('content');
             $table->unsignedBigInteger('image_id');
             $table->foreign('image_id')->references('id')->on('images')->onDelete('cascade');
             $table->unsignedBigInteger('category_id');

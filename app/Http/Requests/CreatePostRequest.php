@@ -16,7 +16,7 @@ class CreatePostRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'content' => ['required', 'string'],
+            'content' => ['required', 'json'],
             'category_id' => ['required', 'exists:categories,id'],
             'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
@@ -25,9 +25,10 @@ class CreatePostRequest extends FormRequest
     public function messages()
     {
         return [
-            'title.required' => 'כותרת הפוסט היא חובה.',
-            'description.required' => 'תיאור הפוסט הוא חובה.',
-            'content.required' => 'תוכן הפוסט הוא חובה.',
+            'title.required' => 'כותרת הכתבה היא חובה.',
+            'description.required' => 'תיאור הכתבה הוא חובה.',
+            'content.required' => 'תוכן הכתבה הוא חובה.',
+            'content.json' => 'תוכן הכתבה אינה בפורמט הנכון.',
             'category_id.required' => 'קטגוריה היא חובה.',
             'category_id.exists' => 'הקטגוריה שסיפקת אינה קיימת.',
             'image.required' => 'חובה להעלות תמונה.',
