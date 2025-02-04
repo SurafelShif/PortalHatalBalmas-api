@@ -179,4 +179,54 @@ class PostController extends Controller
             'message' => ResponseMessages::SUCCESS_ACTION,
         ], Response::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/posts/{uuid}",
+     *     summary="מוחק פוסט לפי UUID",
+     *     description="מוחק פוסט בודד לפי מזהה ייחודי (UUID).",
+     *     operationId="deletePostByUUid",
+     *     tags={"Post"},
+     *
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         description="UUID של הפוסט",
+     *         required=true,
+     *         @OA\Schema(type="string", format="uuid", example="4a206b4-99d6-4692-915c-4935766e0420")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="הפעולה בוצעה בהצלחה",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="הפוסט לא נמצא",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="שגיאה בשרת",
+     *     )
+     * )
+     */
+
+    public function deletePost($uuid)
+    {
+        $result = $this->PostService->deletePost($uuid);
+        if ($result instanceof HttpStatusEnum) {
+            return match ($result) {
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::POST_NOT_FOUND], Response::HTTP_NOT_FOUND),
+            };
+        }
+        return response()->json([
+            'message' => ResponseMessages::SUCCESS_ACTION,
+        ], Response::HTTP_OK);
+    }
+
+    public function updatePost($uuid)
+    {
+        dd($uuid);
+    }
 }

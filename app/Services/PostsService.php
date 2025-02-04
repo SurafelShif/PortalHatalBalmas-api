@@ -5,9 +5,10 @@ namespace App\Services;
 use App\Enums\HttpStatusEnum;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
-
+use RuntimeException;
 
 class PostsService
 {
@@ -48,7 +49,7 @@ class PostsService
             //     return HttpStatusEnum::BAD_REQUEST;
             // }
             $post = Post::where('uuid', $uuid)->first();
-            if (!$post) {
+            if (is_null($post)) {
                 return HttpStatusEnum::NOT_FOUND;
             }
             return new PostResource($post);
@@ -59,6 +60,7 @@ class PostsService
     }
     public function createPosts(string $title, string $description, string $content, int $category_id, UploadedFile $image)
     {
+        $createdImage = null;
         try {
             $createdImage = $this->imageService->uploadImage($image);
             Post::create([
@@ -69,8 +71,24 @@ class PostsService
                 'image_id' => $createdImage->id
             ]);
         } catch (\Exception $e) {
+            $this->imageService->deleteImage($createdImage->image_name);
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }
     }
+    public function deletePost(string $uuid)
+    {
+        try {
+            $post = Post::where('uuid', $uuid)->first();
+            if (is_null($post)) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            Post::destroy($post->id);
+            return Response::HTTP_OK;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function updatePost() {}
 }

@@ -357,6 +357,38 @@
                         "description": "שגיאה בשרת"
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "Post"
+                ],
+                "summary": "מוחק פוסט לפי UUID",
+                "description": "מוחק פוסט בודד לפי מזהה ייחודי (UUID).",
+                "operationId": "deletePostByUUid",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של הפוסט",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "404": {
+                        "description": "הפוסט לא נמצא"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
             }
         },
         "/api/users/": {
