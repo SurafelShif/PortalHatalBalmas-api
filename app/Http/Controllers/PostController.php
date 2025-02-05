@@ -228,8 +228,8 @@ class PostController extends Controller
     /**
      * @OA\Post(
      *     path="/api/posts/{uuid}",
-     *     summary="יוצר פוסט חדש",
-     *     description="יוצר פוסט חדש עם כותרת, תיאור, תוכן, קטגוריה ותמונה.",
+     *     summary="מעדכן פוסט ",
+     *     description="מעדכן פוסט .",
      *     operationId="updatePost",
      *     tags={"Post"},
      *     @OA\Parameter(
@@ -247,7 +247,15 @@ class PostController extends Controller
      *             @OA\Schema(
      *                 @OA\Property(property="title", type="string", example="כותרת הפוסט"),
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של הפוסט"),
-     *                 @OA\Property(property="content", type="string", example="תוכן הפוסט המלא"),
+     * * @OA\Property(
+     *     property="content",
+     *     type="object",
+     *     example={
+     *         "title": "Sample Post",
+     *         "body": "This is the full content of the post",
+     *         "author": "John Doe"
+     *     }
+     * ),
      *                 @OA\Property(property="category_id", type="integer", example=1),
      *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת לפוסט")
      *             )

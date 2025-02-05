@@ -213,13 +213,13 @@
                 "operationId": "getPosts",
                 "parameters": [
                     {
-                        "name": "category",
+                        "name": "category_id",
                         "in": "query",
-                        "description": "סינון לפי קטגוריה",
+                        "description": "סינון לפי מאפיין הקטגוריה",
                         "required": false,
                         "schema": {
-                            "type": "string",
-                            "example": "מחשוב"
+                            "type": "int",
+                            "example": "1"
                         }
                     },
                     {
@@ -361,8 +361,8 @@
                 "tags": [
                     "Post"
                 ],
-                "summary": "יוצר פוסט חדש",
-                "description": "יוצר פוסט חדש עם כותרת, תיאור, תוכן, קטגוריה ותמונה.",
+                "summary": "מעדכן פוסט ",
+                "description": "מעדכן פוסט .",
                 "operationId": "updatePost",
                 "parameters": [
                     {
@@ -392,8 +392,12 @@
                                         "example": "תיאור קצר של הפוסט"
                                     },
                                     "content": {
-                                        "type": "string",
-                                        "example": "תוכן הפוסט המלא"
+                                        "type": "object",
+                                        "example": {
+                                            "title": "Sample Post",
+                                            "body": "This is the full content of the post",
+                                            "author": "John Doe"
+                                        }
                                     },
                                     "category_id": {
                                         "type": "integer",
