@@ -145,7 +145,15 @@ class PostController extends Controller
      *                 required={"title", "description", "content", "category_id", "image"},
      *                 @OA\Property(property="title", type="string", example="כותרת הפוסט"),
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של הפוסט"),
-     *                 @OA\Property(property="content", type="string", example="תוכן הפוסט המלא"),
+     *  @OA\Property(
+     *     property="content",
+     *     type="object",
+     *     example={
+     *         "title": "Sample Post",
+     *         "body": "This is the full content of the post",
+     *         "author": "John Doe"
+     *     }
+     * ),
      *                 @OA\Property(property="category_id", type="integer", example=1),
      *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת לפוסט")
      *             )

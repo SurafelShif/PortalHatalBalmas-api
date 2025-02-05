@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
@@ -26,6 +27,10 @@ Route::controller(PostController::class)->prefix('posts')->group(function () {
 });
 Route::controller(SiteController::class)->prefix('sites')->group(function () {
     Route::get('/', 'getSites');
+});
+Route::controller(AnnouncementController::class)->prefix('announcements')->group(function () {
+    Route::get('/', 'getAnnouncements');
+    Route::post('/', 'createAnnouncement');
 });
 Route::controller(CategoryController::class)->prefix('categories')->group(function () {
     Route::get('/', 'getCategories');

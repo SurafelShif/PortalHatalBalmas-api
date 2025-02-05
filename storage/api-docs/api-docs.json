@@ -5,6 +5,87 @@
         "version": "2"
     },
     "paths": {
+        "/api/announcements": {
+            "get": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "מביא רשימת הכרזות",
+                "description": "מביא רשימת הכרזות.",
+                "operationId": "getAnnouncements",
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "יוצר הכרזה חדשה",
+                "description": "יוצר הכרזה חדש עם כותרת, תיאור, תוכן, מיקום ותמונה.",
+                "operationId": "createAnnouncements",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "content",
+                                    "position",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "כותרת ההכרזה"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "תיאור קצר של ההכרזה"
+                                    },
+                                    "content": {
+                                        "type": "object",
+                                        "example": {
+                                            "title": "Sample Post",
+                                            "body": "This is the full content of the post",
+                                            "author": "John Doe"
+                                        }
+                                    },
+                                    "position": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "image": {
+                                        "description": "תמונה מצורפת להכרזה",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "ההכרזה נוצר בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
         "/api/login": {
             "post": {
                 "tags": [
@@ -290,8 +371,12 @@
                                         "example": "תיאור קצר של הפוסט"
                                     },
                                     "content": {
-                                        "type": "string",
-                                        "example": "תוכן הפוסט המלא"
+                                        "type": "object",
+                                        "example": {
+                                            "title": "Sample Post",
+                                            "body": "This is the full content of the post",
+                                            "author": "John Doe"
+                                        }
                                     },
                                     "category_id": {
                                         "type": "integer",
@@ -707,6 +792,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Announcements",
+            "description": "Announcements"
+        },
         {
             "name": "Authentication",
             "description": "Authentication"
