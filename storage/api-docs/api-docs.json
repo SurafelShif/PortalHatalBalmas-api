@@ -86,6 +86,112 @@
                 }
             }
         },
+        "/api/announcements/{uuid}": {
+            "post": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "מעדכן הכרזה ",
+                "description": "מעדכן הכרזה .",
+                "operationId": "updateAnnouncement",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של ההכרזה",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "457946b0-6c14-4102-bf4a-675c61b228d1"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "כותרת ההכרזה"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "תיאור קצר של ההכרזה"
+                                    },
+                                    "content": {
+                                        "type": "object",
+                                        "example": {
+                                            "title": "Sample Post",
+                                            "body": "This is the full content"
+                                        }
+                                    },
+                                    "position": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "isVisible": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "image": {
+                                        "description": "תמונה מצורפת להכרזה",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "הכרזה עודכנה בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "מוחק הכרזה לפי UUID",
+                "description": "מוחק הכרזה בודד לפי מזהה ייחודי (UUID).",
+                "operationId": "deleteaAnnouncementsByUUid",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של ההכרזה",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "404": {
+                        "description": "הכרזה לא נמצא"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
         "/api/login": {
             "post": {
                 "tags": [

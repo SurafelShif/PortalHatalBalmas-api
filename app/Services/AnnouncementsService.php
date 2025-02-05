@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\HttpStatusEnum;
 use App\Http\Resources\AnnoucementsResource;
 use App\Models\Announcement;
+use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 
@@ -34,6 +35,41 @@ class AnnouncementsService
         try {
             $annoucements = Announcement::all();
             return AnnoucementsResource::collection($annoucements);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function updateAnnouncement(string $uuid, array $updateArray)
+    {
+        try {
+            $announcement = Announcement::where('uuid', $uuid)->first();
+            if (is_null($announcement)) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            if (array_key_exists('image', $updateArray)) {
+                $this->imageService->updateImage($announcement->image->id, $updateArray['image']);
+                unset($updateArray['image']);
+            }
+            if (array_key_exists('content', $updateArray)) {
+                $updateArray['content'] = json_decode($updateArray['content'], 1);
+            }
+            $announcement->update($updateArray);
+            return Response::HTTP_OK;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function deleteAnnouncement(string $uuid)
+    {
+        try {
+            $announcement = Announcement::where('uuid', $uuid)->first();
+            if (is_null($announcement)) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            Announcement::destroy($announcement->id);
+            return Response::HTTP_OK;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

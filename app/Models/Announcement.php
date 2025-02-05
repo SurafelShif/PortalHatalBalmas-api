@@ -26,11 +26,13 @@ class Announcement extends Model
         'description',
         'content',
         'image_id',
+        'isVisible',
         'position'
     ];
     protected $hidden = ['updated_at', 'id'];
 
     protected $casts = [
         'content' => 'array',
+        'isVisible' => 'boolean'
     ];
 }

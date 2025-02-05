@@ -30,7 +30,9 @@ Route::controller(SiteController::class)->prefix('sites')->group(function () {
 });
 Route::controller(AnnouncementController::class)->prefix('announcements')->group(function () {
     Route::get('/', 'getAnnouncements');
+    Route::post('/{uuid}', 'updateAnnouncement');
     Route::post('/', 'createAnnouncement');
+    Route::delete('/{uuid}', 'deleteAnnouncement');
 });
 Route::controller(CategoryController::class)->prefix('categories')->group(function () {
     Route::get('/', 'getCategories');

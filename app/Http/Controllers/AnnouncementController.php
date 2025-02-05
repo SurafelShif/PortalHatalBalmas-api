@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Enums\HttpStatusEnum;
 use App\Enums\ResponseMessages;
+use App\Http\Requests\CreateAnnouncementRequest;
+use App\Http\Requests\UpdateAnnouncementRequest;
 use App\Services\AnnouncementsService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -87,12 +89,111 @@ class AnnouncementController extends Controller
      *     )
      * )
      */
-    public function createAnnouncement(Request $request)
+    public function createAnnouncement(CreateAnnouncementRequest $request)
     {
         $result = $this->announcementsService->createAnnouncement($request->title, $request->description, $request->content, $request->position, $request->image);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+            };
+        }
+        return response()->json([
+            'message' => ResponseMessages::SUCCESS_ACTION,
+        ], Response::HTTP_OK);
+    }
+    /**
+     * @OA\Post(
+     *     path="/api/announcements/{uuid}",
+     *     summary="מעדכן הכרזה ",
+     *     description="מעדכן הכרזה .",
+     *     operationId="updateAnnouncement",
+     *     tags={"Announcements"},
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         description="UUID של ההכרזה",
+     *         required=true,
+     *         @OA\Schema(type="string", format="uuid", example="457946b0-6c14-4102-bf4a-675c61b228d1")
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="title", type="string", example="כותרת ההכרזה"),
+     *                 @OA\Property(property="description", type="string", example="תיאור קצר של ההכרזה"),
+     *                 @OA\Property(property="content", type="object", example={"title": "Sample Post", "body": "This is the full content"}),
+     *                 @OA\Property(property="position", type="integer", example=1),
+     *                 @OA\Property(property="isVisible", type="boolean", example=true),
+     *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת להכרזה")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="הכרזה עודכנה בהצלחה",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="בקשה לא תקינה",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="שגיאה בשרת",
+     *     )
+     * )
+     */
+    public function updateAnnouncement($uuid, UpdateAnnouncementRequest $request)
+    {
+        $result = $this->announcementsService->updateAnnouncement($uuid, $request->validated());
+        if ($result instanceof HttpStatusEnum) {
+            return match ($result) {
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::ANNOUNCEMENT_NOT_FOUND], Response::HTTP_NOT_FOUND),
+            };
+        }
+        return response()->json([
+            'message' => ResponseMessages::SUCCESS_ACTION,
+        ], Response::HTTP_OK);
+    }
+    /**
+     * @OA\Delete(
+     *     path="/api/announcements/{uuid}",
+     *     summary="מוחק הכרזה לפי UUID",
+     *     description="מוחק הכרזה בודד לפי מזהה ייחודי (UUID).",
+     *     operationId="deleteaAnnouncementsByUUid",
+     *     tags={"Announcements"},
+     *
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         description="UUID של ההכרזה",
+     *         required=true,
+     *         @OA\Schema(type="string", format="uuid", example="4a206b4-99d6-4692-915c-4935766e0420")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="הפעולה בוצעה בהצלחה",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="הכרזה לא נמצא",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="שגיאה בשרת",
+     *     )
+     * )
+     */
+    public function deleteAnnouncement($uuid)
+    {
+        $result = $this->announcementsService->deleteAnnouncement($uuid);
+        if ($result instanceof HttpStatusEnum) {
+            return match ($result) {
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::ANNOUNCEMENT_NOT_FOUND], Response::HTTP_NOT_FOUND),
             };
         }
         return response()->json([
