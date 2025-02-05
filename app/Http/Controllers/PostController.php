@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
-    //TODO if no limit then return all
-    //TODO change post filter by categories to be by id
     public function __construct(private PostsService $PostService) {}
 
     /**
@@ -26,11 +24,11 @@ class PostController extends Controller
      *     tags={"Post"},
      *
      *     @OA\Parameter(
-     *         name="category",
+     *         name="category_id",
      *         in="query",
-     *         description="סינון לפי קטגוריה",
+     *         description="סינון לפי מאפיין הקטגוריה",
      *         required=false,
-     *         @OA\Schema(type="string", example="מחשוב")
+     *         @OA\Schema(type="int", example="1")
      *     ),
      *     @OA\Parameter(
      *         name="search",
@@ -67,10 +65,10 @@ class PostController extends Controller
     public function getPosts(Request $request)
     {
         $search = $request->query('search');
-        $category = $request->query('category');
-        $perPage = $request->query('limit', 3);
+        $category_id = $request->query('category_id');
+        $limit = $request->query('limit');
         $page = $request->query('page', 1);
-        $result = $this->PostService->getPosts($category, $perPage, $page, $search);
+        $result = $this->PostService->getPosts($category_id, $limit, $page, $search);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

@@ -13,13 +13,13 @@ use RuntimeException;
 class PostsService
 {
     public function __construct(private ImageService $imageService) {}
-    public function getPosts(string | null $category, int $perPage, int $page, string| null $search)
+    public function getPosts(int | null $category_id, int | null $limit, int $page, string| null $search)
     {
         try {
             $query = Post::with('category')->latest()->select(['image_id', 'title', 'description', 'uuid', 'content', 'category_id']);
-            if (!empty($category)) {
-                $query->whereHas('category', function ($q) use ($category) {
-                    $q->where('name', $category);
+            if (!empty($category_id)) {
+                $query->whereHas('category', function ($q) use ($category_id) {
+                    $q->where('id', $category_id);
                 });
             }
             if (!empty($search)) {
@@ -29,12 +29,7 @@ class PostsService
                         ->orWhere('content', 'LIKE', "%{$search}%");
                 });
             }
-            $posts = $query->paginate(
-                $perPage,
-                ['*'],
-                'page',
-                $page
-            );
+            $posts = is_null($limit) ? $query->get() : $query->paginate($limit, ['*'], 'page', $page);
             return PostResource::collection($posts);
         } catch (\Exception $e) {
             Log::error($e->getMessage());

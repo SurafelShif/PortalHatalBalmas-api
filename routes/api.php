@@ -16,8 +16,9 @@ Route::controller(UserController::class)->middleware(['auth:api', 'role:admin'])
     Route::delete('/{personal_id}', 'deleteAdmin');
     Route::get('/', 'index');
 });
+
 Route::controller(PostController::class)->prefix('posts')->group(function () {
-    Route::get('/', 'getPosts');
+    Route::middleware("throttle:20,1")->get('/', 'getPosts');
     Route::post('/', 'createPost');
     Route::post('/{uuid}', 'updatePost');
     Route::delete('/{uuid}', 'deletePost');
