@@ -33,7 +33,7 @@ class AnnouncementsService
     public function getAnnouncements()
     {
         try {
-            $annoucements = Announcement::all();
+            $annoucements = Announcement::orderBy('position', 'asc')->get();
             return AnnoucementsResource::collection($annoucements);
         } catch (\Exception $e) {
             Log::error($e->getMessage());

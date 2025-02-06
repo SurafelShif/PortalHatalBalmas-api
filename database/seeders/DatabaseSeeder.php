@@ -2,9 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Post;
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,5 +14,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleAndPermissionSeeder::class);
         $this->call(UsersSeeder::class);
         $this->call(PostsSeeder::class);
+        $this->call(AnnouncementsSeeder::class);
     }
 }
