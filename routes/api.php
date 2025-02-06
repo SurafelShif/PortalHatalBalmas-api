@@ -31,6 +31,7 @@ Route::controller(SiteController::class)->prefix('sites')->group(function () {
 Route::controller(AnnouncementController::class)->prefix('announcements')->group(function () {
     Route::get('/', 'getAnnouncements');
     Route::post('/{uuid}', 'updateAnnouncement');
+    Route::patch('/{uuid}', 'updateAnnouncementVisibility');
     Route::post('/', 'createAnnouncement');
     Route::delete('/{uuid}', 'deleteAnnouncement');
 });

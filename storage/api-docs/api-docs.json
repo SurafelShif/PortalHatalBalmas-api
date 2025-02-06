@@ -191,6 +191,58 @@
                         "description": "שגיאה בשרת"
                     }
                 }
+            },
+            "patch": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "עדכון נראות של הכרזה",
+                "description": "עדכון מאפיין ה- isVisible של הכרזה מסוימת לפי UUID.",
+                "operationId": "updateAnnouncementVisibility",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של ההכרזה",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "457946b0-6c14-4102-bf4a-675c61b228d1"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "isVisible"
+                                ],
+                                "properties": {
+                                    "isVisible": {
+                                        "description": "קובע האם ההכרזה גלויה או מוסתרת",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "נראות ההכרזה עודכנה בהצלחה"
+                    },
+                    "404": {
+                        "description": "הכרזה לא נמצאה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
             }
         },
         "/api/login": {

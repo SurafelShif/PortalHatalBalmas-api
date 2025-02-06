@@ -6,6 +6,7 @@ use App\Enums\HttpStatusEnum;
 use App\Enums\ResponseMessages;
 use App\Http\Requests\CreateAnnouncementRequest;
 use App\Http\Requests\UpdateAnnouncementRequest;
+use App\Http\Requests\UpdateAnnouncementVisibility;
 use App\Services\AnnouncementsService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -192,6 +193,62 @@ class AnnouncementController extends Controller
     public function deleteAnnouncement($uuid)
     {
         $result = $this->announcementsService->deleteAnnouncement($uuid);
+        if ($result instanceof HttpStatusEnum) {
+            return match ($result) {
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::ANNOUNCEMENT_NOT_FOUND], Response::HTTP_NOT_FOUND),
+            };
+        }
+        return response()->json([
+            'message' => ResponseMessages::SUCCESS_ACTION,
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * @OA\Patch(
+     *     path="/api/announcements/{uuid}",
+     *     summary="עדכון נראות של הכרזה",
+     *     description="עדכון מאפיין ה- isVisible של הכרזה מסוימת לפי UUID.",
+     *     operationId="updateAnnouncementVisibility",
+     *     tags={"Announcements"},
+     *
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         description="UUID של ההכרזה",
+     *         required=true,
+     *         @OA\Schema(type="string", format="uuid", example="457946b0-6c14-4102-bf4a-675c61b228d1")
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 required={"isVisible"},
+     *                 @OA\Property(property="isVisible", type="boolean", example=true, description="קובע האם ההכרזה גלויה או מוסתרת")
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="נראות ההכרזה עודכנה בהצלחה",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="הכרזה לא נמצאה",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="שגיאה בשרת",
+     *     )
+     * )
+     */
+
+    public function updateAnnouncementVisibility($uuid, UpdateAnnouncementVisibility $request)
+    {
+        $result = $this->announcementsService->updateAnnouncementVisibility($uuid, $request->isVisible);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

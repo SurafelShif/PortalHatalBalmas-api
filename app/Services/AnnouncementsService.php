@@ -77,4 +77,20 @@ class AnnouncementsService
             return HttpStatusEnum::ERROR;
         }
     }
+    public function updateAnnouncementVisibility($uuid, bool $isVisible)
+    {
+        try {
+            $announcement = Announcement::where('uuid', $uuid)->first();
+
+            if (is_null($announcement)) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            $announcement->isVisible = $isVisible;
+            $announcement->save();
+            return Response::HTTP_OK;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
 }
