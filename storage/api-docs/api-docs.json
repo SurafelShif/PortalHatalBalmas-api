@@ -133,8 +133,9 @@
                                         "example": 1
                                     },
                                     "isVisible": {
-                                        "type": "boolean",
-                                        "example": true
+                                        "description": "בוליאני מקבל רק 0 או 1",
+                                        "type": "integer",
+                                        "example": 1
                                     },
                                     "image": {
                                         "description": "תמונה מצורפת להכרזה",

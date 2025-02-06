@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateAnnouncementRequest;
 use App\Services\AnnouncementsService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class AnnouncementController extends Controller
 {
@@ -125,7 +126,7 @@ class AnnouncementController extends Controller
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של ההכרזה"),
      *                 @OA\Property(property="content", type="object", example={"title": "Sample Post", "body": "This is the full content"}),
      *                 @OA\Property(property="position", type="integer", example=1),
-     *                 @OA\Property(property="isVisible", type="boolean", example=true),
+     *                       @OA\Property(property="isVisible", type="integer", example=1,description="בוליאני מקבל רק 0 או 1"),
      *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת להכרזה")
      *             )
      *         )
@@ -146,6 +147,7 @@ class AnnouncementController extends Controller
      */
     public function updateAnnouncement($uuid, UpdateAnnouncementRequest $request)
     {
+        Log::info('Update Array:', $request->validated());
         $result = $this->announcementsService->updateAnnouncement($uuid, $request->validated());
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {

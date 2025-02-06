@@ -43,6 +43,8 @@ class AnnouncementsService
     public function updateAnnouncement(string $uuid, array $updateArray)
     {
         try {
+
+
             $announcement = Announcement::where('uuid', $uuid)->first();
             if (is_null($announcement)) {
                 return HttpStatusEnum::NOT_FOUND;
