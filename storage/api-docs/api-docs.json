@@ -766,6 +766,40 @@
                 }
             }
         },
+        "/api/sites/{uuid}": {
+            "delete": {
+                "tags": [
+                    "Sites"
+                ],
+                "summary": "מוחק פוסט לפי UUID",
+                "description": "מוחק פוסט בודד לפי מזהה ייחודי (UUID).",
+                "operationId": "deleteSiteByUuid",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של הפוסט למחיקה",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "404": {
+                        "description": "הפוסט לא נמצא"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
         "/api/users/": {
             "get": {
                 "tags": [

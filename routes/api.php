@@ -29,12 +29,12 @@ Route::controller(SiteController::class)->prefix('sites')->group(function () {
     Route::get('/', 'getSites');
     Route::post('/', 'createSite');
     // Route::post('/{uuid}', 'updateSite');
-    // Route::post('/', 'deleteSite');
+    Route::delete('/{uuid}', 'deleteSite');
 });
 Route::controller(AnnouncementController::class)->prefix('announcements')->group(function () {
     Route::get('/', 'getAnnouncements');
     Route::post('/{uuid}', 'updateAnnouncement');
-    Route::patch('/{uuid}', 'updateAnnouncementVisibility');
+    Route::middleware("throttle:20,1")->patch('/{uuid}', 'updateAnnouncementVisibility');
     Route::post('/', 'createAnnouncement');
     Route::delete('/{uuid}', 'deleteAnnouncement');
 });
