@@ -767,6 +767,68 @@
             }
         },
         "/api/sites/{uuid}": {
+            "post": {
+                "tags": [
+                    "Sites"
+                ],
+                "summary": "עדכון פוסט לפי UUID",
+                "description": "מעודכן פוסט קיים לפי מזהה ייחודי (UUID) עם הנתונים החדשים שסופקו.",
+                "operationId": "updateSiteByUuid",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של הפוסט לעדכון",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "נתוני הפוסט המעודכנים בפורמט טופס",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "כותרת חדשה"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "תוכן מעודכן של הפוסט"
+                                    },
+                                    "link": {
+                                        "type": "string",
+                                        "example": "https://www.google.com/"
+                                    },
+                                    "image": {
+                                        "description": "קובץ תמונה לפוסט (לא חובה)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "404": {
+                        "description": "הפוסט לא נמצא"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            },
             "delete": {
                 "tags": [
                     "Sites"

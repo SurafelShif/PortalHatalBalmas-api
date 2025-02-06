@@ -28,7 +28,7 @@ Route::controller(PostController::class)->prefix('posts')->group(function () {
 Route::controller(SiteController::class)->prefix('sites')->group(function () {
     Route::get('/', 'getSites');
     Route::post('/', 'createSite');
-    // Route::post('/{uuid}', 'updateSite');
+    Route::post('/{uuid}', 'updateSite');
     Route::delete('/{uuid}', 'deleteSite');
 });
 Route::controller(AnnouncementController::class)->prefix('announcements')->group(function () {
