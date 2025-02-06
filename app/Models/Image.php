@@ -9,10 +9,6 @@ class Image extends Model
 {
     use HasFactory;
 
-    // public function website()
-    // {
-    //     return $this->belongsTo(Website::class);
-    // }
     protected $fillable = [
         'image_name',
         'image_type',

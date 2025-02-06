@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('sites', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('name');
-            $table->json('content');
+            $table->string('description');
             $table->string('link');
             $table->unsignedBigInteger('image_id');
             $table->foreign('image_id')->references('id')->on('images')->onDelete('cascade');

@@ -20,6 +20,9 @@ class Announcement extends Model
                 $model->uuid = (string) Str::uuid();
             }
         });
+        static::deleting(function ($announcement) {
+            $announcement->image()->delete();
+        });
     }
     protected $fillable = [
         'title',

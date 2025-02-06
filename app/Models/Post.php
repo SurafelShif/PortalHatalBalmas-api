@@ -25,6 +25,9 @@ class Post extends Model
                 $model->uuid = (string) Str::uuid();
             }
         });
+        static::deleting(function ($post) {
+            $post->image()->delete();
+        });
     }
     protected $fillable = [
         'title',

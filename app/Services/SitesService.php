@@ -2,10 +2,43 @@
 
 namespace App\Services;
 
+use App\Enums\HttpStatusEnum;
+use App\Http\Resources\SitesResource;
+use App\Models\Site;
+use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
+
 class SitesService
 {
+    public function __construct(private ImageService $imageService) {}
+
     public function getSites()
     {
-        dd('dsgs');
+        try {
+            $sites = Site::all();
+            return SitesResource::collection($sites);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+
+    public function createSite(string $name, string $description, string $link, UploadedFile $image)
+    {
+        $createdImage = null;
+        try {
+            $createdImage = $this->imageService->uploadImage($image);
+            Site::create([
+                'name' => $name,
+                'description' => $description,
+                'link' => $link,
+                'image_id' => $createdImage->id
+            ]);
+        } catch (\Exception $e) {
+            $this->imageService->deleteImage($createdImage->image_name);
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
     }
 }

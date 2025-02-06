@@ -703,6 +703,69 @@
                 }
             }
         },
+        "/api/sites": {
+            "get": {
+                "tags": [
+                    "Sites"
+                ],
+                "summary": "מקבל את רשימת הקישורים",
+                "description": "מחזיר רשימה של כל הקישורים במערכת.",
+                "operationId": "getSites",
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Sites"
+                ],
+                "summary": "יוצר קישור חדש",
+                "description": "יוצר קישור חדש עם השם, התיאור, הקישור, התוכן והתמונה שסופקו.",
+                "operationId": "createSite",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "קישור לדוגמה"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "תיאור של הקישור"
+                                    },
+                                    "link": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://example.com"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "הקישור נוצר בהצלחה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
         "/api/users/": {
             "get": {
                 "tags": [
@@ -970,6 +1033,10 @@
         {
             "name": "Post",
             "description": "Post"
+        },
+        {
+            "name": "Sites",
+            "description": "Sites"
         }
     ]
 }
