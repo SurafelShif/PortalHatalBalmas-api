@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 
 class UpdateAnnouncementRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class UpdateAnnouncementRequest extends FormRequest
             'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'string'],
             'content' => ['sometimes', 'json'],
-            'position' => ['sometimes', 'integer', 'unique:announcements,position'],
+            'position' => "sometimes| integer ",
             'isVisible' => ['sometimes', 'boolean'],
             'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
@@ -36,6 +37,12 @@ class UpdateAnnouncementRequest extends FormRequest
         $validator->after(function ($validator) {
             if (!$this->hasAny(['title', 'description', 'content', 'position', 'isVisible', 'image', 'category_id'])) {
                 $validator->errors()->add('general', 'חייב לשלוח לפחות שדה אחד לעדכון.');
+            }
+            if ($this->has('position')) {
+                $count = DB::table('announcements')->count();
+                if ($this->position > $count) {
+                    $validator->errors()->add('position', 'מיקום ההכרזה אינו יכול להיות גדול מכמות ההכרזות.');
+                }
             }
         });
     }
