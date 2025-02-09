@@ -9,7 +9,8 @@ use App\Http\Requests\UpdateAnnouncementRequest;
 use App\Http\Requests\UpdateAnnouncementVisibility;
 use App\Services\AnnouncementsService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
+
 use Illuminate\Support\Facades\Log;
 
 class AnnouncementController extends Controller

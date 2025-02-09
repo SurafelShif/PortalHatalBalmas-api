@@ -7,7 +7,8 @@ use App\Enums\ResponseMessages;
 use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
+
 use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller

@@ -5,7 +5,8 @@ namespace App\Services;
 use App\Enums\HttpStatusEnum;
 use App\Http\Resources\AnnoucementsResource;
 use App\Models\Announcement;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
+
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 

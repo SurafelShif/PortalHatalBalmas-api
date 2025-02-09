@@ -6,7 +6,8 @@ use App\Enums\HttpStatusEnum;
 use App\Enums\ResponseMessages;
 use App\Http\Requests\AddAdminRequest;
 use App\Services\UsersService;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class UserController extends Controller
 {

@@ -4,7 +4,8 @@ namespace App\Services;
 
 use App\Enums\HttpStatusEnum;
 use App\Models\Category;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
+
 use Illuminate\Support\Facades\Log;
 
 class CategoryService

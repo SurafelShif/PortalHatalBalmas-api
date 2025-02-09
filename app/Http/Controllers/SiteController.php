@@ -8,7 +8,8 @@ use App\Http\Requests\CreateSiteRequest;
 use App\Http\Requests\UpdateSiteRequest;
 use App\Services\SitesService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class SiteController extends Controller
 {
@@ -84,7 +85,7 @@ class SiteController extends Controller
         }
         return response()->json([
             'message' => ResponseMessages::SUCCESS_ACTION,
-        ], Response::HTTP_OK);
+        ], Response::HTTP_CREATED);
     }
     /**
      * @OA\Delete(

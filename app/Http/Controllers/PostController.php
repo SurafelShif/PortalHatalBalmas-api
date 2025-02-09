@@ -8,7 +8,8 @@ use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Services\PostsService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
+
 use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller

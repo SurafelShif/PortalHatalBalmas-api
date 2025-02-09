@@ -7,7 +7,8 @@ use App\Enums\ResponseMessages;
 use App\Http\Requests\CategoryRequest;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class CategoryController extends Controller
 {
