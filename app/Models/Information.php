@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 
 class Information extends Model
 {
+    protected $table = 'informations';
     public function image()
     {
         return $this->hasOne(Image::class, 'id', 'image_id');
@@ -26,7 +27,6 @@ class Information extends Model
     }
     protected $fillable = [
         'title',
-        'description',
         'content',
         'image_id',
     ];

@@ -443,6 +443,24 @@
                 }
             }
         },
+        "/api/informations": {
+            "get": {
+                "tags": [
+                    "Informations"
+                ],
+                "summary": "מקבל את רשימת הכתבות מידע",
+                "description": "מחזיר רשימה של כל הכתבות מידע במערכת.",
+                "operationId": "getInformations",
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
         "/api/posts": {
             "get": {
                 "tags": [
@@ -1125,6 +1143,10 @@
         {
             "name": "Categories",
             "description": "Categories"
+        },
+        {
+            "name": "Informations",
+            "description": "Informations"
         },
         {
             "name": "Post",

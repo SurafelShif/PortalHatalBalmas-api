@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\InformationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
@@ -43,4 +44,10 @@ Route::controller(CategoryController::class)->prefix('categories')->group(functi
     Route::post('/', 'createCategory');
     Route::delete('/{categoryId}', 'deleteCategory');
     Route::put('/{categoryId}', 'updateCategory');
+});
+Route::controller(InformationController::class)->prefix('informations')->group(function () {
+    Route::get('/', 'getInformations');
+    // Route::post('/', 'createCategory');
+    // Route::delete('/{categoryId}', 'deleteCategory');
+    // Route::put('/{categoryId}', 'updateCategory');
 });
