@@ -7,6 +7,7 @@ use App\Http\Resources\InformationResource;
 use App\Models\Information;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class InformationsService
 {
@@ -34,6 +35,41 @@ class InformationsService
             ]);
         } catch (\Exception $e) {
             $this->imageService->deleteImage($createdImage->image_name);
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function deleteInformation($uuid)
+    {
+        try {
+            $information = Information::where('uuid', $uuid)->first();
+            if (is_null($information)) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            Information::destroy($information->id);
+            return Response::HTTP_OK;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function updateInformation(string $uuid, array $updateArray)
+    {
+        try {
+            $information = Information::where('uuid', $uuid)->first();
+            if (is_null($information)) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            if (array_key_exists('image', $updateArray)) {
+                $this->imageService->updateImage($information->image->id, $updateArray['image']);
+                unset($updateArray['image']);
+            }
+            if (array_key_exists('content', $updateArray)) {
+                $updateArray['content'] = json_decode($updateArray['content'], 1);
+            }
+            $information->update($updateArray);
+            return Response::HTTP_OK;
+        } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }

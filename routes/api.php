@@ -18,7 +18,7 @@ Route::controller(UserController::class)->middleware(['auth:api', 'role:admin'])
     Route::delete('/{personal_id}', 'deleteAdmin');
     Route::get('/', 'index');
 });
-//TODO if category not found then return error
+//TODO if category not found then return null
 Route::controller(PostController::class)->prefix('posts')->group(function () {
     Route::middleware("throttle:20,1")->get('/', 'getPosts');
     Route::post('/', 'createPost');
@@ -48,6 +48,6 @@ Route::controller(CategoryController::class)->prefix('categories')->group(functi
 Route::controller(InformationController::class)->prefix('informations')->group(function () {
     Route::get('/', 'getInformations');
     Route::post('/', 'createInformation');
-    // Route::delete('/{categoryId}', 'deleteCategory');
-    // Route::put('/{categoryId}', 'updateCategory');
+    Route::delete('/{uuid}', 'deleteInformation');
+    Route::post('/{uuid}', 'updateInformation');
 });

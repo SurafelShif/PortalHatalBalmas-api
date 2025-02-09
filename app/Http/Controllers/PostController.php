@@ -250,7 +250,7 @@ class PostController extends Controller
      *             @OA\Schema(
      *                 @OA\Property(property="title", type="string", example="כותרת הפוסט"),
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של הפוסט"),
-     * * @OA\Property(
+     *  @OA\Property(
      *     property="content",
      *     type="object",
      *     example={

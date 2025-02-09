@@ -465,7 +465,7 @@
                     "Informations"
                 ],
                 "summary": "יוצר כתבת מידע חדש",
-                "description": "יוצר כתבת מידע חדש עם כותרת, תיאור, תוכן, קטגוריה ותמונה.",
+                "description": "יוצר כתבת מידע חדש עם כותרת, תוכן ותמונה",
                 "operationId": "createInformation",
                 "requestBody": {
                     "required": true,
@@ -491,7 +491,77 @@
                                         }
                                     },
                                     "image": {
-                                        "description": "תמונה מצורפת לכתבת מידע",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "הכתבת מידע נוצר בהצלחה"
+                    },
+                    "400": {
+                        "description": "נתונים חסרים או שגויים"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
+        "/api/informations/{uuid}": {
+            "post": {
+                "tags": [
+                    "Informations"
+                ],
+                "summary": "מעדכן פוסט ",
+                "description": "מעדכן פוסט .",
+                "operationId": "updateInformation",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של כתבת מידע",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "כותרת כתבת מידע"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "תיאור קצר של כתבת מידע"
+                                    },
+                                    "content": {
+                                        "type": "object",
+                                        "example": {
+                                            "title": "Sample Post",
+                                            "body": "This is the full content of the post",
+                                            "author": "John Doe"
+                                        }
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "image": {
+                                        "description": "תמונה מצורפת לפוסט",
                                         "type": "string",
                                         "format": "binary"
                                     }
@@ -503,10 +573,42 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "הכתבת מידע נוצר בהצלחה"
+                        "description": "כתבת מידע נוצר בהצלחה"
                     },
                     "400": {
                         "description": "בקשה לא תקינה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Informations"
+                ],
+                "summary": "מוחק כתבת מידע לפי UUID",
+                "description": "מוחק כתבת מידע בודד לפי מזהה ייחודי (UUID).",
+                "operationId": "deleteInformationByUUid",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של הכתבת מידע",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "404": {
+                        "description": "הכתבת מידע לא נמצא"
                     },
                     "500": {
                         "description": "שגיאה בשרת"
