@@ -47,7 +47,7 @@ Route::controller(CategoryController::class)->prefix('categories')->group(functi
 });
 Route::controller(InformationController::class)->prefix('informations')->group(function () {
     Route::get('/', 'getInformations');
-    // Route::post('/', 'createCategory');
+    Route::post('/', 'createInformation');
     // Route::delete('/{categoryId}', 'deleteCategory');
     // Route::put('/{categoryId}', 'updateCategory');
 });

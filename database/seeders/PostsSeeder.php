@@ -35,7 +35,7 @@ class PostsSeeder extends Seeder
                 'image_id' => $image->id,
                 'title' => $faker->sentence(6),
                 'description' => $faker->sentence(10),
-                'content' => json_encode(["some" => $faker->paragraph(5)]),
+                'content' => (["some" => $faker->paragraph(5)]),
                 'category_id' => Arr::random([1, 2, 3])
             ]);
         }

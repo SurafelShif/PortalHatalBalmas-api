@@ -26,7 +26,7 @@ class AnnouncementsSeeder extends Seeder
                 'image_id' => $image->id,
                 'title' => $faker->sentence(6),
                 'description' => $faker->sentence(10),
-                'content' => json_encode(["some" => $faker->paragraph(5)]),
+                'content' => (["some" => $faker->paragraph(5)]),
                 'position' => $i
             ]);
         }

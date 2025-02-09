@@ -25,7 +25,7 @@ class InformationsSeeder extends Seeder
             Information::create([
                 'image_id' => $image->id,
                 'title' => $faker->sentence(6),
-                'content' => json_encode(["some" => $faker->paragraph(5)]),
+                'content' => (["some" => $faker->paragraph(5)]),
             ]);
         }
     }

@@ -459,6 +459,59 @@
                         "description": "שגיאה בשרת"
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Informations"
+                ],
+                "summary": "יוצר כתבת מידע חדש",
+                "description": "יוצר כתבת מידע חדש עם כותרת, תיאור, תוכן, קטגוריה ותמונה.",
+                "operationId": "createInformation",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "content",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "כותרת הכתבת מידע"
+                                    },
+                                    "content": {
+                                        "type": "object",
+                                        "example": {
+                                            "title": "Sample Post",
+                                            "body": "This is the full content of the post",
+                                            "author": "John Doe"
+                                        }
+                                    },
+                                    "image": {
+                                        "description": "תמונה מצורפת לכתבת מידע",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "הכתבת מידע נוצר בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
             }
         },
         "/api/posts": {
