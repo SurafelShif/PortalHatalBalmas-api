@@ -38,10 +38,7 @@ class CategoryController extends Controller
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
             };
         }
-        return response()->json([
-            'message' => ResponseMessages::SUCCESS_ACTION,
-            'data' => $result,
-        ], Response::HTTP_OK);
+        return response()->json($result, Response::HTTP_OK);
     }
 
     /**

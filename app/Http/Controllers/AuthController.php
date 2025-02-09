@@ -63,10 +63,9 @@ class AuthController extends Controller
         $token = $result['token'];
         $tokenName = $result['tokenName'];
         $user = $result['user'];
-        return response()->json([
-            'message' => ResponseMessages::SUCCESS_ACTION,
-            'user' => new UserResource($user),
-        ])->withCookie(Cookie::make($tokenName, $token->accessToken));
+        return response()->json(
+            new UserResource($user),
+        )->withCookie(Cookie::make($tokenName, $token->accessToken));
     }
     /**
      * @OA\Get(
@@ -97,10 +96,7 @@ class AuthController extends Controller
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
             };
         }
-        return response()->json([
-            'message' => ResponseMessages::SUCCESS_ACTION,
-            'data' => $result,
-        ], Response::HTTP_OK);
+        return response()->json($result, Response::HTTP_OK);
     }
     public function addAdmin()
     {
