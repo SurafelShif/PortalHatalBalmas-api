@@ -28,7 +28,7 @@ class GetPostsRequest extends FormRequest
         if ($this->filled('category_id')) {
             $exists = Category::where('id', $this->category_id)->exists();
             if (!$exists) {
-                abort(response()->json("", Response::HTTP_NOT_FOUND));
+                abort(response()->json("הקטגוריה לא נמצאה", Response::HTTP_NOT_FOUND));
             }
         }
     }
