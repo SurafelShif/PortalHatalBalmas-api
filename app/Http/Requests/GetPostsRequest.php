@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
+use SebastianBergmann\Type\NullType;
+use Symfony\Component\HttpFoundation\Response;
 
 class GetPostsRequest extends FormRequest
 {
@@ -15,18 +18,25 @@ class GetPostsRequest extends FormRequest
     {
         return [
             'search' => 'nullable|string|max:100',
-            'category_id' => 'nullable|integer|exists:categories,id',
+            'category_id' => 'nullable|integer',
             'limit' => 'nullable|integer|min:1|max:10',
             'page' => 'nullable|integer|min:1',
         ];
     }
-
+    protected function passedValidation()
+    {
+        if ($this->filled('category_id')) {
+            $exists = Category::where('id', $this->category_id)->exists();
+            if (!$exists) {
+                abort(response()->json("", Response::HTTP_NOT_FOUND));
+            }
+        }
+    }
     public function messages()
     {
         return [
             'search.max' => 'השדה חיפוש לא יכול להכיל יותר מ-100 תווים.',
             'category_id.integer' => 'קטגוריה חייבת להיות מספר.',
-            'category_id.exists' => 'הקטגוריה שנבחרה לא קיימת.',
             'limit.integer' => 'הגבלת תוצאות חייבת להיות מספר.',
             'limit.min' => 'הגבלת תוצאות חייבת להיות לפחות 1.',
             'limit.max' => 'הגבלת תוצאות לא יכולה להיות יותר מ-10.',

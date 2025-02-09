@@ -18,7 +18,6 @@ Route::controller(UserController::class)->middleware(['auth:api', 'role:admin'])
     Route::delete('/{personal_id}', 'deleteAdmin');
     Route::get('/', 'index');
 });
-//TODO if category not found then return null
 Route::controller(PostController::class)->middleware(['auth:api', 'role:admin'])->prefix('posts')->group(function () {
     Route::post('/', 'createPost');
     Route::post('/{uuid}', 'updatePost');
