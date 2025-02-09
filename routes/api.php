@@ -19,35 +19,37 @@ Route::controller(UserController::class)->middleware(['auth:api', 'role:admin'])
     Route::get('/', 'index');
 });
 //TODO if category not found then return null
-Route::controller(PostController::class)->prefix('posts')->group(function () {
-    Route::middleware("throttle:20,1")->get('/', 'getPosts');
+Route::controller(PostController::class)->middleware(['auth:api', 'role:admin'])->prefix('posts')->group(function () {
     Route::post('/', 'createPost');
     Route::post('/{uuid}', 'updatePost');
     Route::delete('/{uuid}', 'deletePost');
-    Route::middleware("throttle:20,1")->get('/{uuid}', 'getPostByUUid');
+    Route::middleware("throttle:20,1")->withoutMiddleware(['auth:api', 'role:admin'])->group(function () {
+        Route::get('/', 'getPosts');
+        Route::get('/{uuid}', 'getPostByUUid');
+    });
 });
-Route::controller(SiteController::class)->prefix('sites')->group(function () {
-    Route::get('/', 'getSites');
+Route::controller(SiteController::class)->middleware(['auth:api', 'role:admin'])->prefix('sites')->group(function () {
     Route::post('/', 'createSite');
     Route::post('/{uuid}', 'updateSite');
     Route::delete('/{uuid}', 'deleteSite');
+    Route::withoutMiddleware(['auth:api', 'role:admin'])->get('/', 'getSites');
 });
-Route::controller(AnnouncementController::class)->prefix('announcements')->group(function () {
-    Route::get('/', 'getAnnouncements');
+Route::controller(AnnouncementController::class)->middleware(['auth:api', 'role:admin'])->prefix('announcements')->group(function () {
     Route::post('/{uuid}', 'updateAnnouncement');
     Route::middleware("throttle:20,1")->patch('/{uuid}', 'updateAnnouncementVisibility');
     Route::post('/', 'createAnnouncement');
     Route::delete('/{uuid}', 'deleteAnnouncement');
+    Route::withoutMiddleware(['auth:api', 'role:admin'])->get('/', 'getAnnouncements');
 });
-Route::controller(CategoryController::class)->prefix('categories')->group(function () {
-    Route::get('/', 'getCategories');
+Route::controller(CategoryController::class)->middleware(['auth:api', 'role:admin'])->prefix('categories')->group(function () {
     Route::post('/', 'createCategory');
     Route::delete('/{categoryId}', 'deleteCategory');
     Route::put('/{categoryId}', 'updateCategory');
+    Route::withoutMiddleware(['auth:api', 'role:admin'])->get('/', 'getCategories');
 });
-Route::controller(InformationController::class)->prefix('informations')->group(function () {
-    Route::get('/', 'getInformations');
+Route::controller(InformationController::class)->middleware(['auth:api', 'role:admin'])->prefix('informations')->group(function () {
     Route::post('/', 'createInformation');
     Route::delete('/{uuid}', 'deleteInformation');
     Route::post('/{uuid}', 'updateInformation');
+    Route::withoutMiddleware(['auth:api', 'role:admin'])->get('/', 'getInformations');
 });
