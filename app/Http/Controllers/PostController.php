@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\HttpStatusEnum;
 use App\Enums\ResponseMessages;
 use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\GetPostsRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Services\PostsService;
 use Illuminate\Http\Request;
@@ -63,7 +64,7 @@ class PostController extends Controller
      *     )
      * )
      */
-    public function getPosts(Request $request)
+    public function getPosts(GetPostsRequest $request)
     {
         $search = $request->query('search');
         $category_id = $request->query('category_id');
