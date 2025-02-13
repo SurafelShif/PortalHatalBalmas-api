@@ -27,6 +27,7 @@ Route::controller(PostController::class)->middleware(['auth:api', 'role:admin'])
         Route::get('/{uuid}', 'getPostByUUid');
     });
 });
+//TODO add search to sites
 Route::controller(SiteController::class)->middleware(['auth:api', 'role:admin'])->prefix('sites')->group(function () {
     Route::post('/', 'createSite');
     Route::post('/{uuid}', 'updateSite');

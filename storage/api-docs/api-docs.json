@@ -884,6 +884,18 @@
                 "summary": "מקבל את רשימת הקישורים",
                 "description": "מחזיר רשימה של כל הקישורים במערכת.",
                 "operationId": "getSites",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "מילת חיפוש בכותרת, תיאור או תוכן",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": ""
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "הפעולה בוצעה בהצלחה"

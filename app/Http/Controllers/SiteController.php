@@ -21,7 +21,13 @@ class SiteController extends Controller
      *     description="מחזיר רשימה של כל הקישורים במערכת.",
      *     operationId="getSites",
      *     tags={"Sites"},
-     *
+     *     @OA\Parameter(
+     *         name="query",
+     *         in="query",
+     *         description="מילת חיפוש בכותרת, תיאור או תוכן",
+     *         required=false,
+     *         @OA\Schema(type="string", example="")
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="הפעולה בוצעה בהצלחה",
@@ -32,9 +38,10 @@ class SiteController extends Controller
      *     )
      * )
      */
-    public function getSites()
+    public function getSites(Request $request)
     {
-        $result = $this->sitesService->getSites();
+        $query = $request->query("query");
+        $result = $this->sitesService->getSites($query);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

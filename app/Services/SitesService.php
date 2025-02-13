@@ -14,10 +14,18 @@ class SitesService
 {
     public function __construct(private ImageService $imageService) {}
 
-    public function getSites()
+    public function getSites(string | null $searcQuery)
     {
         try {
-            $sites = Site::all();
+            $query = Site::latest();
+            if (!empty($searcQuery)) {
+                $query->where(function ($q) use ($searcQuery) {
+                    $q->where('name', 'LIKE', "%{$searcQuery}%")
+                        ->orWhere('description', 'LIKE', "%{$searcQuery}%")
+                        ->orWhere('link', 'LIKE', "%{$searcQuery}%");
+                });
+            }
+            $sites = $query->get();
             return SitesResource::collection($sites);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
