@@ -478,7 +478,7 @@
                 }
             }
         },
-        "/api/informations": {
+        "/api/info": {
             "get": {
                 "tags": [
                     "Informations"
@@ -548,7 +548,42 @@
                 }
             }
         },
-        "/api/informations/{uuid}": {
+        "/api/info/{uuid}": {
+            "get": {
+                "tags": [
+                    "Informations"
+                ],
+                "summary": "מביא פוסט לפי UUID",
+                "description": "מביא פוסט בודד לפי מזהה ייחודי (UUID).",
+                "operationId": "getInformationByUUid",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של הכרזה",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "404": {
+                        "description": "הכרזה לא נמצא"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Informations"

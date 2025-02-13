@@ -15,7 +15,7 @@ class InformationController extends Controller
     public function __construct(private InformationsService $InformationsService) {}
     /**
      * @OA\Get(
-     *     path="/api/informations",
+     *     path="/api/info",
      *     summary="מקבל את רשימת הכתבות מידע",
      *     description="מחזיר רשימה של כל הכתבות מידע במערכת.",
      *     operationId="getInformations",
@@ -43,7 +43,7 @@ class InformationController extends Controller
     }
     /**
      * @OA\Post(
-     *     path="/api/informations",
+     *     path="/api/info",
      *     summary="יוצר כתבת מידע חדש",
      *     description="יוצר כתבת מידע חדש עם כותרת, תוכן ותמונה",
      *     operationId="createInformation",
@@ -99,7 +99,7 @@ class InformationController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/informations/{uuid}",
+     *     path="/api/info/{uuid}",
      *     summary="מוחק כתבת מידע לפי UUID",
      *     description="מוחק כתבת מידע בודד לפי מזהה ייחודי (UUID).",
      *     operationId="deleteInformationByUUid",
@@ -142,7 +142,7 @@ class InformationController extends Controller
     }
     /**
      * @OA\Post(
-     *     path="/api/informations/{uuid}",
+     *     path="/api/info/{uuid}",
      *     summary="מעדכן פוסט ",
      *     description="מעדכן פוסט .",
      *     operationId="updateInformation",
@@ -207,11 +207,11 @@ class InformationController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/information/{uuid}",
+     *     path="/api/info/{uuid}",
      *     summary="מביא פוסט לפי UUID",
      *     description="מביא פוסט בודד לפי מזהה ייחודי (UUID).",
      *     operationId="getInformationByUUid",
-     *     tags={"Information"},
+     *     tags={"Informations"},
      *
      *     @OA\Parameter(
      *         name="uuid",
