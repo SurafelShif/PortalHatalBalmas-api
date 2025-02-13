@@ -83,7 +83,8 @@ class InformationController extends Controller
      *         description="שגיאה בשרת",
      *     )
      * )
-     */    public function createInformation(CreateInformationRequest $request)
+     */
+    public function createInformation(CreateInformationRequest $request)
     {
         $result = $this->InformationsService->createInformation($request->title, $request->content, $request->image);
         if ($result instanceof HttpStatusEnum) {

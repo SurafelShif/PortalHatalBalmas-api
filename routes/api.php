@@ -34,7 +34,7 @@ Route::controller(SiteController::class)->middleware(['auth:api', 'role:admin'])
     Route::withoutMiddleware(['auth:api', 'role:admin'])->get('/', 'getSites');
 });
 Route::controller(AnnouncementController::class)->middleware(['auth:api', 'role:admin'])->prefix('announcements')->group(function () {
-    Route::post('/{uuid}', 'updateAnnouncement');
+    Route::post('/update', 'updateAnnouncement');
     Route::middleware("throttle:20,1")->patch('/{uuid}', 'updateAnnouncementVisibility');
     Route::post('/', 'createAnnouncement');
     Route::delete('/{uuid}', 'deleteAnnouncement');
@@ -46,7 +46,7 @@ Route::controller(CategoryController::class)->middleware(['auth:api', 'role:admi
     Route::put('/{categoryId}', 'updateCategory');
     Route::withoutMiddleware(['auth:api', 'role:admin'])->get('/', 'getCategories');
 });
-Route::controller(InformationController::class)->middleware(['auth:api', 'role:admin'])->prefix('informations')->group(function () {
+Route::controller(InformationController::class)->middleware(['auth:api', 'role:admin'])->prefix('info')->group(function () {
     Route::post('/', 'createInformation');
     Route::delete('/{uuid}', 'deleteInformation');
     Route::post('/{uuid}', 'updateInformation');

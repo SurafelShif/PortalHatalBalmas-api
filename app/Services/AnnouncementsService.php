@@ -8,6 +8,7 @@ use App\Models\Announcement;
 use Symfony\Component\HttpFoundation\Response;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AnnouncementsService
@@ -41,23 +42,26 @@ class AnnouncementsService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function updateAnnouncement(string $uuid, array $updateArray)
+    public function updateAnnouncement(array $updateArray)
     {
         try {
-
-
-            $announcement = Announcement::where('uuid', $uuid)->first();
-            if (is_null($announcement)) {
-                return HttpStatusEnum::NOT_FOUND;
+            DB::beginTransaction();
+            foreach ($updateArray as $updateInfo) {
+                $announcement = Announcement::where('uuid', $updateInfo['uuid'])->first();
+                if (is_null($announcement)) {
+                    DB::rollBack();
+                    return HttpStatusEnum::NOT_FOUND;
+                }
+                if (array_key_exists('image', $updateInfo)) {
+                    $this->imageService->updateImage($announcement->image->id, $updateInfo['image']);
+                    unset($updateInfo['image']);
+                }
+                if (array_key_exists('content', $updateInfo)) {
+                    $updateInfo['content'] = json_decode($updateInfo['content'], 1);
+                }
+                $announcement->update($updateInfo);
             }
-            if (array_key_exists('image', $updateArray)) {
-                $this->imageService->updateImage($announcement->image->id, $updateArray['image']);
-                unset($updateArray['image']);
-            }
-            if (array_key_exists('content', $updateArray)) {
-                $updateArray['content'] = json_decode($updateArray['content'], 1);
-            }
-            $announcement->update($updateArray);
+            DB::commit();
             return Response::HTTP_OK;
         } catch (\Exception $e) {
             Log::error($e->getMessage());

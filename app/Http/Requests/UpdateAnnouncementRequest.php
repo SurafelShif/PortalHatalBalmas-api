@@ -23,25 +23,32 @@ class UpdateAnnouncementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['sometimes', 'string', 'max:255'],
-            'description' => ['sometimes', 'string'],
-            'content' => ['sometimes', 'json'],
-            'position' => "sometimes| integer ",
-            'isVisible' => ['sometimes', 'boolean'],
-            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
+            '*.uuid' => 'required| uuid',
+            '*.title' => ['sometimes', 'string', 'max:255'],
+            '*.description' => ['sometimes', 'string'],
+            '*.content' => ['sometimes', 'json'],
+            '*.position' => "sometimes| integer ",
+            '*.isVisible' => ['sometimes', 'boolean'],
+            '*.image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
     }
 
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if (!$this->hasAny(['title', 'description', 'content', 'position', 'isVisible', 'image', 'category_id'])) {
-                $validator->errors()->add('general', 'חייב לשלוח לפחות שדה אחד לעדכון.');
+            if (count($this->all()) === 0) {
+                return $validator->errors()->add('', 'הכנס לפחות אתר אחד לעדכון');
             }
-            if ($this->has('position')) {
-                $count = DB::table('announcements')->count();
-                if ($this->position > $count) {
-                    $validator->errors()->add('position', 'מיקום ההכרזה אינו יכול להיות גדול מכמות ההכרזות.');
+            foreach ($this->all() as $key => $item) {
+                if (!isset($item['name']) && !isset($item['position']) && !isset($item['description']) && !isset($item['link']) && !array_key_exists('image', $item)) {
+                    $validator->errors()->add("$key", 'הכנס לפחות ערך אחד לעדכון');
+                }
+
+                if (array_key_exists('position', $item)) {
+                    $count = DB::table('announcements')->count();
+                    if ($item['position'] > $count) {
+                        $validator->errors()->add("$key", 'מיקום ההכרזה אינו יכול להיות גדול מכמות ההכרזות.');
+                    }
                 }
             }
         });
@@ -53,22 +60,18 @@ class UpdateAnnouncementRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'title.string' => 'כותרת הכזרה חייבת להיות מחרוזת.',
-            'title.max' => 'כותרת הכזרה יכולה להכיל עד 255 תווים.',
-
-            'description.string' => 'תיאור הכזרה חייב להיות מחרוזת.',
-
-            'content.json' => 'תוכן הכזרה חייב להיות בפורמט JSON תקין.',
-
-            'position.unique' => 'המיקום שסיפקת כבר קיים במערכת.',
-
-            'position.integer' => 'מיקום ההכזרה אינו בפורמט הנכון',
-
-            'isVisible.boolean' => 'נראות ההכזרה אינו בפורמט הנכון',
-
-            'image.image' => 'הקובץ חייב להיות תמונה.',
-            'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
-            'image.max' => 'התמונה חייבת להיות עד 2MB.',
+            '*.uuid.required' => 'נא לשלוח את מזהה האתר (UUID)',
+            '*.uuid.uuid' => 'מזהה האתר אינו בפורמט הנכון',
+            '*.title.string' => 'כותרת הכזרה חייבת להיות מחרוזת.',
+            '*.title.max' => 'כותרת הכזרה יכולה להכיל עד 255 תווים.',
+            '*.description.string' => 'תיאור הכזרה חייב להיות מחרוזת.',
+            '*.content.json' => 'תוכן הכזרה חייב להיות בפורמט JSON תקין.',
+            '*.position.unique' => 'המיקום שסיפקת כבר קיים במערכת.',
+            '*.position.integer' => 'מיקום ההכזרה אינו בפורמט הנכון',
+            '*.isVisible.boolean' => 'נראות ההכזרה אינו בפורמט הנכון',
+            '*.image.image' => 'הקובץ חייב להיות תמונה.',
+            '*.image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
+            '*.image.max' => 'התמונה חייבת להיות עד 2MB.',
         ];
     }
 }
