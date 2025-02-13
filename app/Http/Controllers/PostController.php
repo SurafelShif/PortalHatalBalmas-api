@@ -26,14 +26,14 @@ class PostController extends Controller
      *     tags={"Post"},
      *
      *     @OA\Parameter(
-     *         name="category_id",
+     *         name="category",
      *         in="query",
      *         description="סינון לפי מאפיין הקטגוריה",
      *         required=false,
      *         @OA\Schema(type="int", example="1")
      *     ),
      *     @OA\Parameter(
-     *         name="search",
+     *         name="query",
      *         in="query",
      *         description="מילת חיפוש בכותרת, תיאור או תוכן",
      *         required=false,
@@ -66,8 +66,8 @@ class PostController extends Controller
      */
     public function getPosts(GetPostsRequest $request)
     {
-        $search = $request->query('search');
-        $category_id = $request->query('category_id');
+        $search = $request->query('query');
+        $category_id = $request->query('category');
         $limit = $request->query('limit');
         $page = $request->query('page', 1);
         $result = $this->PostService->getPosts($category_id, $limit, $page, $search);
