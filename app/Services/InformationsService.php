@@ -16,7 +16,7 @@ class InformationsService
     public function getInformations()
     {
         try {
-            $informations = Information::all();
+            $informations = Information::select(['uuid', 'title', 'image_id'])->get();
             return InformationResource::collection($informations);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -69,6 +69,22 @@ class InformationsService
             }
             $information->update($updateArray);
             return Response::HTTP_OK;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function getInformationByUUid($uuid)
+    {
+        try {
+            // if (!Str::isUuid($uuid)) {
+            //     return HttpStatusEnum::BAD_REQUEST;
+            // }
+            $post = Information::where('uuid', $uuid)->first();
+            if (is_null($post)) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            return new InformationResource($post);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

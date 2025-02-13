@@ -9,7 +9,7 @@ class AnnoucementsResource extends JsonResource
 {
     public function toArray(Request $request)
     {
-        return [
+        return array_filter([
             'uuid' => $this->uuid,
             'title' => $this->title,
             'description' => $this->description,
@@ -22,6 +22,6 @@ class AnnoucementsResource extends JsonResource
 
 
 
-        ];
+        ], fn($value) => !is_null($value));
     }
 }

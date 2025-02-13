@@ -35,7 +35,7 @@ class AnnouncementsService
     public function getAnnouncements()
     {
         try {
-            $annoucements = Announcement::orderBy('position', 'asc')->get();
+            $annoucements = Announcement::orderBy('position', 'asc')->where('isVisible', true)->select(['uuid', 'title', 'description', 'position', 'image_id', 'created_at'])->get();
             return AnnoucementsResource::collection($annoucements);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -104,7 +104,7 @@ class AnnouncementsService
             // if (!Str::isUuid($uuid)) {
             //     return HttpStatusEnum::BAD_REQUEST;
             // }
-            $announcement = Announcement::where('uuid', $uuid)->first();
+            $announcement = Announcement::where('uuid', $uuid)->where('isVisible', true)->first();
             if (is_null($announcement)) {
                 return HttpStatusEnum::NOT_FOUND;
             }
