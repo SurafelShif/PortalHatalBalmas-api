@@ -259,4 +259,50 @@ class AnnouncementController extends Controller
             'message' => ResponseMessages::SUCCESS_ACTION,
         ], Response::HTTP_OK);
     }
+    /**
+     * @OA\Get(
+     *     path="/api/announcements/{uuid}",
+     *     summary="מביא פוסט לפי UUID",
+     *     description="מביא פוסט בודד לפי מזהה ייחודי (UUID).",
+     *     operationId="getAnnouncementByUUid",
+     *     tags={"Announcements"},
+     *
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         description="UUID של הכרזה",
+     *         required=true,
+     *         @OA\Schema(type="string", format="uuid", example="4a206b4-99d6-4692-915c-4935766e0420")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="הפעולה בוצעה בהצלחה",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="בקשה לא תקינה",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="הכרזה לא נמצא",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="שגיאה בשרת",
+     *     )
+     * )
+     */
+    public function getAnnouncementByUUid($uuid)
+    {
+        $result = $this->announcementsService->getAnnouncementByUUid($uuid);
+        if ($result instanceof HttpStatusEnum) {
+            return match ($result) {
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::ANNOUNCEMENT_NOT_FOUND], Response::HTTP_NOT_FOUND),
+                HttpStatusEnum::BAD_REQUEST => response()->json(["message" => ResponseMessages::BAD_REQUEST], Response::HTTP_BAD_REQUEST),
+            };
+        }
+        return response()->json($result, Response::HTTP_OK);
+    }
 }

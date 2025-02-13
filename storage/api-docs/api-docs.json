@@ -87,6 +87,41 @@
             }
         },
         "/api/announcements/{uuid}": {
+            "get": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "מביא פוסט לפי UUID",
+                "description": "מביא פוסט בודד לפי מזהה ייחודי (UUID).",
+                "operationId": "getAnnouncementByUUid",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של הכרזה",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "404": {
+                        "description": "הכרזה לא נמצא"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Announcements"
@@ -626,7 +661,7 @@
                 "operationId": "getPosts",
                 "parameters": [
                     {
-                        "name": "category_id",
+                        "name": "category",
                         "in": "query",
                         "description": "סינון לפי מאפיין הקטגוריה",
                         "required": false,
@@ -636,7 +671,7 @@
                         }
                     },
                     {
-                        "name": "search",
+                        "name": "query",
                         "in": "query",
                         "description": "מילת חיפוש בכותרת, תיאור או תוכן",
                         "required": false,

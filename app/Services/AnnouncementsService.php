@@ -98,4 +98,20 @@ class AnnouncementsService
             return HttpStatusEnum::ERROR;
         }
     }
+    public function getAnnouncementByUUid($uuid)
+    {
+        try {
+            // if (!Str::isUuid($uuid)) {
+            //     return HttpStatusEnum::BAD_REQUEST;
+            // }
+            $announcement = Announcement::where('uuid', $uuid)->first();
+            if (is_null($announcement)) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            return new AnnoucementsResource($announcement);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
 }
