@@ -137,7 +137,7 @@ class AnnouncementController extends Controller
      * @OA\Post(
      *     path="/api/announcements/update",
      *     summary="מעדכן הכזרזות ",
-     *     description=מעדכן הכרזות .",
+     *     description="מעדכן הכרזות .",
      *     operationId="updateAnnouncement",
      *     tags={"Announcements"},
      *     @OA\Parameter(

@@ -99,54 +99,19 @@
                 }
             }
         },
-        "/api/announcements/{uuid}": {
-            "get": {
-                "tags": [
-                    "Announcements"
-                ],
-                "summary": "מביא פוסט לפי UUID",
-                "description": "מביא פוסט בודד לפי מזהה ייחודי (UUID).",
-                "operationId": "getAnnouncementByUUid",
-                "parameters": [
-                    {
-                        "name": "uuid",
-                        "in": "path",
-                        "description": "UUID של הכרזה",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid",
-                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "הפעולה בוצעה בהצלחה"
-                    },
-                    "400": {
-                        "description": "בקשה לא תקינה"
-                    },
-                    "404": {
-                        "description": "הכרזה לא נמצא"
-                    },
-                    "500": {
-                        "description": "שגיאה בשרת"
-                    }
-                }
-            },
+        "/api/announcements/update": {
             "post": {
                 "tags": [
                     "Announcements"
                 ],
-                "summary": "מעדכן הכרזה ",
-                "description": "מעדכן הכרזה .",
+                "summary": "מעדכן הכזרזות ",
+                "description": "מעדכן הכרזות .",
                 "operationId": "updateAnnouncement",
                 "parameters": [
                     {
                         "name": "uuid",
                         "in": "path",
-                        "description": "UUID של ההכרזה",
+                        "description": "מערך של הכרזות עם שינויים",
                         "required": true,
                         "schema": {
                             "type": "string",
@@ -202,6 +167,43 @@
                     },
                     "400": {
                         "description": "בקשה לא תקינה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
+        "/api/announcements/{uuid}": {
+            "get": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "מביא פוסט לפי UUID",
+                "description": "מביא פוסט בודד לפי מזהה ייחודי (UUID).",
+                "operationId": "getAnnouncementByUUid",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של הכרזה",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "404": {
+                        "description": "הכרזה לא נמצא"
                     },
                     "500": {
                         "description": "שגיאה בשרת"
