@@ -15,7 +15,7 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/api/users/",
+     *      path="/api/users",
      *      operationId="getAdmins",
      *      tags={"Users"},
      *      summary="קבלת רשימת המנהלים",
@@ -57,7 +57,7 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *      path="/api/users/",
+     *      path="/api/users",
      *      operationId="addAdmin",
      *      tags={"Users"},
      *      summary="הוספת מנהל חדש",

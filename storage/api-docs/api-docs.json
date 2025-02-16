@@ -1142,7 +1142,7 @@
                 }
             }
         },
-        "/api/users/": {
+        "/api/users": {
             "get": {
                 "tags": [
                     "Users"

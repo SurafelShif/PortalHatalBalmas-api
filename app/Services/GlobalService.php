@@ -29,63 +29,54 @@ class GlobalService
                 'title',
                 'description',
                 'image_id',
-                DB::raw("NULL as link"), // Placeholder for 'link' column from Sites
+                DB::raw("NULL as link"),
                 DB::raw("'פוסט' as type")
             ])
                 ->where(function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%")
-                        ->orWhere('description', 'LIKE', "%{$search}%")
-                        ->orWhere('content', 'LIKE', "%{$search}%");
+                        ->orWhere('description', 'LIKE', "%{$search}%");
                 });
 
-            // Announcements Query
-            // Announcements Query
             $announcementsQuery = Announcement::query()
                 ->select([
                     'uuid',
                     'title',
                     'description',
                     'image_id',
-                    DB::raw("NULL as link"), // Placeholder for 'link' column from Sites
+                    DB::raw("NULL as link"),
                     DB::raw("'הכרזה' as type")
                 ])
                 ->where(function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%")
-                        ->orWhere('description', 'LIKE', "%{$search}%")
-                        ->orWhere('content', 'LIKE', "%{$search}%");
+                        ->orWhere('description', 'LIKE', "%{$search}%");
                 });
 
 
-            // Information Query (Missing 'description' so we add NULL)
             $informationQuery = Information::query()->select([
                 'uuid',
                 'title',
-                DB::raw("NULL as description"), // Information does not have description
+                DB::raw("NULL as description"),
                 'image_id',
-                DB::raw("NULL as link"), // Placeholder for 'link' column from Sites
+                DB::raw("NULL as link"),
                 DB::raw("'כתבת מידע' as type")
             ])
                 ->where(function ($q) use ($search) {
-                    $q->where('title', 'LIKE', "%{$search}%")
-                        ->orWhere('content', 'LIKE', "%{$search}%");
+                    $q->where('title', 'LIKE', "%{$search}%");
                 });
 
-            // Sites Query (Renaming 'name' to 'title' and adding placeholders)
             $sitesQuery = Site::query()->select([
                 'uuid',
-                DB::raw("name as title"), // Rename 'name' to match other tables
+                DB::raw("name as title"),
                 'description',
                 'image_id',
-                'link', // Sites has 'link', other tables do not
+                'link',
                 DB::raw("'לינק' as type")
             ])
                 ->where(function ($q) use ($search) {
                     $q->where('name', 'LIKE', "%{$search}%")
-                        ->orWhere('description', 'LIKE', "%{$search}%")
-                        ->orWhere('link', 'LIKE', "%{$search}%");
+                        ->orWhere('description', 'LIKE', "%{$search}%");
                 });
 
-            // Combine all queries with UNION
             $results = $postsQuery->union($announcementsQuery)
                 ->union($informationQuery)
                 ->union($sitesQuery)
