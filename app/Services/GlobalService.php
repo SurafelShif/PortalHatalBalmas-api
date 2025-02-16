@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Enums\HttpStatusEnum;
+use App\Http\Resources\GlobalSearchResource;
+use App\Http\Resources\PostResource;
 use App\Models\Announcement;
 use App\Models\Image;
 use App\Models\Information;
@@ -27,7 +29,6 @@ class GlobalService
                 'title',
                 'description',
                 'image_id',
-                'content',
                 DB::raw("NULL as link"), // Placeholder for 'link' column from Sites
                 DB::raw("'פוסט' as type")
             ])
@@ -38,28 +39,29 @@ class GlobalService
                 });
 
             // Announcements Query
-            $announcementsQuery = Announcement::select([
-                'uuid',
-                'title',
-                'description',
-                'image_id',
-                'content',
-                DB::raw("NULL as link"), // Placeholder for 'link' column from Sites
-                DB::raw("'הכרזה' as type")
-            ])
+            // Announcements Query
+            $announcementsQuery = Announcement::query()
+                ->select([
+                    'uuid',
+                    'title',
+                    'description',
+                    'image_id',
+                    DB::raw("NULL as link"), // Placeholder for 'link' column from Sites
+                    DB::raw("'הכרזה' as type")
+                ])
                 ->where(function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%")
                         ->orWhere('description', 'LIKE', "%{$search}%")
                         ->orWhere('content', 'LIKE', "%{$search}%");
                 });
 
+
             // Information Query (Missing 'description' so we add NULL)
-            $informationQuery = Information::select([
+            $informationQuery = Information::query()->select([
                 'uuid',
                 'title',
                 DB::raw("NULL as description"), // Information does not have description
                 'image_id',
-                'content',
                 DB::raw("NULL as link"), // Placeholder for 'link' column from Sites
                 DB::raw("'כתבת מידע' as type")
             ])
@@ -69,12 +71,11 @@ class GlobalService
                 });
 
             // Sites Query (Renaming 'name' to 'title' and adding placeholders)
-            $sitesQuery = Site::select([
+            $sitesQuery = Site::query()->select([
                 'uuid',
                 DB::raw("name as title"), // Rename 'name' to match other tables
                 'description',
                 'image_id',
-                DB::raw("NULL as content"), // Placeholder for 'content' column from Posts/Announcements
                 'link', // Sites has 'link', other tables do not
                 DB::raw("'לינק' as type")
             ])
@@ -90,7 +91,7 @@ class GlobalService
                 ->union($sitesQuery)
                 ->get();
 
-            return $results;
+            return GlobalSearchResource::collection($results);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

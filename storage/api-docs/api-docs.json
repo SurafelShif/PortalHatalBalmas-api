@@ -478,6 +478,36 @@
                 }
             }
         },
+        "/api/search": {
+            "get": {
+                "tags": [
+                    "GlobalSearch"
+                ],
+                "summary": "מביא רשימת כל המידע לפי חיפוש",
+                "description": "מביא רשימת כל המידע לפי חיפוש",
+                "operationId": "getAllByQuery",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "מילת חיפוש בכותרת, תיאור או תוכן",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": ""
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
         "/api/info": {
             "get": {
                 "tags": [
@@ -1380,6 +1410,10 @@
         {
             "name": "Categories",
             "description": "Categories"
+        },
+        {
+            "name": "GlobalSearch",
+            "description": "GlobalSearch"
         },
         {
             "name": "Informations",

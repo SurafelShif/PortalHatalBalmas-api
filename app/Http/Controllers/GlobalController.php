@@ -11,6 +11,32 @@ use Symfony\Component\HttpFoundation\Response;
 class GlobalController extends Controller
 {
     public function __construct(private GlobalService $globalService) {}
+    /**
+     * @OA\Get(
+     *     path="/api/search",
+     *     summary="מביא רשימת כל המידע לפי חיפוש",
+     *     description="מביא רשימת כל המידע לפי חיפוש",
+     *     operationId="getAllByQuery",
+     *     tags={"GlobalSearch"},
+     *
+
+     *     @OA\Parameter(
+     *         name="query",
+     *         in="query",
+     *         description="מילת חיפוש בכותרת, תיאור או תוכן",
+     *         required=false,
+     *         @OA\Schema(type="string", example="")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="הפעולה בוצעה בהצלחה",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="שגיאה בשרת",
+     *     )
+     * )
+     */
     public function search(Request $request)
     {
 
