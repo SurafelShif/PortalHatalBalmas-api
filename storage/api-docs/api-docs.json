@@ -81,6 +81,24 @@
                 }
             }
         },
+        "/api/announcements/admin": {
+            "get": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "מביא רשימת הכרזות",
+                "description": "מביא רשימת הכרזות.",
+                "operationId": "getAdminAnnouncements",
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
         "/api/announcements/{uuid}": {
             "get": {
                 "tags": [
@@ -721,7 +739,7 @@
                 "operationId": "getPosts",
                 "parameters": [
                     {
-                        "name": "category",
+                        "name": "category_id",
                         "in": "query",
                         "description": "סינון לפי מאפיין הקטגוריה",
                         "required": false,

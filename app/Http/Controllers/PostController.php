@@ -26,7 +26,7 @@ class PostController extends Controller
      *     tags={"Post"},
      *
      *     @OA\Parameter(
-     *         name="category",
+     *         name="category_id",
      *         in="query",
      *         description="סינון לפי מאפיין הקטגוריה",
      *         required=false,

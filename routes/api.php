@@ -37,6 +37,7 @@ Route::controller(AnnouncementController::class)->middleware(['auth:api', 'role:
     Route::middleware("throttle:20,1")->patch('/{uuid}', 'updateAnnouncementVisibility');
     Route::post('/', 'createAnnouncement');
     Route::delete('/{uuid}', 'deleteAnnouncement');
+    Route::get('/admin', 'getAdminAnnouncements');
     Route::withoutMiddleware(['auth:api', 'role:admin'])->group(function () {
         Route::get('/', 'getAnnouncements');
         Route::get('/{uuid}', 'getAnnouncementByUUid');

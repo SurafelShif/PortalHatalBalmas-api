@@ -48,6 +48,36 @@ class AnnouncementController extends Controller
         );
     }
     /**
+     * @OA\Get(
+     *     path="/api/announcements/admin",
+     *     summary="מביא רשימת הכרזות",
+     *     description="מביא רשימת הכרזות.",
+     *     operationId="getAdminAnnouncements",
+     *     tags={"Announcements"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="הפעולה בוצעה בהצלחה",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="שגיאה בשרת",
+     *     )
+     * )
+     */
+    public function getAdminAnnouncements()
+    {
+        $result = $this->announcementsService->getAdminAnnouncements();
+        if ($result instanceof HttpStatusEnum) {
+            return match ($result) {
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+            };
+        }
+        return response()->json(
+            $result,
+            Response::HTTP_OK
+        );
+    }
+    /**
      * @OA\Post(
      *     path="/api/announcements",
      *     summary="יוצר הכרזה חדשה",
@@ -299,6 +329,7 @@ class AnnouncementController extends Controller
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
                 HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::ANNOUNCEMENT_NOT_FOUND], Response::HTTP_NOT_FOUND),
+                HttpStatusEnum::FORBIDDEN => response()->json(["message" => ResponseMessages::FORBIDDEN], Response::HTTP_FORBIDDEN),
                 HttpStatusEnum::BAD_REQUEST => response()->json(["message" => ResponseMessages::BAD_REQUEST], Response::HTTP_BAD_REQUEST),
             };
         }

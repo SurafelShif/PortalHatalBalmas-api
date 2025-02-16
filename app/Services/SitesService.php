@@ -21,8 +21,7 @@ class SitesService
             if (!empty($searcQuery)) {
                 $query->where(function ($q) use ($searcQuery) {
                     $q->where('name', 'LIKE', "%{$searcQuery}%")
-                        ->orWhere('description', 'LIKE', "%{$searcQuery}%")
-                        ->orWhere('link', 'LIKE', "%{$searcQuery}%");
+                        ->orWhere('description', 'LIKE', "%{$searcQuery}%");
                 });
             }
             $sites = $query->get();

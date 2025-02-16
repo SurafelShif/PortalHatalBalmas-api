@@ -8,6 +8,7 @@ use App\Models\Announcement;
 use Symfony\Component\HttpFoundation\Response;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -35,6 +36,16 @@ class AnnouncementsService
     {
         try {
             $annoucements = Announcement::orderBy('position', 'asc')->where('isVisible', true)->select(['uuid', 'title', 'description', 'position', 'image_id', 'created_at'])->get();
+            return AnnoucementsResource::collection($annoucements);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function getAdminAnnouncements()
+    {
+        try {
+            $annoucements = Announcement::orderBy('position', 'asc')->select(['uuid', 'title', 'description', 'position', 'image_id', 'created_at', 'isVisible'])->get();
             return AnnoucementsResource::collection($annoucements);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -103,9 +114,13 @@ class AnnouncementsService
             // if (!Str::isUuid($uuid)) {
             //     return HttpStatusEnum::BAD_REQUEST;
             // }
-            $announcement = Announcement::where('uuid', $uuid)->where('isVisible', true)->first();
+            $announcement = Announcement::where('uuid', $uuid)->first();
             if (is_null($announcement)) {
                 return HttpStatusEnum::NOT_FOUND;
+            }
+            $user = Auth::user();
+            if (is_null($user) && !$announcement->isVisible) {
+                return HttpStatusEnum::FORBIDDEN;
             }
             return new AnnoucementsResource($announcement);
         } catch (\Exception $e) {
