@@ -51,7 +51,7 @@ class AnnouncementController extends Controller
      * @OA\Post(
      *     path="/api/announcements",
      *     summary="יוצר הכרזה חדשה",
-     *     description="יוצר הכרזה חדש עם כותרת, תיאור, תוכן, מיקום ותמונה.",
+     *     description="יוצר הכרזה חדש עם כותרת, תיאור, תוכן,  ותמונה.",
      *     operationId="createAnnouncements",
      *     tags={"Announcements"},
      *
@@ -60,7 +60,7 @@ class AnnouncementController extends Controller
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
-     *                 required={"title", "description", "content", "position", "image"},
+     *                 required={"title", "description", "content", "image"},
      *                 @OA\Property(property="title", type="string", example="כותרת ההכרזה"),
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של ההכרזה"),
      *  @OA\Property(
@@ -72,7 +72,6 @@ class AnnouncementController extends Controller
      *         "author": "John Doe"
      *     }
      * ),
-     *                 @OA\Property(property="position", type="integer", example=1),
      *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת להכרזה")
      *             )
      *         )
@@ -94,7 +93,7 @@ class AnnouncementController extends Controller
      */
     public function createAnnouncement(CreateAnnouncementRequest $request)
     {
-        $result = $this->announcementsService->createAnnouncement($request->title, $request->description, $request->content, $request->position, $request->image);
+        $result = $this->announcementsService->createAnnouncement($request->title, $request->description, $request->content, $request->image);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

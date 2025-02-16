@@ -27,7 +27,7 @@
                     "Announcements"
                 ],
                 "summary": "יוצר הכרזה חדשה",
-                "description": "יוצר הכרזה חדש עם כותרת, תיאור, תוכן, מיקום ותמונה.",
+                "description": "יוצר הכרזה חדש עם כותרת, תיאור, תוכן,  ותמונה.",
                 "operationId": "createAnnouncements",
                 "requestBody": {
                     "required": true,
@@ -38,7 +38,6 @@
                                     "title",
                                     "description",
                                     "content",
-                                    "position",
                                     "image"
                                 ],
                                 "properties": {
@@ -57,10 +56,6 @@
                                             "body": "This is the full content of the post",
                                             "author": "John Doe"
                                         }
-                                    },
-                                    "position": {
-                                        "type": "integer",
-                                        "example": 1
                                     },
                                     "image": {
                                         "description": "תמונה מצורפת להכרזה",

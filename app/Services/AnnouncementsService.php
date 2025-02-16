@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 class AnnouncementsService
 {
     public function __construct(private ImageService $imageService) {}
-    public function createAnnouncement(string $title, string $description, string $content, int $position, UploadedFile $image)
+    public function createAnnouncement(string $title, string $description, string $content, UploadedFile $image)
     {
         $createdImage = null;
         try {
@@ -23,7 +23,6 @@ class AnnouncementsService
                 'title' => $title,
                 'description' => $description,
                 'content' => json_decode($content, 1),
-                'position' => $position,
                 'image_id' => $createdImage->id
             ]);
         } catch (\Exception $e) {

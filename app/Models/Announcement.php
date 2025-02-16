@@ -19,6 +19,8 @@ class Announcement extends Model
             if (empty($model->uuid)) {
                 $model->uuid = (string) Str::uuid();
             }
+            $maxPosition = Announcement::max('position');
+            $model->position = $maxPosition ? $maxPosition + 1 : 1;
         });
         static::deleting(function ($announcement) {
             $announcement->image()->delete();

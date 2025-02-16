@@ -22,7 +22,7 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|string"
+            "name" => "required|string| unique:categories,name"
         ];
     }
 
@@ -31,6 +31,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             "name.required" => "שם הקטגוריה הינו חובה",
+            "name.unique" => "שם הקטגוריה קיימת",
             "name.string" => "שם הקטגוריה אינו בפורמט הנכון"
         ];
     }

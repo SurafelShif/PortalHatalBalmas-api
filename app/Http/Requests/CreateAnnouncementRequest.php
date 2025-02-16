@@ -18,7 +18,7 @@ class CreateAnnouncementRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'content' => ['required', 'json'],
-            'position' => ['required', 'integer'],
+            // 'position' => ['required', 'integer', 'unique:announcements,position'],
             'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
     }
