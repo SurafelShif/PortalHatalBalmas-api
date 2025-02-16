@@ -135,15 +135,15 @@ class AnnouncementController extends Controller
     }
     /**
      * @OA\Post(
-     *     path="/api/announcements/{uuid}",
-     *     summary="מעדכן הכרזה ",
-     *     description="מעדכן הכרזה .",
+     *     path="/api/announcements/update",
+     *     summary="מעדכן הכזרזות ",
+     *     description=מעדכן הכרזות .",
      *     operationId="updateAnnouncement",
      *     tags={"Announcements"},
      *     @OA\Parameter(
      *         name="uuid",
      *         in="path",
-     *         description="UUID של ההכרזה",
+     *         description="מערך של הכרזות עם שינויים",
      *         required=true,
      *         @OA\Schema(type="string", format="uuid", example="457946b0-6c14-4102-bf4a-675c61b228d1")
      *     ),
