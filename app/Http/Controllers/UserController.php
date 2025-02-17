@@ -104,17 +104,17 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *      path="/api/users/{personal_id}",
+     *      path="/api/users/{uuid}",
      *      operationId="deleteAdmin",
      *      tags={"Users"},
      *      summary="הסרת מנהל",
      *      description="הסרת הרשאת מנהל ממשתמש לפי מספר תעודת זהות",
      *      @OA\Parameter(
-     *          name="personal_id",
+     *          name="uuid",
      *          in="path",
      *          required=true,
      *          description="מספר תעודת הזהות של המנהל להסרה",
-     *          @OA\Schema(type="string", example="123456789")
+     *          @OA\Schema(type="string", example="4a206b4-99d6-4692-915c-4935766e0420")
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -138,9 +138,9 @@ class UserController extends Controller
      *      )
      * )
      */
-    public function deleteAdmin($personal_id)
+    public function deleteAdmin($uuid)
     {
-        $result = $this->usersService->deleteAdmin($personal_id);
+        $result = $this->usersService->deleteAdmin($uuid);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

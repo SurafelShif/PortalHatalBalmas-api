@@ -1288,7 +1288,7 @@
                 }
             }
         },
-        "/api/users/{personal_id}": {
+        "/api/users/{uuid}": {
             "delete": {
                 "tags": [
                     "Users"
@@ -1298,13 +1298,13 @@
                 "operationId": "deleteAdmin",
                 "parameters": [
                     {
-                        "name": "personal_id",
+                        "name": "uuid",
                         "in": "path",
                         "description": "מספר תעודת הזהות של המנהל להסרה",
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "example": "123456789"
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
                         }
                     }
                 ],

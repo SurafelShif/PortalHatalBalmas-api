@@ -24,7 +24,7 @@ Route::get('/user', [UserController::class, 'user'])->middleware(['auth:api']);
 // });
 Route::controller(UserController::class)->middleware(['auth:api', 'role:admin'])->prefix('users')->group(function () {
     Route::post('/', 'addAdmin');
-    Route::delete('/{personal_id}', 'deleteAdmin');
+    Route::delete('/{uuid}', 'deleteAdmin');
     Route::get('/', 'index');
 });
 // Route::controller(PostController::class)->middleware(['auth:api', 'role:admin'])->prefix('posts')->group(function () {

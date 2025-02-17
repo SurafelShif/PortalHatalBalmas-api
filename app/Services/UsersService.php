@@ -36,10 +36,10 @@ class UsersService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function deleteAdmin($personal_id)
+    public function deleteAdmin($uuid)
     {
         try {
-            $user = User::where('personal_id', $personal_id)->first();
+            $user = User::where('uuid', $uuid)->first();
             $AuthenticatedUser = Auth::user();
             if (is_null($user))
                 return HttpStatusEnum::NOT_FOUND;
