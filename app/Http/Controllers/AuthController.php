@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Enums\HttpStatusEnum;
 use App\Enums\ResponseMessages;
+use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Log;
+use Laravel\Passport\Token;
 
 class AuthController extends Controller
 {
@@ -68,39 +72,39 @@ class AuthController extends Controller
             new UserResource($user),
         )->withCookie(Cookie::make($tokenName, $token->accessToken));
     }
-    /**
-     * @OA\Get(
-     *      path="/api/user",
-     *      operationId="user",
-     *      tags={"Users"},
-     *      summary="Get authenticated user",
-     *      description="Returns the authenticated user's details",
-     *      @OA\Response(
-     *          response=200,
-     *          description="הפעולה התבצעה בהצלחה",
-     *      ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="המשתמש לא מחובר",
-     *      ),
-     *      @OA\Response(
-     *          response=500,
-     *          description="אירעה שגיאה",
-     *      )
-     * )
-     */
-    public function user()
+
+    public function loginAzure(LoginRequest $request)
     {
-        $result = $this->AuthService->getLoggedUser();
-        if ($result instanceof HttpStatusEnum) {
-            return match ($result) {
-                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
-            };
+        $idToken = $request->idToken;
+        $accessToken = $request->accessToken;
+        try {
+            $result = $this->AuthService->authenticateAzure($idToken, $accessToken);
+            $personalID = $result->personalId;
+            if (!$this->isValidPersonalId($personalID)) {
+                return response()->json('נא להתחבר עם תעודת זהות.', Response::HTTP_FORBIDDEN);
+            }
+            $name = $result->name;
+            $user = User::where('personal_id', $personalID)->first();
+            if (!$user) {
+                return response()->json('משתמש לא נמצא במערכת. נא לפנות למנהל מערכת', Response::HTTP_NOT_FOUND);
+            }
+            $tokenName = config('auth.token_name');
+            Token::where('name', $tokenName)
+                ->where('user_id', $user->id)
+                ->update(['revoked' => true]);
+            if (empty($user->name)) {
+                User::find($user->id)?->update(["name" => $name]);
+            }
+            return $user->createToken($tokenName)->accessToken;
+        } catch (\Exception $e) {
+            Log::error('Error from AuthController: loginAzure function: ' . $e->getMessage());
+            return $e->getMessage() === "Expired token" ?
+                response()->json("", Response::HTTP_CONFLICT) :
+                response()->json("", Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return response()->json($result, Response::HTTP_OK);
     }
-    public function addAdmin()
+    private function isValidPersonalId($personalID)
     {
-        dd('fhrf');
+        return (bool)preg_match('/^\d{9}$/', $personalID);
     }
 }

@@ -152,4 +152,35 @@ class UserController extends Controller
             'message' => ResponseMessages::SUCCESS_ACTION
         ], Response::HTTP_OK);
     }
+    /**
+     * @OA\Get(
+     *      path="/api/user",
+     *      operationId="user",
+     *      tags={"Users"},
+     *      summary="Get authenticated user",
+     *      description="Returns the authenticated user's details",
+     *      @OA\Response(
+     *          response=200,
+     *          description="הפעולה התבצעה בהצלחה",
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="המשתמש לא מחובר",
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="אירעה שגיאה",
+     *      )
+     * )
+     */
+    public function user()
+    {
+        $result = $this->usersService->getLoggedUser();
+        if ($result instanceof HttpStatusEnum) {
+            return match ($result) {
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+            };
+        }
+        return response()->json($result, Response::HTTP_OK);
+    }
 }

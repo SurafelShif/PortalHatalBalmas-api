@@ -338,27 +338,6 @@
                 }
             }
         },
-        "/api/user": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get authenticated user",
-                "description": "Returns the authenticated user's details",
-                "operationId": "user",
-                "responses": {
-                    "200": {
-                        "description": "הפעולה התבצעה בהצלחה"
-                    },
-                    "401": {
-                        "description": "המשתמש לא מחובר"
-                    },
-                    "500": {
-                        "description": "אירעה שגיאה"
-                    }
-                }
-            }
-        },
         "/api/categories": {
             "get": {
                 "tags": [
@@ -1396,6 +1375,27 @@
                     }
                 }
             }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get authenticated user",
+                "description": "Returns the authenticated user's details",
+                "operationId": "user",
+                "responses": {
+                    "200": {
+                        "description": "הפעולה התבצעה בהצלחה"
+                    },
+                    "401": {
+                        "description": "המשתמש לא מחובר"
+                    },
+                    "500": {
+                        "description": "אירעה שגיאה"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1419,10 +1419,6 @@
             "description": "Authentication"
         },
         {
-            "name": "Users",
-            "description": "Users"
-        },
-        {
             "name": "Categories",
             "description": "Categories"
         },
@@ -1441,6 +1437,10 @@
         {
             "name": "Sites",
             "description": "Sites"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
         }
     ]
 }

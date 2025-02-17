@@ -12,17 +12,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
-    Route::get('/user', 'user')->middleware(['auth:api']);
 });
 Route::controller(GlobalController::class)->group(function () {
     Route::get('/search', 'search');
 });
+Route::get('/user', [UserController::class, 'user'])->middleware(['auth:api']);
 // Route::controller(UserController::class)->middleware(['auth:api', 'role:admin'])->prefix('users')->group(function () {
 //     Route::post('/', 'addAdmin');
 //     Route::delete('/{personal_id}', 'deleteAdmin');
 //     Route::get('/', 'index');
 // });
-Route::controller(UserController::class)->prefix('users')->group(function () {
+Route::controller(UserController::class)->middleware(['auth:api', 'role:admin'])->prefix('users')->group(function () {
     Route::post('/', 'addAdmin');
     Route::delete('/{personal_id}', 'deleteAdmin');
     Route::get('/', 'index');

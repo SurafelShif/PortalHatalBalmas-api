@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\HttpStatusEnum;
 use App\Enums\Permission;
 use App\Enums\Role;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -60,10 +61,20 @@ class UsersService
             $users = User::whereHas('roles', function ($query) {
                 $query->where('name', 'admin');
             })
-                ->select(['full_name', 'uuid', 'personal_id'])
+                ->select(['uuid', 'full_name', 'personal_id'])
                 ->get();
 
             return $users;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function getLoggedUser()
+    {
+        try {
+            $user = Auth::user();
+            return new UserResource($user);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

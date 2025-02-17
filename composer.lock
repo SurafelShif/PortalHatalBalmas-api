@@ -4,8 +4,72 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cf32bddbf4c0f9e10256bc9979b9e5c9",
+    "content-hash": "94a331051fbf864b1ded91f823d80d25",
     "packages": [
+        {
+            "name": "alancting/php-microsoft-jwt",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alancting/php-microsoft-jwt.git",
+                "reference": "7899f16478cee7c9a24821b5bc159da8a34a2b8c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alancting/php-microsoft-jwt/zipball/7899f16478cee7c9a24821b5bc159da8a34a2b8c",
+                "reference": "7899f16478cee7c9a24821b5bc159da8a34a2b8c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.3",
+                "phpunit/phpunit": ">=4.8 <=9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Alancting\\Microsoft\\JWT\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                },
+                {
+                    "name": "alancting",
+                    "homepage": "https://github.com/alancting"
+                }
+            ],
+            "description": "A simple library to validate and decode Microsoft Azure Active Directory (Azure AD), Microsoft Active Directory Federation Services (ADFS) JSON Web Tokens (JWT) in PHP, conforming to RFC 7519",
+            "homepage": "https://github.com/alancting/php-microsoft-jwt",
+            "keywords": [
+                "OpenId",
+                "ad",
+                "adfs",
+                "azure",
+                "jwt",
+                "microsoft",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/alancting/php-microsoft-jwt/issues",
+                "source": "https://github.com/alancting/php-microsoft-jwt/tree/v1.1.1"
+            },
+            "time": "2021-03-15T14:57:35+00:00"
+        },
         {
             "name": "aws/aws-crt-php",
             "version": "v1.2.7",

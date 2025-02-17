@@ -23,29 +23,44 @@ class CategoryService
     }
     public function deleteCategory($categoryId)
     {
-        $category = Category::where('id', $categoryId)->first()->toArray();
-        if (empty($category)) {
-            return HttpStatusEnum::NOT_FOUND;
+        try {
+            $category = Category::where('id', $categoryId)->first()->toArray();
+            if (empty($category)) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            Category::destroy($categoryId);
+            return Response::HTTP_OK;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
         }
-        Category::destroy($categoryId);
-        return Response::HTTP_OK;
     }
     public function updateCategory(int $categoryId, string $name)
     {
-        $category = Category::where('id', $categoryId)->first();
-        if (is_null($category)) {
-            return HttpStatusEnum::NOT_FOUND;
+        try {
+            $category = Category::where('id', $categoryId)->first();
+            if (is_null($category)) {
+                return HttpStatusEnum::NOT_FOUND;
+            }
+            $category->update([
+                'name' => $name
+            ]);
+            return Response::HTTP_OK;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
         }
-        $category->update([
-            'name' => $name
-        ]);
-        return Response::HTTP_OK;
     }
     public function createCategory(string $name)
     {
-        Category::create([
-            "name" => $name
-        ]);
-        return Response::HTTP_OK;
+        try {
+            Category::create([
+                "name" => $name
+            ]);
+            return Response::HTTP_OK;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
     }
 }
