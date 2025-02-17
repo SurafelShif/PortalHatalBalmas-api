@@ -22,7 +22,7 @@ Route::get('/user', [UserController::class, 'user'])->middleware(['auth:api']);
 //     Route::delete('/{personal_id}', 'deleteAdmin');
 //     Route::get('/', 'index');
 // });
-Route::controller(UserController::class)->middleware(['auth:api', 'role:admin'])->prefix('users')->group(function () {
+Route::controller(UserController::class)->prefix('users')->group(function () {
     Route::post('/', 'addAdmin');
     Route::delete('/{uuid}', 'deleteAdmin');
     Route::get('/', 'index');
