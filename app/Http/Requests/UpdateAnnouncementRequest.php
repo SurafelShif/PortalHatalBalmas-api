@@ -40,7 +40,7 @@ class UpdateAnnouncementRequest extends FormRequest
                 return $validator->errors()->add('', 'הכנס לפחות אתר אחד לעדכון');
             }
             foreach ($this->all() as $key => $item) {
-                if (!isset($item['name']) && !isset($item['position']) && !isset($item['description']) && !isset($item['link']) && !array_key_exists('image', $item)) {
+                if (!isset($item['name']) && !isset($item['position']) && !isset($item['description']) && !isset($item['link']) && !array_key_exists('image', $item) && !array_key_exists('title', $item) && !array_key_exists('content', $item)) {
                     $validator->errors()->add("$key", 'הכנס לפחות ערך אחד לעדכון');
                 }
 
