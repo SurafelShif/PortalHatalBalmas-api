@@ -17,7 +17,7 @@ class PostsService
     public function getPosts(int | null $category_id, int | null $limit, int $page, string| null $search)
     {
         try {
-            $query = Post::with('category')->latest()->select(['image_id', 'title', 'description', 'uuid']);
+            $query = Post::with('category')->latest()->select(['image_id', 'title', 'uuid', "description"]);
             if (!empty($category_id)) {
                 $query->whereHas('category', function ($q) use ($category_id) {
                     $q->where('id', $category_id);
@@ -44,7 +44,7 @@ class PostsService
             // if (!Str::isUuid($uuid)) {
             //     return HttpStatusEnum::BAD_REQUEST;
             // }
-            $post = Post::where('uuid', $uuid)->first();
+            $post = Post::select(['image_id', 'title', 'uuid', 'category_id', 'content', 'created_at'])->where('uuid', $uuid)->first();
             if (is_null($post)) {
                 return HttpStatusEnum::NOT_FOUND;
             }

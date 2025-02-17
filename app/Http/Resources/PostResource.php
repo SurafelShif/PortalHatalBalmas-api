@@ -14,11 +14,13 @@ class PostResource extends JsonResource
             'uuid' => $this->uuid,
             'title' => $this->title,
             'description' => $this->description,
+            'category' => $this->category ? ["name" => $this->category->name, "id" => $this->category->id] : null,
             'content' => $this->content ? $this->content : null,
             'image' => optional($this->image)->image_path
                 ?  config('filesystems.storage_path') . $this->image->image_path
                 : null,
             "created_at" => $this->created_at ? $this->created_at->format('d/m/Y H:i') : null,
+
         ], fn($value) => !is_null($value));
     }
 }
