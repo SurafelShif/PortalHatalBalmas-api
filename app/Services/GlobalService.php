@@ -24,27 +24,31 @@ class GlobalService
     {
         try {
             // Posts Query
-            $postsQuery = Post::select([
-                'uuid',
-                'title',
-                'description',
-                'image_id',
-                DB::raw("NULL as link"),
-                DB::raw("'פוסט' as type")
-            ])
+            $postsQuery = Post::with('category')
+                ->select([
+                    'uuid',
+                    'title',
+                    'description',
+                    'image_id',
+                    'category_id',
+                    DB::raw("NULL as link"),
+                    DB::raw("'פוסט' as name"),
+                    DB::raw("'post' as type"),
+                ])
                 ->where(function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%")
                         ->orWhere('description', 'LIKE', "%{$search}%");
                 });
-
             $announcementsQuery = Announcement::query()
                 ->select([
                     'uuid',
                     'title',
                     'description',
                     'image_id',
+                    DB::raw("NULL as category_id"),
                     DB::raw("NULL as link"),
-                    DB::raw("'הכרזה' as type")
+                    DB::raw("'הכרזה' as name"),
+                    DB::raw("'announcement' as type")
                 ])
                 ->where(function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%")
@@ -57,8 +61,10 @@ class GlobalService
                 'title',
                 DB::raw("NULL as description"),
                 'image_id',
+                DB::raw("NULL as category_id"),
                 DB::raw("NULL as link"),
-                DB::raw("'כתבת מידע' as type")
+                DB::raw("'כתבת מידע' as name"),
+                DB::raw("'info' as type"),
             ])
                 ->where(function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%");
@@ -70,7 +76,9 @@ class GlobalService
                 'description',
                 'image_id',
                 'link',
-                DB::raw("'לינק' as type")
+                DB::raw("NULL as category_id"),
+                DB::raw("'לינק' as name"),
+                DB::raw("'site' as type")
             ])
                 ->where(function ($q) use ($search) {
                     $q->where('name', 'LIKE', "%{$search}%")
