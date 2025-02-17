@@ -109,7 +109,7 @@ class AnnouncementsService
             } else {
                 Announcement::where('position', '>', $announcement->position)
                     ->decrement('position');
-                $announcement->position = -1;
+                $announcement->position = null;
             }
             $announcement->isVisible = $isVisible;
             $announcement->save();
