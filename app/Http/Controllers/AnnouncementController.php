@@ -330,7 +330,6 @@ class AnnouncementController extends Controller
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
                 HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::ANNOUNCEMENT_NOT_FOUND], Response::HTTP_NOT_FOUND),
-                HttpStatusEnum::FORBIDDEN => response()->json(["message" => ResponseMessages::FORBIDDEN], Response::HTTP_FORBIDDEN),
                 HttpStatusEnum::BAD_REQUEST => response()->json(["message" => ResponseMessages::BAD_REQUEST], Response::HTTP_BAD_REQUEST),
             };
         }

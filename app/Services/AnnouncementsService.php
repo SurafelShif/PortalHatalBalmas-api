@@ -129,10 +129,6 @@ class AnnouncementsService
             if (is_null($announcement)) {
                 return HttpStatusEnum::NOT_FOUND;
             }
-            $user = Auth::user();
-            if (is_null($user) && !$announcement->isVisible) {
-                return HttpStatusEnum::FORBIDDEN;
-            }
             return new AnnoucementsResource($announcement);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
