@@ -28,7 +28,6 @@ class UpdateAnnouncementRequest extends FormRequest
             '*.description' => ['sometimes', 'string'],
             '*.content' => ['sometimes', 'json'],
             '*.position' => "sometimes| integer ",
-            '*.isVisible' => ['sometimes', 'boolean'],
             '*.image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
     }
@@ -68,7 +67,6 @@ class UpdateAnnouncementRequest extends FormRequest
             '*.content.json' => 'תוכן הכזרה חייב להיות בפורמט JSON תקין.',
             '*.position.unique' => 'המיקום שסיפקת כבר קיים במערכת.',
             '*.position.integer' => 'מיקום ההכזרה אינו בפורמט הנכון',
-            '*.isVisible.boolean' => 'נראות ההכזרה אינו בפורמט הנכון',
             '*.image.image' => 'הקובץ חייב להיות תמונה.',
             '*.image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
             '*.image.max' => 'התמונה חייבת להיות עד 2MB.',

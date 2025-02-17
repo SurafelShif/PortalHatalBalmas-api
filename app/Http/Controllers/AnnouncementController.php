@@ -281,6 +281,7 @@ class AnnouncementController extends Controller
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+                HttpStatusEnum::NO_CONTENT => response()->json(["message" => ResponseMessages::NO_CONTENT], Response::HTTP_NO_CONTENT),
                 HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::ANNOUNCEMENT_NOT_FOUND], Response::HTTP_NOT_FOUND),
             };
         }

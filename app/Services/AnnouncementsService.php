@@ -100,6 +100,17 @@ class AnnouncementsService
             if (is_null($announcement)) {
                 return HttpStatusEnum::NOT_FOUND;
             }
+            if ($isVisible === $announcement->isVisible) {
+                return HttpStatusEnum::NO_CONTENT;
+            }
+            if ($isVisible) {
+                $maxPosition = Announcement::max('position');
+                $announcement->position = $maxPosition ? $maxPosition + 1 : 1;
+            } else {
+                Announcement::where('position', '>', $announcement->position)
+                    ->decrement('position');
+                $announcement->position = -1;
+            }
             $announcement->isVisible = $isVisible;
             $announcement->save();
             return Response::HTTP_OK;
