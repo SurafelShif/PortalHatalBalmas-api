@@ -35,7 +35,7 @@ class AnnouncementsService
     public function getAnnouncements()
     {
         try {
-            $annoucements = Announcement::orderBy('position', 'asc')->where('isVisible', true)->select(['uuid', 'title', 'description', 'position', 'image_id', 'created_at'])->get();
+            $annoucements = Announcement::orderBy('position', 'asc')->where('isVisible', true)->select(['uuid', 'title', 'description', 'position', 'image_id'])->get();
             return AnnoucementsResource::collection($annoucements);
         } catch (\Exception $e) {
             Log::error($e->getMessage());

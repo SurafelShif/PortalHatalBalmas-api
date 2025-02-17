@@ -12,7 +12,6 @@ class GlobalSearchResource extends JsonResource
         return array_filter([
             'uuid' => $this->uuid,
             'title' => $this->title,
-            'description' => $this->description,
             'content' => $this->content ? $this->content : null,
             'type' => $this->type,
             'name' => $this->name,

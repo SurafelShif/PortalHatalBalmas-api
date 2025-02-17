@@ -36,7 +36,7 @@ class Post extends Model
         'image_id',
         'category_id',
     ];
-    protected $hidden = ['updated_at', 'created_at', 'id'];
+    protected $hidden = ['updated_at', 'id'];
 
     protected $casts = [
         'content' => 'array',
