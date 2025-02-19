@@ -32,7 +32,7 @@ class GlobalService
                     'image_id',
                     'category_id',
                     DB::raw("NULL as link"),
-                    DB::raw("'פוסט' as name"),
+                    DB::raw("'כתבה' as name"),
                     DB::raw("'post' as type"),
                 ])
                 ->where(function ($q) use ($search) {
@@ -63,7 +63,7 @@ class GlobalService
                 'image_id',
                 DB::raw("NULL as category_id"),
                 DB::raw("NULL as link"),
-                DB::raw("'כתבת מידע' as name"),
+                DB::raw("'מידע' as name"),
                 DB::raw("'info' as type"),
             ])
                 ->where(function ($q) use ($search) {
@@ -75,9 +75,9 @@ class GlobalService
                 DB::raw("name as title"),
                 'description',
                 'image_id',
-                'link',
                 DB::raw("NULL as category_id"),
-                DB::raw("'לינק' as name"),
+                'link',
+                DB::raw("'קישור' as name"),
                 DB::raw("'site' as type")
             ])
                 ->where(function ($q) use ($search) {
@@ -89,7 +89,6 @@ class GlobalService
                 ->union($informationQuery)
                 ->union($sitesQuery)
                 ->get();
-
             return GlobalSearchResource::collection($results);
         } catch (\Exception $e) {
             Log::error($e->getMessage());

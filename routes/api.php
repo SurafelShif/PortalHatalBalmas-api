@@ -9,7 +9,8 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-
+//TODO add search query for announcements and posts
+//TODO add category to getPosts
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
 });
