@@ -54,6 +54,13 @@ class AnnouncementController extends Controller
      *     description="מביא רשימת הכרזות.",
      *     operationId="getAdminAnnouncements",
      *     tags={"Announcements"},
+     *       @OA\Parameter(
+     *         name="query",
+     *         in="query",
+     *         description="חיפוש הכרזות",
+     *         required=false,
+     *         @OA\Schema(type="string", example="")
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="הפעולה בוצעה בהצלחה",
@@ -64,9 +71,10 @@ class AnnouncementController extends Controller
      *     )
      * )
      */
-    public function getAdminAnnouncements()
+    public function getAdminAnnouncements(Request $request)
     {
-        $result = $this->announcementsService->getAdminAnnouncements();
+        $search = $request->query("query");
+        $result = $this->announcementsService->getAdminAnnouncements($search);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

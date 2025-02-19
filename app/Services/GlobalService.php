@@ -20,7 +20,7 @@ use Illuminate\Support\Str;
 class GlobalService
 {
 
-    public function search(?string $search)
+    public function search(?string $search, ?int $limit)
     {
         try {
             // Posts Query
@@ -87,7 +87,7 @@ class GlobalService
 
             $results = $postsQuery->union($announcementsQuery)
                 ->union($informationQuery)
-                ->union($sitesQuery)
+                ->union($sitesQuery)->limit($limit)
                 ->get();
             return GlobalSearchResource::collection($results);
         } catch (\Exception $e) {

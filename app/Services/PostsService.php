@@ -17,7 +17,7 @@ class PostsService
     public function getPosts(int | null $category_id, int | null $limit, int $page, string| null $search)
     {
         try {
-            $query = Post::with('category')->latest()->select(['image_id', 'title', 'uuid', "description"]);
+            $query = Post::with('category')->latest()->select(['image_id', 'title', 'uuid', "description", "category_id"]);
             if (!empty($category_id)) {
                 $query->whereHas('category', function ($q) use ($category_id) {
                     $q->where('id', $category_id);

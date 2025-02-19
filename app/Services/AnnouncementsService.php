@@ -42,11 +42,19 @@ class AnnouncementsService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function getAdminAnnouncements()
+    public function getAdminAnnouncements(?string $search)
     {
         try {
-            $annoucements = Announcement::orderBy('position', 'asc')->select(['uuid', 'title', 'description', 'position', 'image_id', 'created_at', 'isVisible'])->get();
-            return AnnoucementsResource::collection($annoucements);
+            $announcements = Announcement::orderBy('position', 'asc')
+                ->select(['uuid', 'title', 'description', 'position', 'image_id', 'created_at', 'isVisible'])
+                ->when(!empty($search), function ($query) use ($search) {
+                    $query->where('title', 'LIKE', "%{$search}%")
+                        ->orWhere('description', 'LIKE', "%{$search}%");
+                })
+
+                ->get();
+
+            return AnnoucementsResource::collection($announcements);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

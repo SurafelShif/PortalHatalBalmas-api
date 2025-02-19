@@ -89,6 +89,18 @@
                 "summary": "מביא רשימת הכרזות",
                 "description": "מביא רשימת הכרזות.",
                 "operationId": "getAdminAnnouncements",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "חיפוש הכרזות",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": ""
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "הפעולה בוצעה בהצלחה"
@@ -489,6 +501,16 @@
                         "schema": {
                             "type": "string",
                             "example": ""
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "פילטור כמות המציאות",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": "2"
                         }
                     }
                 ],

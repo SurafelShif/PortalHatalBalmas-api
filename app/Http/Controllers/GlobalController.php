@@ -18,14 +18,19 @@ class GlobalController extends Controller
      *     description="מביא רשימת כל המידע לפי חיפוש",
      *     operationId="getAllByQuery",
      *     tags={"GlobalSearch"},
-     *
-
      *     @OA\Parameter(
      *         name="query",
      *         in="query",
      *         description="מילת חיפוש בכותרת, תיאור או תוכן",
      *         required=false,
      *         @OA\Schema(type="string", example="")
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="פילטור כמות המציאות",
+     *         required=false,
+     *         @OA\Schema(type="integer", example="2")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -41,7 +46,8 @@ class GlobalController extends Controller
     {
 
         $search = $request->query('query');
-        $result = $this->globalService->search($search);
+        $limit = $request->query('limit');
+        $result = $this->globalService->search($search, $limit);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
