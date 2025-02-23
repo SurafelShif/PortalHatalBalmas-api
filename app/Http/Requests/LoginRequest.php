@@ -11,9 +11,8 @@ class LoginRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +21,17 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'idToken' => 'required|string',
+            'accessToken' => 'required|string',
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'idToken.required' => 'יש לספק מזהה לטוקן',
+            'idToken.string' => 'פורמט אינו תקין',
+            'accessToken.required' => 'יש לספק טוקן',
+            'accessToken.string' => 'פורמט אינו תקין',
         ];
     }
 }
