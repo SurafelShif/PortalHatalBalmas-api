@@ -16,7 +16,7 @@ class InformationsService
     public function getInformations()
     {
         try {
-            $informations = Information::select(['uuid', 'title', 'image_id', 'content'])->get();
+            $informations = Information::select(['uuid', 'title', 'image_id', 'content'])->orderBy('created_at', 'desc')->get();
             return InformationResource::collection($informations);
         } catch (\Exception $e) {
             Log::error($e->getMessage());

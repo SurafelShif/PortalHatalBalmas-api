@@ -14,7 +14,7 @@ class CategoryService
     public function getCategories()
     {
         try {
-            $categories = Category::withCount('posts')->get()->toArray();
+            $categories = Category::withCount('posts')->orderBy('created_at', 'desc')->get()->toArray();
             return $categories;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
