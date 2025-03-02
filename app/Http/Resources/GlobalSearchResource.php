@@ -20,6 +20,7 @@ class GlobalSearchResource extends JsonResource
             'image' => optional($this->image)->image_path
                 ?  config('filesystems.storage_path') . $this->image->image_path
                 : null,
+            'created_at' => $this->created_at->format('d/m/Y H:i'),
         ], fn($value) => !is_null($value));
     }
 }

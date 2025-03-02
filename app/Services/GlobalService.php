@@ -34,6 +34,7 @@ class GlobalService
                     DB::raw("NULL as link"),
                     DB::raw("'כתבה' as name"),
                     DB::raw("'post' as type"),
+                    'created_at',
                 ])
                 ->where(function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%")
@@ -48,7 +49,8 @@ class GlobalService
                     DB::raw("NULL as category_id"),
                     DB::raw("NULL as link"),
                     DB::raw("'הכרזה' as name"),
-                    DB::raw("'announcement' as type")
+                    DB::raw("'announcement' as type"),
+                    'created_at',
                 ])
                 ->where(function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%")
@@ -65,6 +67,7 @@ class GlobalService
                 DB::raw("NULL as link"),
                 DB::raw("'מידע' as name"),
                 DB::raw("'info' as type"),
+                'created_at',
             ])
                 ->where(function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%");
@@ -78,7 +81,8 @@ class GlobalService
                 DB::raw("NULL as category_id"),
                 'link',
                 DB::raw("'קישור' as name"),
-                DB::raw("'site' as type")
+                DB::raw("'site' as type"),
+                'created_at',
             ])
                 ->where(function ($q) use ($search) {
                     $q->where('name', 'LIKE', "%{$search}%")
@@ -87,7 +91,7 @@ class GlobalService
 
             $results = $postsQuery->union($announcementsQuery)
                 ->union($informationQuery)
-                ->union($sitesQuery)->limit($limit)
+                ->union($sitesQuery)->limit($limit)->orderBy('created_at', 'desc')
                 ->get();
             return GlobalSearchResource::collection($results);
         } catch (\Exception $e) {
