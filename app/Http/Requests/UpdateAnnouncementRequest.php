@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateAnnouncementRequest extends FormRequest
 {
@@ -23,34 +24,11 @@ class UpdateAnnouncementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            '*.uuid' => 'required| uuid',
-            '*.title' => ['sometimes', 'string', 'max:255'],
-            '*.description' => ['sometimes', 'string'],
-            '*.content' => ['sometimes', 'json'],
-            '*.position' => "sometimes| integer ",
-            '*.image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
+            'title' => ['sometimes', 'string', 'max:255'],
+            'description' => ['sometimes', 'string'],
+            'content' => ['sometimes', 'json'],
+            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
-    }
-
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            if (count($this->all()) === 0) {
-                return $validator->errors()->add('', 'הכנס לפחות אתר אחד לעדכון');
-            }
-            foreach ($this->all() as $key => $item) {
-                if (!isset($item['name']) && !isset($item['position']) && !isset($item['description']) && !isset($item['link']) && !array_key_exists('image', $item) && !array_key_exists('title', $item) && !array_key_exists('content', $item)) {
-                    $validator->errors()->add("$key", 'הכנס לפחות ערך אחד לעדכון');
-                }
-
-                if (array_key_exists('position', $item)) {
-                    $count = DB::table('announcements')->count();
-                    if ($item['position'] > $count) {
-                        $validator->errors()->add("$key", 'מיקום ההכרזה אינו יכול להיות גדול מכמות ההכרזות.');
-                    }
-                }
-            }
-        });
     }
 
     /**
@@ -59,17 +37,38 @@ class UpdateAnnouncementRequest extends FormRequest
     public function messages(): array
     {
         return [
-            '*.uuid.required' => 'נא לשלוח את מזהה האתר (UUID)',
-            '*.uuid.uuid' => 'מזהה האתר אינו בפורמט הנכון',
-            '*.title.string' => 'כותרת הכזרה חייבת להיות מחרוזת.',
-            '*.title.max' => 'כותרת הכזרה יכולה להכיל עד 255 תווים.',
-            '*.description.string' => 'תיאור הכזרה חייב להיות מחרוזת.',
-            '*.content.json' => 'תוכן הכזרה חייב להיות בפורמט JSON תקין.',
-            '*.position.unique' => 'המיקום שסיפקת כבר קיים במערכת.',
-            '*.position.integer' => 'מיקום ההכזרה אינו בפורמט הנכון',
-            '*.image.image' => 'הקובץ חייב להיות תמונה.',
-            '*.image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
-            '*.image.max' => 'התמונה חייבת להיות עד 2MB.',
+            'title.string' => 'כותרת ההכרזה חייבת להיות מחרוזת.',
+            'title.max' => 'כותרת ההכרזה יכולה להכיל עד 255 תווים.',
+            'description.string' => 'תיאור ההכרזה חייב להיות מחרוזת.',
+            'content.json' => 'תוכן ההכרזה חייב להיות בפורמט JSON תקין.',
+            'image.image' => 'הקובץ חייב להיות תמונה.',
+            'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
+            'image.max' => 'התמונה חייבת להיות עד 2MB.',
         ];
+    }
+
+    /**
+     * Apply custom validation logic.
+     */
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($this->all() === []) {
+                $validator->errors()->add('general', 'יש להזין לפחות שדה אחד לעדכון.');
+            }
+        });
+    }
+
+    /**
+     * Handle failed validation response.
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = collect($validator->errors()->messages())
+            ->map(fn($messages) => $messages[0]); // Get only the first error message per field
+
+        throw new HttpResponseException(response()->json([
+            'errors' => $errors
+        ], 422));
     }
 }

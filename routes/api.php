@@ -56,7 +56,7 @@ Route::controller(PostController::class)->prefix('posts')->group(function () {
 //     });
 // });
 Route::controller(AnnouncementController::class)->prefix('announcements')->group(function () {
-    Route::post('/update', 'updateAnnouncement');
+    Route::post('/{uuid}', 'updateAnnouncement');
     Route::middleware("throttle:20,1")->patch('/{uuid}', 'updateAnnouncementVisibility');
     Route::post('/', 'createAnnouncement');
     Route::delete('/{uuid}', 'deleteAnnouncement');

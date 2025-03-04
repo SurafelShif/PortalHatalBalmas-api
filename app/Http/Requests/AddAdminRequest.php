@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class AddAdminRequest extends FormRequest
 {
@@ -37,5 +39,14 @@ class AddAdminRequest extends FormRequest
             'personal_id.regex' => 'המספר האישי בפורמט לא נכון',
 
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = collect($validator->errors()->messages())
+            ->map(fn($messages) => $messages[0]); // Get only the first error message per field
+
+        throw new HttpResponseException(response()->json([
+            'errors' => $errors
+        ], 422));
     }
 }

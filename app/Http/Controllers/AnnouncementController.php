@@ -184,9 +184,9 @@ class AnnouncementController extends Controller
      *     )
      * )
      */
-    public function updateAnnouncement(UpdateAnnouncementRequest $request)
+    public function updateAnnouncement(string $uuid, UpdateAnnouncementRequest $request)
     {
-        $result = $this->announcementsService->updateAnnouncement($request->validated());
+        $result = $this->announcementsService->updateAnnouncement($uuid, $request->validated());
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

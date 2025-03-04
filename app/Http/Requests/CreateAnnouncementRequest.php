@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CreateAnnouncementRequest extends FormRequest
 {
@@ -18,13 +20,14 @@ class CreateAnnouncementRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'content' => ['required', 'json'],
-            // 'position' => ['required', 'integer', 'unique:announcements,position'],
             'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
     }
 
+
     public function messages()
     {
+
         return [
             'title.required' => 'כותרת הכזרה היא חובה.',
             'description.required' => 'תיאור הכזרה הוא חובה.',
@@ -37,5 +40,15 @@ class CreateAnnouncementRequest extends FormRequest
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
             'image.max' => 'התמונה חייבת להיות עד 2MB.',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = collect($validator->errors()->messages())
+            ->map(fn($messages) => $messages[0]); // Get only the first error message per field
+
+        throw new HttpResponseException(response()->json([
+            'errors' => $errors
+        ], 422));
     }
 }

@@ -60,25 +60,24 @@ class AnnouncementsService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function updateAnnouncement(array $updateArray)
+    public function updateAnnouncement(string $uuid, array $updateArray)
     {
+
         try {
             DB::beginTransaction();
-            foreach ($updateArray as $updateInfo) {
-                $announcement = Announcement::where('uuid', $updateInfo['uuid'])->first();
-                if (is_null($announcement)) {
-                    DB::rollBack();
-                    return HttpStatusEnum::NOT_FOUND;
-                }
-                if (array_key_exists('image', $updateInfo)) {
-                    $this->imageService->updateImage($announcement->image->id, $updateInfo['image']);
-                    unset($updateInfo['image']);
-                }
-                if (array_key_exists('content', $updateInfo)) {
-                    $updateInfo['content'] = json_decode($updateInfo['content'], 1);
-                }
-                $announcement->update($updateInfo);
+            $announcement = Announcement::where('uuid', $uuid)->first();
+            if (is_null($announcement)) {
+                DB::rollBack();
+                return HttpStatusEnum::NOT_FOUND;
             }
+            if (array_key_exists('image', $updateArray)) {
+                $this->imageService->updateImage($announcement->image->id, $updateArray['image']);
+                unset($updateArray['image']);
+            }
+            if (array_key_exists('content', $updateArray)) {
+                $updateArray['content'] = json_decode($updateArray['content'], 1);
+            }
+            $announcement->update($updateArray);
             DB::commit();
             return Response::HTTP_OK;
         } catch (\Exception $e) {

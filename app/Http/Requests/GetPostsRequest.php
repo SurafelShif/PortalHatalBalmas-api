@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\Category;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use SebastianBergmann\Type\NullType;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,5 +45,14 @@ class GetPostsRequest extends FormRequest
             'page.integer' => 'עמוד חייב להיות מספר.',
             'page.min' => 'מספר העמוד חייב להיות לפחות 1.',
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = collect($validator->errors()->messages())
+            ->map(fn($messages) => $messages[0]); // Get only the first error message per field
+
+        throw new HttpResponseException(response()->json([
+            'errors' => $errors
+        ], 422));
     }
 }
