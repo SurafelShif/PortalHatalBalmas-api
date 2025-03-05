@@ -94,7 +94,7 @@ class InformationController extends Controller
         }
         return response()->json([
             'message' => ResponseMessages::SUCCESS_ACTION,
-        ], Response::HTTP_OK);
+        ], Response::HTTP_CREATED);
     }
 
     /**

@@ -99,7 +99,7 @@ class UserController extends Controller
         }
         return response()->json([
             'message' => ResponseMessages::SUCCESS_ACTION
-        ], Response::HTTP_CREATED);
+        ], Response::HTTP_OK);
     }
 
     /**
