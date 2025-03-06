@@ -34,9 +34,9 @@ class AddAdminRequest extends FormRequest
         return [
             'full_name.required' => 'שם המשתמש חסר',
             'full_name.min' => 'שם המשתמש צריך להיות לפחות שני תווים',
-            'personal_id.required' => 'המספר האישי חסר',
-            'personal_id.integer' => 'המספר האישי חסר',
-            'personal_id.regex' => 'המספר האישי בפורמט לא נכון',
+            'personal_id.required' => 'תעודת הזהות חסר',
+            'personal_id.integer' => 'תעודת הזהות אינה בפורמט הנכון',
+            'personal_id.regex' => 'תעודת הזהות צריכה להיות 9 תווים',
 
         ];
     }
