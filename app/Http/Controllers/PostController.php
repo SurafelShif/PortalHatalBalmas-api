@@ -67,7 +67,7 @@ class PostController extends Controller
     public function getPosts(GetPostsRequest $request)
     {
         $search = $request->query('query');
-        $category_id = $request->query('category');
+        $category_id = $request->query('category_id');
         $limit = $request->query('limit');
         $page = $request->query('page', 1);
         $result = $this->PostService->getPosts($category_id, $limit, $page, $search);
