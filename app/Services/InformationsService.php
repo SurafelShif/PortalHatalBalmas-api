@@ -68,7 +68,7 @@ class InformationsService
                 $updateArray['content'] = json_decode($updateArray['content'], 1);
             }
             $information->update($updateArray);
-            return Response::HTTP_OK;
+            return new InformationResource($information);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

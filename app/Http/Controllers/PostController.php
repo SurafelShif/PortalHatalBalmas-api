@@ -290,7 +290,7 @@ class PostController extends Controller
             };
         }
         return response()->json([
-            'message' => ResponseMessages::SUCCESS_ACTION,
+            'data' => $result,
         ], Response::HTTP_OK);
     }
 }

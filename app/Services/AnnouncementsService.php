@@ -79,7 +79,7 @@ class AnnouncementsService
             }
             $announcement->update($updateArray);
             DB::commit();
-            return Response::HTTP_OK;
+            return new AnnoucementsResource($announcement);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

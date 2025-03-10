@@ -101,7 +101,7 @@ class PostsService
                 $updateArray['content'] = json_decode($updateArray['content'], 1);
             }
             $post->update($updateArray);
-            return Response::HTTP_OK;
+            return new PostResource($post);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

@@ -67,16 +67,16 @@ class SitesService
     public function updateSite(string $uuid, array $updateArray)
     {
         try {
-            $post = Site::where('uuid', $uuid)->first();
-            if (is_null($post)) {
+            $site = Site::where('uuid', $uuid)->first();
+            if (is_null($site)) {
                 return HttpStatusEnum::NOT_FOUND;
             }
             if (array_key_exists('image', $updateArray)) {
-                $this->imageService->updateImage($post->image->id, $updateArray['image']);
+                $this->imageService->updateImage($site->image->id, $updateArray['image']);
                 unset($updateArray['image']);
             }
-            $post->update($updateArray);
-            return Response::HTTP_OK;
+            $site->update($updateArray);
+            return new SitesResource($site);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

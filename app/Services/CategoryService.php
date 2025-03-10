@@ -45,7 +45,7 @@ class CategoryService
             $category->update([
                 'name' => $name
             ]);
-            return Response::HTTP_OK;
+            return $category;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
