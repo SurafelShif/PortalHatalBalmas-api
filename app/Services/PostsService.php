@@ -20,7 +20,7 @@ class PostsService
             $query = Post::with('category')->latest()->select(['image_id', 'title', 'uuid', "description", "category_id"]);
             if (!is_null($category_id)) {
                 $query->whereHas('category', function ($q) use ($category_id) {
-                    $q->where('id', $category_id);
+                    $q->where('filter_by', $category_id);
                 });
             }
             if (!empty($search)) {

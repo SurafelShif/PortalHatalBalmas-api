@@ -55,8 +55,6 @@ Route::controller(PostController::class)->prefix('posts')->group(function () {
 //         Route::get('/{uuid}', 'getAnnouncementByUUid');
 //     });
 // });
-//TODO WHATEVER JOHNNY SAID
-//TODO ANNOUNCEMENTS ADD IMAGE NAME
 //TODO UPDATE ANNOUCMENTS IMAGE nullage
 Route::controller(AnnouncementController::class)->prefix('announcements')->group(function () {
     Route::post('/{uuid}', 'updateAnnouncement');

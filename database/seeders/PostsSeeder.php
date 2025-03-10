@@ -19,9 +19,10 @@ class PostsSeeder extends Seeder
     {
         $faker = Faker::create();
         $categories = ["מפקדת מחנה", 'משא"ן', "מחשב"];
-        foreach ($categories as $category) {
+        foreach ($categories as $index => $category) {
             $category = Category::create([
-                'name' => $category
+                'name' => $category,
+                'filter_by' => $index
             ]);
         }
         for ($i = 0; $i < 5; $i++) {
