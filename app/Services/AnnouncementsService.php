@@ -142,4 +142,20 @@ class AnnouncementsService
             return HttpStatusEnum::ERROR;
         }
     }
+    public function updateAnnouncementPosition(array $positions)
+    {
+        try {
+            foreach ($positions as $item) {
+                $announcement = Announcement::where('uuid', $item['uuid'])->first();
+
+                $announcement->position = $item['position'];
+                $announcement->save();
+            }
+
+            return Response::HTTP_OK;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

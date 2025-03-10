@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\HttpStatusEnum;
 use App\Enums\ResponseMessages;
 use App\Http\Requests\CreateAnnouncementRequest;
+use App\Http\Requests\UpdateAnnouncementPositionRequest;
 use App\Http\Requests\UpdateAnnouncementRequest;
 use App\Http\Requests\UpdateAnnouncementVisibility;
 use App\Services\AnnouncementsService;
@@ -143,7 +144,7 @@ class AnnouncementController extends Controller
     }
     /**
      * @OA\Post(
-     *     path="/api/announcements/update",
+     *     path="/api/announcements/{uuid}",
      *     summary="מעדכן הכזרזות ",
      *     description="מעדכן הכרזות .",
      *     operationId="updateAnnouncement",
@@ -342,5 +343,53 @@ class AnnouncementController extends Controller
             };
         }
         return response()->json($result, Response::HTTP_OK);
+    }
+    /**
+     * @OA\Put(
+     *     path="/api/announcements/updatePosition",
+     *     summary="עדכון מיקומים של מספר הכרזות",
+     *     description="מעודכן את המיקומים של מספר הכרזות בהתבסס על הנתונים שנשלחו.",
+     *     operationId="updateAnnouncementPosition",
+     *     tags={"Announcements"},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="uuid", type="string", format="uuid", example="4a206b4-99d6-4692-915c-4935766e0420"),
+     *                 @OA\Property(property="position", type="integer", example=2)
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="המיקומים עודכנו בהצלחה",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             example={"message": "הפעולה בוצעה בהצלחה"}
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="בקשה לא תקינה"),
+     *     @OA\Response(response=404, description="אחת או יותר מההכרזות לא נמצאה"),
+     *     @OA\Response(response=500, description="שגיאת שרת פנימית")
+     * )
+     */
+
+    public function updateAnnouncementPosition(UpdateAnnouncementPositionRequest $request)
+    {
+        $result = $this->announcementsService->updateAnnouncementPosition($request->validated());
+        if ($result instanceof HttpStatusEnum) {
+            return match ($result) {
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::ANNOUNCEMENT_NOT_FOUND], Response::HTTP_NOT_FOUND),
+                HttpStatusEnum::BAD_REQUEST => response()->json(["message" => ResponseMessages::BAD_REQUEST], Response::HTTP_BAD_REQUEST),
+            };
+        }
+        return response()->json([
+            'message' => ResponseMessages::SUCCESS_ACTION,
+        ], Response::HTTP_OK);
     }
 }

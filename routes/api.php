@@ -55,6 +55,9 @@ Route::controller(PostController::class)->prefix('posts')->group(function () {
 //         Route::get('/{uuid}', 'getAnnouncementByUUid');
 //     });
 // });
+//TODO WHATEVER JOHNNY SAID
+//TODO ANNOUNCEMENTS ADD IMAGE NAME
+//TODO UPDATE ANNOUCMENTS IMAGE
 Route::controller(AnnouncementController::class)->prefix('announcements')->group(function () {
     Route::post('/{uuid}', 'updateAnnouncement');
     Route::middleware("throttle:20,1")->patch('/{uuid}', 'updateAnnouncementVisibility');
@@ -63,6 +66,7 @@ Route::controller(AnnouncementController::class)->prefix('announcements')->group
     Route::get('/admin', 'getAdminAnnouncements');
     Route::get('/', 'getAnnouncements');
     Route::get('/{uuid}', 'getAnnouncementByUUid');
+    Route::put('/updatePosition', 'updateAnnouncementPosition');
 });
 // Route::controller(InformationController::class)->middleware(['auth:api', 'role:admin'])->prefix('info')->group(function () {
 //     Route::post('/', 'createInformation');

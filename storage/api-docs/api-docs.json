@@ -111,7 +111,42 @@
                 }
             }
         },
-        "/api/announcements/update": {
+        "/api/announcements/{uuid}": {
+            "get": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "מביא פוסט לפי UUID",
+                "description": "מביא פוסט בודד לפי מזהה ייחודי (UUID).",
+                "operationId": "getAnnouncementByUUid",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID של הכרזה",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה בוצעה בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "404": {
+                        "description": "הכרזה לא נמצא"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Announcements"
@@ -179,43 +214,6 @@
                     },
                     "400": {
                         "description": "בקשה לא תקינה"
-                    },
-                    "500": {
-                        "description": "שגיאה בשרת"
-                    }
-                }
-            }
-        },
-        "/api/announcements/{uuid}": {
-            "get": {
-                "tags": [
-                    "Announcements"
-                ],
-                "summary": "מביא פוסט לפי UUID",
-                "description": "מביא פוסט בודד לפי מזהה ייחודי (UUID).",
-                "operationId": "getAnnouncementByUUid",
-                "parameters": [
-                    {
-                        "name": "uuid",
-                        "in": "path",
-                        "description": "UUID של הכרזה",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid",
-                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "הפעולה בוצעה בהצלחה"
-                    },
-                    "400": {
-                        "description": "בקשה לא תקינה"
-                    },
-                    "404": {
-                        "description": "הכרזה לא נמצא"
                     },
                     "500": {
                         "description": "שגיאה בשרת"
@@ -303,6 +301,64 @@
                     },
                     "500": {
                         "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
+        "/api/announcements/updatePosition": {
+            "put": {
+                "tags": [
+                    "Announcements"
+                ],
+                "summary": "עדכון מיקומים של מספר הכרזות",
+                "description": "מעודכן את המיקומים של מספר הכרזות בהתבסס על הנתונים שנשלחו.",
+                "operationId": "updateAnnouncementPosition",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "uuid": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "example": "4a206b4-99d6-4692-915c-4935766e0420"
+                                        },
+                                        "position": {
+                                            "type": "integer",
+                                            "example": 2
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "המיקומים עודכנו בהצלחה",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "message": "הפעולה בוצעה בהצלחה"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "404": {
+                        "description": "אחת או יותר מההכרזות לא נמצאה"
+                    },
+                    "500": {
+                        "description": "שגיאת שרת פנימית"
                     }
                 }
             }
