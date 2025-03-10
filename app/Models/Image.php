@@ -13,6 +13,7 @@ class Image extends Model
         'image_name',
         'image_type',
         'image_path',
+        'image_file_name'
     ];
     protected $hidden = [
         'created_at',

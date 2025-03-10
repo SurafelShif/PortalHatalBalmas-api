@@ -34,6 +34,12 @@ class UpdateAnnouncementPositionRequest extends FormRequest
     public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
+            if (count($this->all()) === 0) {
+                $validator->errors()->add(
+                    "general",
+                    "לפחות הכרזה אחת לעדכון"
+                );
+            }
             $announcementsCount = Announcement::count();
             foreach ($this->all() as $index => $item) {
 

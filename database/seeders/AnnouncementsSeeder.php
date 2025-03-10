@@ -19,7 +19,8 @@ class AnnouncementsSeeder extends Seeder
             $image = Image::create([
                 "image_name" => "moon.jpg",
                 "image_type" => "jpg",
-                "image_path" => "images/moon.jpg"
+                "image_path" => "images/moon.jpg",
+                "image_file_name" => "moon.jpg"
             ]);
 
             Announcement::create([

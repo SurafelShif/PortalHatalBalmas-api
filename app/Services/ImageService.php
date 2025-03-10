@@ -17,12 +17,15 @@ class ImageService
     {
         try {
             $extension = $image->getClientOriginalExtension();
+            $originalName = $image->getClientOriginalName();
             $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
             $imagePath = $image->storeAs('images', $randomFileName, config('filesystems.storage_service'));
+
             return Image::create([
                 'image_name' => $randomFileName,
                 'image_path' => $imagePath,
                 'image_type' => $image->getMimeType(),
+                'image_file_name' => $originalName
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -45,15 +48,18 @@ class ImageService
                 $extension = $newImage->getClientOriginalExtension();
                 $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
                 $imagePath = $newImage->storeAs('images', $randomFileName, config('filesystems.storage_service'));
+                $originalName = $newImage->getClientOriginalName();
             } else {
                 $imagePath = null;
                 $randomFileName = null;
                 $extension = null;
+                $originalName = null;
             }
             $this->deleteImage($oldImage->image_name);
             $oldImage->image_path = $imagePath;
             $oldImage->image_name = $randomFileName;
             $oldImage->image_type = $extension;
+            $oldImage->image_file_name = $originalName;
             $oldImage->save();
             return $oldImage;
         } catch (\Exception $e) {

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("image_name")->nullable();
             $table->string("image_path")->nullable();
             $table->string("image_type")->nullable();
+            $table->string("image_file_name")->nullable();
             $table->timestamps();
         });
     }
