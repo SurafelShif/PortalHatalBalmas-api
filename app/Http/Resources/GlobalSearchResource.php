@@ -9,10 +9,10 @@ class GlobalSearchResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+
         return array_filter([
             'uuid' => $this->uuid,
             'title' => $this->title,
-            'content' => $this->content ? $this->content : null,
             'type' => $this->type,
             'name' => $this->name,
             'link' => $this->link ? $this->link : null,
