@@ -74,6 +74,7 @@ class SitesService
             if (array_key_exists('image', $updateArray)) {
                 $this->imageService->updateImage($site->image->id, $updateArray['image']);
                 unset($updateArray['image']);
+                $site->refresh();
             }
             $site->update($updateArray);
             return new SitesResource($site);

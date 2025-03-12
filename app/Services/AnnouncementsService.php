@@ -73,6 +73,7 @@ class AnnouncementsService
             if (array_key_exists('image', $updateArray)) {
                 $this->imageService->updateImage($announcement->image->id, $updateArray['image']);
                 unset($updateArray['image']);
+                $announcement->refresh();
             }
             if (array_key_exists('content', $updateArray)) {
                 $updateArray['content'] = json_decode($updateArray['content'], 1);

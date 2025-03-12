@@ -63,6 +63,7 @@ class InformationsService
             if (array_key_exists('image', $updateArray)) {
                 $this->imageService->updateImage($information->image->id, $updateArray['image']);
                 unset($updateArray['image']);
+                $information->refresh();
             }
             if (array_key_exists('content', $updateArray)) {
                 $updateArray['content'] = json_decode($updateArray['content'], 1);

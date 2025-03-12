@@ -96,6 +96,7 @@ class PostsService
             if (array_key_exists('image', $updateArray)) {
                 $this->imageService->updateImage($post->image->id, $updateArray['image']);
                 unset($updateArray['image']);
+                $post->refresh();
             }
             if (array_key_exists('content', $updateArray)) {
                 $updateArray['content'] = json_decode($updateArray['content'], 1);
