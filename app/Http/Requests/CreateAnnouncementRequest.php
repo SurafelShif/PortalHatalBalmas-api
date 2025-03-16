@@ -19,7 +19,7 @@ class CreateAnnouncementRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'content' => ['required', 'json'],
+            'content' => ['required', 'string'],
             'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
     }
@@ -32,7 +32,7 @@ class CreateAnnouncementRequest extends FormRequest
             'title.required' => 'כותרת הכזרה היא חובה.',
             'description.required' => 'תיאור הכזרה הוא חובה.',
             'content.required' => 'תוכן הכזרה הוא חובה.',
-            'content.json' => 'תוכן הכזרה אינה בפורמט הנכון.',
+            'content.string' => 'תוכן הכזרה אינה בפורמט הנכון.',
             'position.required' => 'מיקום ההכזרה היא חובה.',
             'position.integer' => 'מיקום ההכזרה אינה בפורמט הנכון.',
             'image.required' => 'חובה להעלות תמונה.',
