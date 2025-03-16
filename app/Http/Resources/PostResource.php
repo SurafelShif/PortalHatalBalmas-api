@@ -9,17 +9,17 @@ class PostResource extends JsonResource
 {
     public function toArray(Request $request)
     {
-        if (is_null($this->content)) {
-            $content = null;
-        } else {
-            $content = !count($this->content) ? (object) [] : $this->content;
-        }
+        // if (is_null($this->content)) {
+        //     $content = null;
+        // } else {
+        //     $content = !count($this->content) ? (object) [] : $this->content;
+        // }
         return array_filter([
             'uuid' => $this->uuid,
             'title' => $this->title,
             'description' => $this->description,
             'category' => $this->category ? ["name" => $this->category->name, "id" => $this->category->id] : null,
-            'content' => $content,
+            'content' =>  $this->content,
             'image' => optional($this->image)->image_path
                 ?  config('filesystems.storage_path') . $this->image->image_path
                 : null,

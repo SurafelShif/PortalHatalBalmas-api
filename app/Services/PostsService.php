@@ -62,7 +62,7 @@ class PostsService
             Post::create([
                 'title' => $title,
                 'description' => $description,
-                'content' => json_decode($content, 1),
+                'content' => $content,
                 'category_id' => $category_id,
                 'image_id' => $createdImage->id
             ]);
@@ -98,9 +98,9 @@ class PostsService
                 unset($updateArray['image']);
                 $post->refresh();
             }
-            if (array_key_exists('content', $updateArray)) {
-                $updateArray['content'] = json_decode($updateArray['content'], 1);
-            }
+            // if (array_key_exists('content', $updateArray)) {
+            //     $updateArray['content'] = json_decode($updateArray['content'], 1);
+            // }
             $post->update($updateArray);
             return new PostResource($post);
         } catch (\Exception $e) {

@@ -143,12 +143,8 @@ class PostController extends Controller
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של הפוסט"),
      *  @OA\Property(
      *     property="content",
-     *     type="object",
-     *     example={
-     *         "title": "Sample Post",
-     *         "body": "This is the full content of the post",
-     *         "author": "John Doe"
-     *     }
+     *     type="string",
+     *     example="{blah:{dfgfdgfd}"
      * ),
      *                 @OA\Property(property="category_id", type="integer", example=1),
      *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת לפוסט")
@@ -157,7 +153,7 @@ class PostController extends Controller
      *     ),
      *
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="הפוסט נוצר בהצלחה",
      *     ),
      *     @OA\Response(
@@ -253,12 +249,8 @@ class PostController extends Controller
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של הפוסט"),
      *  @OA\Property(
      *     property="content",
-     *     type="object",
-     *     example={
-     *         "title": "Sample Post",
-     *         "body": "This is the full content of the post",
-     *         "author": "John Doe"
-     *     }
+     *     type="string",
+     *     example="{blah:{dfgfdgfd}"
      * ),
      *                 @OA\Property(property="category_id", type="integer", example=1),
      *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת לפוסט")

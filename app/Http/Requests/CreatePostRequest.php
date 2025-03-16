@@ -18,7 +18,7 @@ class CreatePostRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'content' => ['required', 'json'],
+            'content' => ['required', 'string'],
             'category_id' => ['required', 'exists:categories,id'],
             'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
@@ -30,7 +30,7 @@ class CreatePostRequest extends FormRequest
             'title.required' => 'כותרת הכתבה היא חובה.',
             'description.required' => 'תיאור הכתבה הוא חובה.',
             'content.required' => 'תוכן הכתבה הוא חובה.',
-            'content.json' => 'תוכן הכתבה אינה בפורמט הנכון.',
+            'content.string' => 'תוכן הכתבה אינו בפורמט הנכון.',
             'category_id.required' => 'קטגוריה היא חובה.',
             'category_id.exists' => 'הקטגוריה שסיפקת אינה קיימת.',
             'image.required' => 'חובה להעלות תמונה.',

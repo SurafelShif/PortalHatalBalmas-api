@@ -104,12 +104,8 @@ class AnnouncementController extends Controller
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של ההכרזה"),
      *  @OA\Property(
      *     property="content",
-     *     type="object",
-     *     example={
-     *         "title": "Sample Post",
-     *         "body": "This is the full content of the post",
-     *         "author": "John Doe"
-     *     }
+     *     type="string",
+     *     example="{blah:{dfgfdgfd}"
      * ),
      *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת להכרזה")
      *             )
@@ -164,7 +160,11 @@ class AnnouncementController extends Controller
      *             @OA\Schema(
      *                 @OA\Property(property="title", type="string", example="כותרת ההכרזה"),
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של ההכרזה"),
-     *                 @OA\Property(property="content", type="object", example={"title": "Sample Post", "body": "This is the full content"}),
+     *  @OA\Property(
+     *     property="content",
+     *     type="string",
+     *     example="{blah:{dfgfdgfd}"
+     * ),
      *                 @OA\Property(property="position", type="integer", example=1),
      *                       @OA\Property(property="isVisible", type="integer", example=1,description="בוליאני מקבל רק 0 או 1"),
      *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת להכרזה")

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->string('title');
             $table->string('description');
-            $table->json('content');
+            $table->text('content');
             $table->integer('position')->nullable();
             $table->boolean('isVisible')->default(true);
             $table->unsignedBigInteger('image_id');

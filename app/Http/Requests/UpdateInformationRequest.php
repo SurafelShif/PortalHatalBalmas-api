@@ -25,7 +25,7 @@ class UpdateInformationRequest extends FormRequest
     {
         return [
             'title' => ['sometimes', 'string', 'max:255'],
-            'content' => ['sometimes', 'json'],
+            'content' => ['sometimes', 'string'],
             'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
     }
@@ -47,7 +47,7 @@ class UpdateInformationRequest extends FormRequest
         return [
             'title.string' => 'כותרת הכתבה חייבת להיות מחרוזת.',
             'title.max' => 'כותרת הכתבה יכולה להכיל עד 255 תווים.',
-            'content.json' => 'תוכן הכתבה חייב להיות בפורמט JSON תקין.',
+            'content.string' => 'תוכן הכתבה אינו בפורמט הנכון.',
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
             'image.max' => 'התמונה חייבת להיות עד 2MB.',

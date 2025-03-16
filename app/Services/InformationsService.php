@@ -30,7 +30,7 @@ class InformationsService
             $createdImage = $this->imageService->uploadImage($image);
             Information::create([
                 'title' => $title,
-                'content' => json_decode($content, 1),
+                'content' => $content,
                 'image_id' => $createdImage->id
             ]);
         } catch (\Exception $e) {
@@ -64,9 +64,6 @@ class InformationsService
                 $this->imageService->updateImage($information->image->id, $updateArray['image']);
                 unset($updateArray['image']);
                 $information->refresh();
-            }
-            if (array_key_exists('content', $updateArray)) {
-                $updateArray['content'] = json_decode($updateArray['content'], 1);
             }
             $information->update($updateArray);
             return new InformationResource($information);

@@ -58,12 +58,8 @@ class InformationController extends Controller
      *                 @OA\Property(property="title", type="string", example="כותרת הכתבת מידע"),
      *  @OA\Property(
      *     property="content",
-     *     type="object",
-     *     example={
-     *         "title": "Sample Post",
-     *         "body": "This is the full content of the post",
-     *         "author": "John Doe"
-     *     }
+     *     type="string",
+     *     example="{blah:{dfgfdgfd}"
      * ),
      *                 @OA\Property(property="image", type="string", format="binary")
      *             )
@@ -162,14 +158,10 @@ class InformationController extends Controller
      *             @OA\Schema(
      *                 @OA\Property(property="title", type="string", example="כותרת כתבת מידע"),
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של כתבת מידע"),
-     * * @OA\Property(
+     *  @OA\Property(
      *     property="content",
-     *     type="object",
-     *     example={
-     *         "title": "Sample Post",
-     *         "body": "This is the full content of the post",
-     *         "author": "John Doe"
-     *     }
+     *     type="string",
+     *     example="{blah:{dfgfdgfd}"
      * ),
      *                 @OA\Property(property="category_id", type="integer", example=1),
      *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת לפוסט")

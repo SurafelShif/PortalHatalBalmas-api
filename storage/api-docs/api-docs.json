@@ -50,12 +50,8 @@
                                         "example": "תיאור קצר של ההכרזה"
                                     },
                                     "content": {
-                                        "type": "object",
-                                        "example": {
-                                            "title": "Sample Post",
-                                            "body": "This is the full content of the post",
-                                            "author": "John Doe"
-                                        }
+                                        "type": "string",
+                                        "example": "{blah:{dfgfdgfd}"
                                     },
                                     "image": {
                                         "description": "תמונה מצורפת להכרזה",
@@ -182,11 +178,8 @@
                                         "example": "תיאור קצר של ההכרזה"
                                     },
                                     "content": {
-                                        "type": "object",
-                                        "example": {
-                                            "title": "Sample Post",
-                                            "body": "This is the full content"
-                                        }
+                                        "type": "string",
+                                        "example": "{blah:{dfgfdgfd}"
                                     },
                                     "position": {
                                         "type": "integer",
@@ -620,12 +613,8 @@
                                         "example": "כותרת הכתבת מידע"
                                     },
                                     "content": {
-                                        "type": "object",
-                                        "example": {
-                                            "title": "Sample Post",
-                                            "body": "This is the full content of the post",
-                                            "author": "John Doe"
-                                        }
+                                        "type": "string",
+                                        "example": "{blah:{dfgfdgfd}"
                                     },
                                     "image": {
                                         "type": "string",
@@ -721,12 +710,8 @@
                                         "example": "תיאור קצר של כתבת מידע"
                                     },
                                     "content": {
-                                        "type": "object",
-                                        "example": {
-                                            "title": "Sample Post",
-                                            "body": "This is the full content of the post",
-                                            "author": "John Doe"
-                                        }
+                                        "type": "string",
+                                        "example": "{blah:{dfgfdgfd}"
                                     },
                                     "category_id": {
                                         "type": "integer",
@@ -875,12 +860,8 @@
                                         "example": "תיאור קצר של הפוסט"
                                     },
                                     "content": {
-                                        "type": "object",
-                                        "example": {
-                                            "title": "Sample Post",
-                                            "body": "This is the full content of the post",
-                                            "author": "John Doe"
-                                        }
+                                        "type": "string",
+                                        "example": "{blah:{dfgfdgfd}"
                                     },
                                     "category_id": {
                                         "type": "integer",
@@ -898,7 +879,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "הפוסט נוצר בהצלחה"
                     },
                     "400": {
@@ -981,12 +962,8 @@
                                         "example": "תיאור קצר של הפוסט"
                                     },
                                     "content": {
-                                        "type": "object",
-                                        "example": {
-                                            "title": "Sample Post",
-                                            "body": "This is the full content of the post",
-                                            "author": "John Doe"
-                                        }
+                                        "type": "string",
+                                        "example": "{blah:{dfgfdgfd}"
                                     },
                                     "category_id": {
                                         "type": "integer",

@@ -23,7 +23,7 @@ class AnnouncementsService
             Announcement::create([
                 'title' => $title,
                 'description' => $description,
-                'content' => json_decode($content, 1),
+                'content' => $content,
                 'image_id' => $createdImage->id
             ]);
         } catch (\Exception $e) {
@@ -74,9 +74,6 @@ class AnnouncementsService
                 $this->imageService->updateImage($announcement->image->id, $updateArray['image']);
                 unset($updateArray['image']);
                 $announcement->refresh();
-            }
-            if (array_key_exists('content', $updateArray)) {
-                $updateArray['content'] = json_decode($updateArray['content'], 1);
             }
             $announcement->update($updateArray);
             DB::commit();

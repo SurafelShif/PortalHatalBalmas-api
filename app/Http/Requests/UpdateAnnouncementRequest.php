@@ -26,7 +26,7 @@ class UpdateAnnouncementRequest extends FormRequest
         return [
             'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'string'],
-            'content' => ['sometimes', 'json'],
+            'content' => ['sometimes', 'string'],
             'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
     }
@@ -40,7 +40,7 @@ class UpdateAnnouncementRequest extends FormRequest
             'title.string' => 'כותרת ההכרזה חייבת להיות מחרוזת.',
             'title.max' => 'כותרת ההכרזה יכולה להכיל עד 255 תווים.',
             'description.string' => 'תיאור ההכרזה חייב להיות מחרוזת.',
-            'content.json' => 'תוכן ההכרזה חייב להיות בפורמט JSON תקין.',
+            'content.string' => 'תוכן הכתבה אינו בפורמט הנכון.',
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
             'image.max' => 'התמונה חייבת להיות עד 2MB.',

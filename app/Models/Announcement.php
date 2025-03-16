@@ -37,7 +37,6 @@ class Announcement extends Model
     protected $hidden = ['updated_at', 'id'];
 
     protected $casts = [
-        'content' => 'array',
         'isVisible' => 'boolean'
     ];
 }

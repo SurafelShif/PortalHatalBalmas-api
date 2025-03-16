@@ -26,7 +26,7 @@ class UpdatePostRequest extends FormRequest
         return [
             'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'string'],
-            'content' => ['sometimes', 'json'],
+            'content' => ['sometimes', 'string'],
             'category_id' => ['sometimes', 'exists:categories,id'],
             'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
@@ -52,7 +52,7 @@ class UpdatePostRequest extends FormRequest
 
             'description.string' => 'תיאור הכתבה חייב להיות מחרוזת.',
 
-            'content.json' => 'תוכן הכתבה חייב להיות בפורמט JSON תקין.',
+            'content.string' => 'תוכן הכתבה אינו בפורמט הנכון.',
 
             'category_id.exists' => 'הקטגוריה שסיפקת אינה קיימת.',
 

@@ -37,8 +37,4 @@ class Post extends Model
         'category_id',
     ];
     protected $hidden = ['updated_at', 'id'];
-
-    protected $casts = [
-        'content' => 'array',
-    ];
 }
