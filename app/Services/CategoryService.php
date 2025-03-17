@@ -54,10 +54,10 @@ class CategoryService
     public function createCategory(string $name)
     {
         try {
-            Category::create([
+            $category = Category::create([
                 "name" => $name
             ]);
-            return Response::HTTP_OK;
+            return $category;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

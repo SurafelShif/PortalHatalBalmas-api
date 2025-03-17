@@ -27,7 +27,7 @@ class AnnouncementsSeeder extends Seeder
                 'image_id' => $image->id,
                 'title' => $faker->sentence(6),
                 'description' => $faker->sentence(10),
-                'content' => json_encode(["some" => $faker->paragraph(5)]),
+                'content' => '<p><span style="color: #D64C4C"><em>רפאל האלוף</em></span></p>',
                 'position' => $i
             ]);
         }
