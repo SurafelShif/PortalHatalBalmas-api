@@ -41,6 +41,7 @@ Route::controller(PostController::class)->prefix('posts')->group(function () {
     Route::post('/{uuid}', 'updatePost');
     Route::delete('/{uuid}', 'deletePost');
     Route::get('/', 'getPosts');
+    Route::get('/admin', 'getAdminPosts');
     Route::get('/{uuid}', 'getPostByUUid');
 });
 

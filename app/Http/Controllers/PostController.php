@@ -80,6 +80,67 @@ class PostController extends Controller
     }
     /**
      * @OA\Get(
+     *     path="/api/posts/admin",
+     *     summary="מביא רשימת חדשות",
+     *     description="מביא רשימת חדשות עם אפשרות לסינון לפי קטגוריה, חיפוש ודפדוף.",
+     *     operationId="getAdminPosts",
+     *     tags={"Post"},
+     *
+     *     @OA\Parameter(
+     *         name="category_id",
+     *         in="query",
+     *         description="סינון לפי מאפיין הקטגוריה",
+     *         required=false,
+     *         @OA\Schema(type="int", example="1")
+     *     ),
+     *     @OA\Parameter(
+     *         name="query",
+     *         in="query",
+     *         description="מילת חיפוש בכותרת, תיאור או תוכן",
+     *         required=false,
+     *         @OA\Schema(type="string", example="")
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="כמות פריטים בעמוד",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="מספר עמוד לתצוגה",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=1)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="הפעולה בוצעה בהצלחה",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="שגיאה בשרת",
+     *     )
+     * )
+     */
+    public function getAdminPosts(GetPostsRequest $request)
+    {
+        $search = $request->query('query');
+        $category_id = $request->query('category_id');
+        $limit = $request->query('limit');
+        $page = $request->query('page', 1);
+        $result = $this->PostService->getAdminPosts($category_id, $limit, $page, $search);
+        if ($result instanceof HttpStatusEnum) {
+            return match ($result) {
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+            };
+        }
+        return response()->json($result, Response::HTTP_OK);
+    }
+    /**
+     * @OA\Get(
      *     path="/api/posts/{uuid}",
      *     summary="מביא פוסט לפי UUID",
      *     description="מביא פוסט בודד לפי מזהה ייחודי (UUID).",

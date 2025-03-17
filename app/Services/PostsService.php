@@ -37,6 +37,29 @@ class PostsService
             return HttpStatusEnum::ERROR;
         }
     }
+    public function getAdminPosts(int | null $category_id, int | null $limit, int $page, string| null $search)
+    {
+        try {
+            $query = Post::with('category')->latest()->select(['image_id', 'title', 'uuid', "description", "category_id", "content"]);
+            if (!is_null($category_id)) {
+                $query->whereHas('category', function ($q) use ($category_id) {
+                    $q->where('filter_by', $category_id);
+                });
+            }
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'LIKE', "%{$search}%")
+                        ->orWhere('description', 'LIKE', "%{$search}%")
+                        ->orWhere('content', 'LIKE', "%{$search}%");
+                });
+            }
+            $posts = is_null($limit) ? $query->get() : $query->paginate($limit, ['*'], 'page', $page);
+            return PostResource::collection($posts);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
 
     public function getPostByUUid(string $uuid)
     {
