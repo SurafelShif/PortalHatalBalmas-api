@@ -46,7 +46,7 @@ class AnnouncementsService
     {
         try {
             $announcements = Announcement::orderBy('position', 'asc')
-                ->select(['uuid', 'title', 'description', 'position', 'image_id', 'created_at', 'isVisible'])
+                ->select(['uuid', 'title', 'description', 'position', 'image_id', 'created_at', 'isVisible', 'content'])
                 ->when(!empty($search), function ($query) use ($search) {
                     $query->where('title', 'LIKE', "%{$search}%")
                         ->orWhere('description', 'LIKE', "%{$search}%");
