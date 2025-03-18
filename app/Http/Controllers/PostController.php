@@ -26,7 +26,7 @@ class PostController extends Controller
      *     tags={"Post"},
      *
      *     @OA\Parameter(
-     *         name="category_uuid",
+     *         name="category",
      *         in="query",
      *         description="סינון לפי מאפיין הקטגוריה",
      *         required=false,
@@ -67,7 +67,7 @@ class PostController extends Controller
     public function getPosts(GetPostsRequest $request)
     {
         $search = $request->query('query');
-        $category_uuid = $request->query('category_uuid');
+        $category_uuid = $request->query('category');
         $limit = $request->query('limit');
         $page = $request->query('page', 1);
         $result = $this->PostService->getPosts($category_uuid, $limit, $page, $search);
