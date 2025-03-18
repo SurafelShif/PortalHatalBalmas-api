@@ -399,7 +399,7 @@
                 }
             }
         },
-        "/api/categories": {
+        "/api/categories/{type}": {
             "get": {
                 "tags": [
                     "Categories"
@@ -407,44 +407,20 @@
                 "summary": "מביא את כל הקטגוריות",
                 "description": "מביא את כל הקטגוריות עם מספר הפוסטים בכל קטגוריה",
                 "operationId": "getCategories",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "path",
+                        "description": "קבלת קטגוריה לפי סוג",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "הפעולה בוצעה בהצלחה"
-                    },
-                    "500": {
-                        "description": "שגיאה בשרת"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "יוצר קטגוריה חדשה",
-                "description": "יוצר קטגוריה חדשה במערכת",
-                "operationId": "createCategory",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "קטגוריה חדשה"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "קטגוריה נוצרה בהצלחה"
                     },
                     "500": {
                         "description": "שגיאה בשרת"
@@ -526,6 +502,43 @@
                     },
                     "404": {
                         "description": "הקטגוריה לא נמצאה"
+                    },
+                    "500": {
+                        "description": "שגיאה בשרת"
+                    }
+                }
+            }
+        },
+        "/api/categories": {
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "יוצר קטגוריה חדשה",
+                "description": "יוצר קטגוריה חדשה במערכת",
+                "operationId": "createCategory",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "קטגוריה חדשה"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "קטגוריה נוצרה בהצלחה"
                     },
                     "500": {
                         "description": "שגיאה בשרת"

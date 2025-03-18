@@ -16,11 +16,18 @@ class CategoryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/categories",
+     *     path="/api/categories/{type}",
      *     summary="מביא את כל הקטגוריות",
      *     description="מביא את כל הקטגוריות עם מספר הפוסטים בכל קטגוריה",
      *     operationId="getCategories",
      *     tags={"Categories"},
+     *      @OA\Parameter(
+     *         name="type",
+     *         in="path",
+     *         required=true,
+     *         description="קבלת קטגוריה לפי סוג",
+     *         @OA\Schema(type="string")
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="הפעולה בוצעה בהצלחה",
@@ -31,9 +38,9 @@ class CategoryController extends Controller
      *     )
      * )
      */
-    public function getCategories()
+    public function getCategories($type)
     {
-        $result = $this->categoryService->getCategories();
+        $result = $this->categoryService->getCategories($type);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

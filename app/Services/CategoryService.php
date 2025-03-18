@@ -11,11 +11,16 @@ use Illuminate\Support\Facades\Log;
 class CategoryService
 {
 
-    public function getCategories()
+    public function getCategories(string $type)
     {
         try {
-            $categories = Category::withCount('posts')->orderBy('created_at', 'desc')->get()->toArray();
-            return $categories;
+            switch ($type) {
+                case "initial":
+                    return Category::withCount('posts')->oldest()->first();
+
+                case "all":
+                    return Category::withCount('posts')->orderBy('created_at', 'desc')->get()->toArray();
+            }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

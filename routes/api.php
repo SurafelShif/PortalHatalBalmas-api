@@ -92,7 +92,7 @@ Route::controller(CategoryController::class)->prefix('categories')->group(functi
     Route::post('/', 'createCategory');
     Route::delete('/{category_uuid}', 'deleteCategory');
     Route::put('/{category_uuid}', 'updateCategory');
-    Route::get('/', 'getCategories');
+    Route::get('/{type}', 'getCategories');
 });
 // Route::controller(SiteController::class)->middleware(['auth:api', 'role:admin'])->prefix('sites')->group(function () {
 //     Route::post('/', 'createSite');
