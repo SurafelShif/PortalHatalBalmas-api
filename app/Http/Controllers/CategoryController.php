@@ -44,17 +44,17 @@ class CategoryController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/categories/{categoryId}",
+     *     path="/api/categories/{category_uuid}",
      *     summary="מוחק קטגוריה",
      *     description="מוחק קטגוריה על פי מזהה ID",
      *     operationId="deleteCategory",
      *     tags={"Categories"},
      *     @OA\Parameter(
-     *         name="categoryId",
+     *         name="category_uuid",
      *         in="path",
      *         required=true,
      *         description="המזהה של הקטגוריה",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -70,9 +70,9 @@ class CategoryController extends Controller
      *     )
      * )
      */
-    public function deleteCategory($categoryId)
+    public function deleteCategory($category_uuid)
     {
-        $result = $this->categoryService->deleteCategory($categoryId);
+        $result = $this->categoryService->deleteCategory($category_uuid);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
@@ -86,17 +86,17 @@ class CategoryController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/categories/{categoryId}",
+     *     path="/api/categories/{category_uuid}",
      *     summary="מעודכן קטגוריה",
      *     description="מעודכן שם קטגוריה",
      *     operationId="updateCategory",
      *     tags={"Categories"},
      *     @OA\Parameter(
-     *         name="categoryId",
+     *         name="category_uuid",
      *         in="path",
      *         required=true,
      *         description="המזהה של הקטגוריה",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\RequestBody(
      *         required=true,
@@ -119,9 +119,9 @@ class CategoryController extends Controller
      *     )
      * )
      */
-    public function updateCategory(CategoryRequest $request, $categoryId)
+    public function updateCategory(CategoryRequest $request, $category_uuid)
     {
-        $result = $this->categoryService->updateCategory($categoryId, $request->name);
+        $result = $this->categoryService->updateCategory($category_uuid, $request->name);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

@@ -4,23 +4,25 @@ namespace App\Services;
 
 use App\Enums\HttpStatusEnum;
 use App\Http\Resources\PostResource;
+use App\Models\Category;
 use App\Models\Post;
 use Symfony\Component\HttpFoundation\Response;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class PostsService
 {
     public function __construct(private ImageService $imageService) {}
-    public function getPosts(int | null $category_id, int | null $limit, int $page, string| null $search)
+    public function getPosts(string | null $category_uuid, int | null $limit, int $page, string| null $search)
     {
         try {
             $query = Post::with('category')->latest()->select(['image_id', 'title', 'uuid', "description", "category_id"]);
-            if (!is_null($category_id)) {
-                $query->whereHas('category', function ($q) use ($category_id) {
-                    $q->where('filter_by', $category_id);
+            if (!is_null($category_uuid)) {
+                $query->whereHas('category', function ($q) use ($category_uuid) {
+                    $q->where('uuid', $category_uuid);
                 });
             }
             if (!empty($search)) {
@@ -37,13 +39,13 @@ class PostsService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function getAdminPosts(int | null $category_id, int | null $limit, int $page, string| null $search)
+    public function getAdminPosts(string | null $category_uuid, int | null $limit, int $page, string| null $search)
     {
         try {
             $query = Post::with('category')->latest()->select(['image_id', 'title', 'uuid', "description", "category_id", "content"]);
-            if (!is_null($category_id)) {
-                $query->whereHas('category', function ($q) use ($category_id) {
-                    $q->where('filter_by', $category_id);
+            if (!is_null($category_uuid)) {
+                $query->whereHas('category', function ($q) use ($category_uuid) {
+                    $q->where('uuid', $category_uuid);
                 });
             }
             if (!empty($search)) {
@@ -77,11 +79,13 @@ class PostsService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function createPosts(string $title, string $description, string $content, int $category_id, UploadedFile $image)
+    public function createPosts(string $title, string $description, string $content, string $category_uuid, UploadedFile $image)
     {
         $createdImage = null;
         try {
+            DB::beginTransaction();
             $createdImage = $this->imageService->uploadImage($image);
+            $category_id = Category::where('uuid', $category_uuid)->first()->id;
             Post::create([
                 'title' => $title,
                 'description' => $description,
@@ -89,7 +93,9 @@ class PostsService
                 'category_id' => $category_id,
                 'image_id' => $createdImage->id
             ]);
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
             $this->imageService->deleteImage($createdImage->image_name);
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;

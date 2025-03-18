@@ -18,7 +18,7 @@ class PostResource extends JsonResource
             'uuid' => $this->uuid,
             'title' => $this->title,
             'description' => $this->description,
-            'category' => $this->category ? ["name" => $this->category->name, "id" => $this->category->id] : null,
+            'category' => $this->category ? ["name" => $this->category->name, "uuid" => $this->category->uuid] : null,
             'content' =>  $this->content,
             'image' => optional($this->image)->image_path
                 ?  config('filesystems.storage_path') . $this->image->image_path

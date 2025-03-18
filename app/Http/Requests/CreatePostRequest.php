@@ -19,7 +19,7 @@ class CreatePostRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'content' => ['required', 'string'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'category_uuid' => ['required', 'exists:categories,uuid'],
             'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
     }
@@ -31,8 +31,8 @@ class CreatePostRequest extends FormRequest
             'description.required' => 'תיאור הכתבה הוא חובה.',
             'content.required' => 'תוכן הכתבה הוא חובה.',
             'content.string' => 'תוכן הכתבה אינו בפורמט הנכון.',
-            'category_id.required' => 'קטגוריה היא חובה.',
-            'category_id.exists' => 'הקטגוריה שסיפקת אינה קיימת.',
+            'category_uuid.required' => 'קטגוריה היא חובה.',
+            'category_uuid.exists' => 'הקטגוריה שסיפקת אינה קיימת.',
             'image.required' => 'חובה להעלות תמונה.',
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',

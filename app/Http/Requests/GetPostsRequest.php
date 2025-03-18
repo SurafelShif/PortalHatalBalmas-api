@@ -20,7 +20,7 @@ class GetPostsRequest extends FormRequest
     {
         return [
             'search' => 'nullable|string|max:100',
-            'category_id' => 'nullable|integer|exists:categories,filter_by',
+            'category_uuid' => 'nullable|uuid|exists:categories,uuid',
             'limit' => 'nullable|integer|min:1|max:10',
             'page' => 'nullable|integer|min:1',
         ];
@@ -29,8 +29,8 @@ class GetPostsRequest extends FormRequest
     {
         return [
             'search.max' => 'השדה חיפוש לא יכול להכיל יותר מ-100 תווים.',
-            'category_id.integer' => 'קטגוריה חייבת להיות מספר.',
-            'category_id.exists' => 'קטגוריה לא נמצאה.',
+            'category_uuid.uuid' => 'מזהה קטגוריה חייב להיות בפורמט UUID.',
+            'category_uuid.exists' => 'קטגוריה לא נמצאה.',
             'limit.integer' => 'הגבלת תוצאות חייבת להיות מספר.',
             'limit.min' => 'הגבלת תוצאות חייבת להיות לפחות 1.',
             'limit.max' => 'הגבלת תוצאות לא יכולה להיות יותר מ-10.',

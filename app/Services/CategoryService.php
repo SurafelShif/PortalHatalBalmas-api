@@ -21,24 +21,24 @@ class CategoryService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function deleteCategory($categoryId)
+    public function deleteCategory($category_uuid)
     {
         try {
-            $category = Category::where('id', $categoryId)->first()->toArray();
+            $category = Category::where('uuid', $category_uuid)->first();
             if (empty($category)) {
                 return HttpStatusEnum::NOT_FOUND;
             }
-            Category::destroy($categoryId);
+            Category::destroy($category->id);
             return Response::HTTP_OK;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }
     }
-    public function updateCategory(int $categoryId, string $name)
+    public function updateCategory(string $category_uuid, string $name)
     {
         try {
-            $category = Category::where('id', $categoryId)->first();
+            $category = Category::where('uuid', $category_uuid)->first();
             if (is_null($category)) {
                 return HttpStatusEnum::NOT_FOUND;
             }

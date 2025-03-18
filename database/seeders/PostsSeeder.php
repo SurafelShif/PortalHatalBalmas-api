@@ -22,7 +22,6 @@ class PostsSeeder extends Seeder
         foreach ($categories as $index => $category) {
             $category = Category::create([
                 'name' => $category,
-                'filter_by' => $index
             ]);
         }
         for ($i = 0; $i < 5; $i++) {

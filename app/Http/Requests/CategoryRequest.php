@@ -24,7 +24,8 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|string| unique:categories,name"
+            "name" => "required|string| unique:categories,name",
+            "category_uuid" => "uuid|exists:categories,uuid"
         ];
     }
 
@@ -34,7 +35,9 @@ class CategoryRequest extends FormRequest
         return [
             "name.required" => "שם הקטגוריה הינו חובה",
             "name.unique" => "שם הקטגוריה קיימת",
-            "name.string" => "שם הקטגוריה אינו בפורמט הנכון"
+            "name.string" => "שם הקטגוריה אינו בפורמט הנכון",
+            'category_uuid.uuid' => 'מזהה קטגוריה חייב להיות בפורמט UUID.',
+            'category_uuid.exists' => 'קטגוריה לא נמצאה.',
         ];
     }
     protected function failedValidation(Validator $validator)

@@ -26,7 +26,7 @@ class PostController extends Controller
      *     tags={"Post"},
      *
      *     @OA\Parameter(
-     *         name="category_id",
+     *         name="category_uuid",
      *         in="query",
      *         description="סינון לפי מאפיין הקטגוריה",
      *         required=false,
@@ -67,10 +67,10 @@ class PostController extends Controller
     public function getPosts(GetPostsRequest $request)
     {
         $search = $request->query('query');
-        $category_id = $request->query('category_id');
+        $category_uuid = $request->query('category_uuid');
         $limit = $request->query('limit');
         $page = $request->query('page', 1);
-        $result = $this->PostService->getPosts($category_id, $limit, $page, $search);
+        $result = $this->PostService->getPosts($category_uuid, $limit, $page, $search);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
@@ -87,7 +87,7 @@ class PostController extends Controller
      *     tags={"Post"},
      *
      *     @OA\Parameter(
-     *         name="category_id",
+     *         name="category_uuid",
      *         in="query",
      *         description="סינון לפי מאפיין הקטגוריה",
      *         required=false,
@@ -128,10 +128,10 @@ class PostController extends Controller
     public function getAdminPosts(GetPostsRequest $request)
     {
         $search = $request->query('query');
-        $category_id = $request->query('category_id');
+        $category_uuid = $request->query('category_uuid');
         $limit = $request->query('limit');
         $page = $request->query('page', 1);
-        $result = $this->PostService->getAdminPosts($category_id, $limit, $page, $search);
+        $result = $this->PostService->getAdminPosts($category_uuid, $limit, $page, $search);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
@@ -199,7 +199,7 @@ class PostController extends Controller
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
-     *                 required={"title", "description", "content", "category_id", "image"},
+     *                 required={"title", "description", "content", "category_uuid", "image"},
      *                 @OA\Property(property="title", type="string", example="כותרת הפוסט"),
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של הפוסט"),
      *  @OA\Property(
@@ -207,7 +207,7 @@ class PostController extends Controller
      *     type="string",
      *     example="{blah:{dfgfdgfd}"
      * ),
-     *                 @OA\Property(property="category_id", type="integer", example=1),
+     *                 @OA\Property(property="category_uuid", type="integer", example=1),
      *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת לפוסט")
      *             )
      *         )
@@ -231,7 +231,7 @@ class PostController extends Controller
 
     public function createPost(CreatePostRequest $request)
     {
-        $result = $this->PostService->createPosts($request->title, $request->description, $request->content, $request->category_id, $request->image);
+        $result = $this->PostService->createPosts($request->title, $request->description, $request->content, $request->category_uuid, $request->image);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
@@ -313,7 +313,7 @@ class PostController extends Controller
      *     type="string",
      *     example="{blah:{dfgfdgfd}"
      * ),
-     *                 @OA\Property(property="category_id", type="integer", example=1),
+     *                 @OA\Property(property="category_uuid", type="integer", example=1),
      *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת לפוסט")
      *             )
      *         )

@@ -452,7 +452,7 @@
                 }
             }
         },
-        "/api/categories/{categoryId}": {
+        "/api/categories/{category_uuid}": {
             "put": {
                 "tags": [
                     "Categories"
@@ -462,12 +462,12 @@
                 "operationId": "updateCategory",
                 "parameters": [
                     {
-                        "name": "categoryId",
+                        "name": "category_uuid",
                         "in": "path",
                         "description": "המזהה של הקטגוריה",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -511,12 +511,12 @@
                 "operationId": "deleteCategory",
                 "parameters": [
                     {
-                        "name": "categoryId",
+                        "name": "category_uuid",
                         "in": "path",
                         "description": "המזהה של הקטגוריה",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -783,7 +783,7 @@
                 "operationId": "getPosts",
                 "parameters": [
                     {
-                        "name": "category_id",
+                        "name": "category_uuid",
                         "in": "query",
                         "description": "סינון לפי מאפיין הקטגוריה",
                         "required": false,
@@ -847,7 +847,7 @@
                                     "title",
                                     "description",
                                     "content",
-                                    "category_id",
+                                    "category_uuid",
                                     "image"
                                 ],
                                 "properties": {
@@ -863,7 +863,7 @@
                                         "type": "string",
                                         "example": "{blah:{dfgfdgfd}"
                                     },
-                                    "category_id": {
+                                    "category_uuid": {
                                         "type": "integer",
                                         "example": 1
                                     },
@@ -901,7 +901,7 @@
                 "operationId": "getAdminPosts",
                 "parameters": [
                     {
-                        "name": "category_id",
+                        "name": "category_uuid",
                         "in": "query",
                         "description": "סינון לפי מאפיין הקטגוריה",
                         "required": false,
@@ -1024,7 +1024,7 @@
                                         "type": "string",
                                         "example": "{blah:{dfgfdgfd}"
                                     },
-                                    "category_id": {
+                                    "category_uuid": {
                                         "type": "integer",
                                         "example": 1
                                     },

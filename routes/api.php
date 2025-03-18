@@ -90,8 +90,8 @@ Route::controller(InformationController::class)->prefix('info')->group(function 
 // });
 Route::controller(CategoryController::class)->prefix('categories')->group(function () {
     Route::post('/', 'createCategory');
-    Route::delete('/{categoryId}', 'deleteCategory');
-    Route::put('/{categoryId}', 'updateCategory');
+    Route::delete('/{category_uuid}', 'deleteCategory');
+    Route::put('/{category_uuid}', 'updateCategory');
     Route::get('/', 'getCategories');
 });
 // Route::controller(SiteController::class)->middleware(['auth:api', 'role:admin'])->prefix('sites')->group(function () {
