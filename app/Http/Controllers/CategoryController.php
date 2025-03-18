@@ -173,8 +173,7 @@ class CategoryController extends Controller
             };
         }
         return response()->json([
-            'data' => $result,
-
+            'message' => ResponseMessages::SUCCESS_ACTION,
         ], Response::HTTP_CREATED);
     }
 }
