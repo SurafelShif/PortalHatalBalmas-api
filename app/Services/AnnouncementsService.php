@@ -17,9 +17,17 @@ class AnnouncementsService
     public function __construct(private ImageService $imageService) {}
     public function createAnnouncement(string $title, string $description, string $content, UploadedFile $image)
     {
-        $createdImage = null;
+        $createdImage = [];
+        preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
+        if (!empty($matches[2])) {
+            $createdImages = $this->createImages($matches[2], $matches[1]);
+            $imagePath = config('filesystems.storage_path') . 'images/' . $createdImages[0];
+            dd($imagePath);
+        }
+        dd($content);
+        dd($matches);
         try {
-            $createdImage = $this->imageService->uploadImage($image);
+            $createdImage[] = $this->imageService->uploadImage($image);
             Announcement::create([
                 'title' => $title,
                 'description' => $description,
@@ -152,6 +160,21 @@ class AnnouncementsService
 
             return Response::HTTP_OK;
         } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+    private function createImages(array $images, array $types)
+    {
+        $created_images = [];
+        try {
+            foreach ($images as $index => $image) {
+                $created_image = $this->imageService->uploadStringImage(base64_decode($image), $types[$index]);
+                $created_images[] = $created_image->image_name;
+            }
+            return $created_images;
+        } catch (\Exception $e) {
+            //TODO DELETED THE IMAGES IF IT FAILED
             Log::error($e->getMessage());
             return response()->json(['error' => 'Something went wrong'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

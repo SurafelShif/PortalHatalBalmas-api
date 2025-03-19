@@ -20,7 +20,6 @@ class ImageService
             $originalName = $image->getClientOriginalName();
             $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
             $imagePath = $image->storeAs('images', $randomFileName, config('filesystems.storage_service'));
-
             return Image::create([
                 'image_name' => $randomFileName,
                 'image_path' => $imagePath,
@@ -75,6 +74,23 @@ class ImageService
             } else {
                 Log::info("image was not found");
             }
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function uploadStringImage(string $image, $extension)
+    {
+        try {
+            $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
+            Storage::disk(config('filesystems.storage_service'))->put('images/' . $randomFileName, $image);
+            Storage::disk(config('filesystems.storage_service'))->url('images/' . $randomFileName);
+            return Image::create([
+                'image_name' => $randomFileName,
+                'image_path' => 'images/' . $randomFileName,
+                'image_type' => $extension,
+                'image_file_name' => null
+            ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
