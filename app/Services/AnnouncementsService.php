@@ -8,7 +8,6 @@ use App\Models\Announcement;
 use Symfony\Component\HttpFoundation\Response;
 
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -17,25 +16,36 @@ class AnnouncementsService
     public function __construct(private ImageService $imageService) {}
     public function createAnnouncement(string $title, string $description, string $content, UploadedFile $image)
     {
-        $createdImage = [];
-        preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
-        if (!empty($matches[2])) {
-            $createdImages = $this->createImages($matches[2], $matches[1]);
-            $imagePath = config('filesystems.storage_path') . 'images/' . $createdImages[0];
-            dd($imagePath);
-        }
-        dd($content);
-        dd($matches);
+        $createdImages = [];
+
         try {
-            $createdImage[] = $this->imageService->uploadImage($image);
+            DB::beginTransaction();
+            preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
+            if (!empty($matches[2])) {
+                $createdImages = $this->createImages($matches[2], $matches[1]);
+
+                foreach ($matches[2] as $index => $base64Data) {
+                    $oldString = "data:image/{$matches[1][$index]};base64,{$base64Data}\"";
+                    $newString = config('filesystems.storage_path') . 'images/' . $createdImages[$index] . '"';
+
+                    $content = str_replace($oldString, $newString, $content);
+                }
+            }
+
+            $createdImage = $this->imageService->uploadImage($image);
+            $createdImages[] = $createdImage->image_name;
             Announcement::create([
                 'title' => $title,
                 'description' => $description,
                 'content' => $content,
                 'image_id' => $createdImage->id
             ]);
+            DB::commit();
         } catch (\Exception $e) {
-            $this->imageService->deleteImage($createdImage->image_name);
+            DB::rollBack();
+            foreach ($createdImages as $image) {
+                $this->imageService->deleteImage($image);
+            }
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }
@@ -75,7 +85,6 @@ class AnnouncementsService
             DB::beginTransaction();
             $announcement = Announcement::where('uuid', $uuid)->first();
             if (is_null($announcement)) {
-                DB::rollBack();
                 return HttpStatusEnum::NOT_FOUND;
             }
             if (array_key_exists('image', $updateArray)) {
@@ -166,7 +175,6 @@ class AnnouncementsService
     }
     private function createImages(array $images, array $types)
     {
-        $created_images = [];
         try {
             foreach ($images as $index => $image) {
                 $created_image = $this->imageService->uploadStringImage(base64_decode($image), $types[$index]);
@@ -174,7 +182,6 @@ class AnnouncementsService
             }
             return $created_images;
         } catch (\Exception $e) {
-            //TODO DELETED THE IMAGES IF IT FAILED
             Log::error($e->getMessage());
             return response()->json(['error' => 'Something went wrong'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
