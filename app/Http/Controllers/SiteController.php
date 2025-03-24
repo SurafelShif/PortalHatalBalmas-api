@@ -64,9 +64,9 @@ class SiteController extends Controller
      *             @OA\Schema(
      *                 type="object",
      *                 @OA\Property(property="name", type="string", example="קישור לדוגמה"),
+     *                 @OA\Property(property="icon_name", type="string", example="שם אייקון האתר"),
      *                 @OA\Property(property="description", type="string", example="תיאור של הקישור"),
      *                 @OA\Property(property="link", type="string", format="url", example="https://example.com"),
-     *                 @OA\Property(property="image", type="string", format="binary")
      *             )
      *         )
      *     ),
@@ -84,7 +84,7 @@ class SiteController extends Controller
 
     public function createSite(CreateSiteRequest $request)
     {
-        $result = $this->sitesService->createSite($request->name, $request->description, $request->link, $request->image);
+        $result = $this->sitesService->createSite($request->name, $request->description, $request->link, $request->icon_name);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
@@ -162,8 +162,8 @@ class SiteController extends Controller
      *             @OA\Schema(
      *                 @OA\Property(property="name", type="string", example="כותרת חדשה"),
      *                 @OA\Property(property="description", type="string", example="תוכן מעודכן של הפוסט"),
+     *                 @OA\Property(property="icon_name", type="string", example="תוכן מעודכן של הפוסט"),
      *                 @OA\Property(property="link", type="string", example="https://www.google.com/"),
-     *                 @OA\Property(property="image", type="string", format="binary", description="קובץ תמונה לפוסט (לא חובה)")
      *             )
      *         )
      *     ),

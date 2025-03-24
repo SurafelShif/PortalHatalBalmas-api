@@ -19,21 +19,19 @@ class CreateSiteRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'link' => ['required', 'url'],
-            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
+            'icon_name' =>  ['required', 'string'],
         ];
     }
 
     public function messages()
     {
         return [
-            'name.required' => 'כותרת הכתבה היא חובה.',
-            'link.required' => 'כותרת הכתבה היא חובה.',
+            'name.required' => 'שם האתר היא חובה.',
+            'link.required' => 'לינק האתר היא חובה.',
             'link.url' => 'הלינק אינו בפוורמט הנכון.',
-            'description.required' => 'תיאור הכתבה הוא חובה.',
-            'image.required' => 'חובה להעלות תמונה.',
-            'image.image' => 'הקובץ חייב להיות תמונה.',
-            'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
-            'image.max' => 'התמונה חייבת להיות עד 2MB.',
+            'description.required' => 'תיאור האתר הוא חובה.',
+            'icon_name.required' => 'שם האייקון הינו חובה',
+            'icon_name.string' => 'שם האייקון אינו בפורמט הנכון'
         ];
     }
     protected function failedValidation(Validator $validator)

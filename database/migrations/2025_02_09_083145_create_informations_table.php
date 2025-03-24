@@ -15,9 +15,8 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('title');
+            $table->string('icon_name');
             $table->text('content');
-            $table->unsignedBigInteger('image_id');
-            $table->foreign('image_id')->references('id')->on('images')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -796,7 +796,7 @@
                 "operationId": "getPosts",
                 "parameters": [
                     {
-                        "name": "category_uuid",
+                        "name": "category",
                         "in": "query",
                         "description": "סינון לפי מאפיין הקטגוריה",
                         "required": false,
@@ -1143,6 +1143,10 @@
                                         "type": "string",
                                         "example": "קישור לדוגמה"
                                     },
+                                    "icon_name": {
+                                        "type": "string",
+                                        "example": "שם אייקון האתר"
+                                    },
                                     "description": {
                                         "type": "string",
                                         "example": "תיאור של הקישור"
@@ -1151,10 +1155,6 @@
                                         "type": "string",
                                         "format": "url",
                                         "example": "https://example.com"
-                                    },
-                                    "image": {
-                                        "type": "string",
-                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"
@@ -1208,14 +1208,13 @@
                                         "type": "string",
                                         "example": "תוכן מעודכן של הפוסט"
                                     },
+                                    "icon_name": {
+                                        "type": "string",
+                                        "example": "תוכן מעודכן של הפוסט"
+                                    },
                                     "link": {
                                         "type": "string",
                                         "example": "https://www.google.com/"
-                                    },
-                                    "image": {
-                                        "description": "קובץ תמונה לפוסט (לא חובה)",
-                                        "type": "string",
-                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"

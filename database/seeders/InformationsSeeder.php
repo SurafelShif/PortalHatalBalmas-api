@@ -16,15 +16,9 @@ class InformationsSeeder extends Seeder
     {
         $faker = Faker::create();
         for ($i = 0; $i < 5; $i++) {
-            $image = Image::create([
-                "image_name" => "moon.jpg",
-                "image_type" => "jpg",
-                "image_path" => "images/moon.jpg",
-                "image_file_name" => "moon.jpg"
-            ]);
 
             Information::create([
-                'image_id' => $image->id,
+                'icon_name' => 'Apple',
                 'title' => $faker->sentence(6),
                 'content' => '<p><span style="color: #D64C4C"><em>רפאל האלוף</em></span></p>',
             ]);

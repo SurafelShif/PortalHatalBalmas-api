@@ -32,19 +32,16 @@ class SitesService
         }
     }
 
-    public function createSite(string $name, string $description, string $link, UploadedFile $image)
+    public function createSite(string $name, string $description, string $link, string $icon_name)
     {
-        $createdImage = null;
         try {
-            $createdImage = $this->imageService->uploadImage($image);
             Site::create([
                 'name' => $name,
                 'description' => $description,
                 'link' => $link,
-                'image_id' => $createdImage->id
+                'icon_name' => $icon_name
             ]);
         } catch (\Exception $e) {
-            $this->imageService->deleteImage($createdImage->image_name);
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }
@@ -70,11 +67,6 @@ class SitesService
             $site = Site::where('uuid', $uuid)->first();
             if (is_null($site)) {
                 return HttpStatusEnum::NOT_FOUND;
-            }
-            if (array_key_exists('image', $updateArray)) {
-                $this->imageService->updateImage($site->image->id, $updateArray['image']);
-                unset($updateArray['image']);
-                $site->refresh();
             }
             $site->update($updateArray);
             return new SitesResource($site);
