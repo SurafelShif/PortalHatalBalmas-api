@@ -618,20 +618,20 @@
                                 "required": [
                                     "title",
                                     "content",
-                                    "image"
+                                    "icon_name"
                                 ],
                                 "properties": {
                                     "title": {
                                         "type": "string",
                                         "example": "כותרת הכתבת מידע"
                                     },
+                                    "icon_name": {
+                                        "type": "string",
+                                        "example": "כותרת הכתבת מידע"
+                                    },
                                     "content": {
                                         "type": "string",
                                         "example": "{blah:{dfgfdgfd}"
-                                    },
-                                    "image": {
-                                        "type": "string",
-                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"
@@ -722,6 +722,10 @@
                                         "type": "string",
                                         "example": "תיאור קצר של כתבת מידע"
                                     },
+                                    "icon_name": {
+                                        "type": "string",
+                                        "example": "תיאור קצר של כתבת מידע"
+                                    },
                                     "content": {
                                         "type": "string",
                                         "example": "{blah:{dfgfdgfd}"
@@ -729,11 +733,6 @@
                                     "category_id": {
                                         "type": "integer",
                                         "example": 1
-                                    },
-                                    "image": {
-                                        "description": "תמונה מצורפת לפוסט",
-                                        "type": "string",
-                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"

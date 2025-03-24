@@ -19,8 +19,7 @@ class InformationResource extends JsonResource
             'uuid' => $this->uuid,
             'title' => $this->title,
             'content' => $this->content,
-            'image' => $this->image->image_path ? config('filesystems.storage_path') . $this->image->image_path : null,
-            'image_name' => $this->image->image_path ? $this->image->image_file_name : null,
+            'icon_name' => $this->icon_name,
 
         ], fn($value) => !is_null($value));
     }

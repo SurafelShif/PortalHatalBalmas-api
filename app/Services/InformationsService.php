@@ -16,25 +16,22 @@ class InformationsService
     public function getInformations()
     {
         try {
-            $informations = Information::select(['uuid', 'title', 'image_id', 'content'])->orderBy('created_at', 'desc')->get();
+            $informations = Information::select(['uuid', 'title', 'icon_name', 'content'])->orderBy('created_at', 'desc')->get();
             return InformationResource::collection($informations);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }
     }
-    public function createInformation(string $title, string $content, UploadedFile $image)
+    public function createInformation(string $title, string $content, string $icon_name)
     {
-        $createdImage = null;
         try {
-            $createdImage = $this->imageService->uploadImage($image);
             Information::create([
                 'title' => $title,
                 'content' => $content,
-                'image_id' => $createdImage->id
+                'icon_name' => $icon_name
             ]);
         } catch (\Exception $e) {
-            $this->imageService->deleteImage($createdImage->image_name);
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }

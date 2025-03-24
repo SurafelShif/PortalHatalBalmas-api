@@ -54,14 +54,14 @@ class InformationController extends Controller
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
-     *                 required={"title", "content", "image"},
+     *                 required={"title", "content", "icon_name"},
      *                 @OA\Property(property="title", type="string", example="כותרת הכתבת מידע"),
+     *                 @OA\Property(property="icon_name", type="string", example="כותרת הכתבת מידע"),
      *  @OA\Property(
      *     property="content",
      *     type="string",
      *     example="{blah:{dfgfdgfd}"
      * ),
-     *                 @OA\Property(property="image", type="string", format="binary")
      *             )
      *         )
      *     ),
@@ -82,7 +82,7 @@ class InformationController extends Controller
      */
     public function createInformation(CreateInformationRequest $request)
     {
-        $result = $this->InformationsService->createInformation($request->title, $request->content, $request->image);
+        $result = $this->InformationsService->createInformation($request->title, $request->content, $request->icon_name);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
@@ -158,13 +158,13 @@ class InformationController extends Controller
      *             @OA\Schema(
      *                 @OA\Property(property="title", type="string", example="כותרת כתבת מידע"),
      *                 @OA\Property(property="description", type="string", example="תיאור קצר של כתבת מידע"),
+     *                 @OA\Property(property="icon_name", type="string", example="תיאור קצר של כתבת מידע"),
      *  @OA\Property(
      *     property="content",
      *     type="string",
      *     example="{blah:{dfgfdgfd}"
      * ),
      *                 @OA\Property(property="category_id", type="integer", example=1),
-     *                 @OA\Property(property="image", type="string", format="binary", description="תמונה מצורפת לפוסט")
      *             )
      *         )
      *     ),
