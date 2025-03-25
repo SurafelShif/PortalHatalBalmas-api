@@ -120,5 +120,18 @@ class GlobalService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function updateContent() {}
+    public function updateContent($content, $model)
+    {
+        preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
+        if (!empty($matches[2])) {
+            $createdImages = $this->createImagesFromBase64($content, $model);
+            foreach ($matches[2] as $index => $base64Data) {
+                $oldString = "data:image/{$matches[1][$index]};base64,{$base64Data}\"";
+                $newString = config('filesystems.storage_path') . 'images/' . $createdImages[$index] . '"';
+
+                $content = str_replace($oldString, $newString, $content);
+            }
+        }
+        return $content;
+    }
 }

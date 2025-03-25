@@ -9,7 +9,7 @@ class Announcement extends Model
 {
     public function image()
     {
-        return $this->hasOne(Image::class, 'id', 'image_id');
+        return $this->hasOne(Image::class, 'id', 'preview_image_id');
     }
     public function images()
     {
@@ -34,9 +34,9 @@ class Announcement extends Model
         'title',
         'description',
         'content',
-        'image_id',
+        'preview_image_id',
         'isVisible',
-        'position'
+        'position',
     ];
     protected $hidden = ['updated_at', 'id'];
 

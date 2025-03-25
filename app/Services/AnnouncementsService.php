@@ -26,18 +26,9 @@ class AnnouncementsService
                 'title' => $title,
                 'description' => $description,
                 'content' => "",
-                'image_id' => $createdImage->id
+                'preview_image_id' => $createdImage->id
             ]);
-            preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
-            if (!empty($matches[2])) {
-                $createdImages = $this->globalService->createImagesFromBase64($content, $model);
-                foreach ($matches[2] as $index => $base64Data) {
-                    $oldString = "data:image/{$matches[1][$index]};base64,{$base64Data}\"";
-                    $newString = config('filesystems.storage_path') . 'images/' . $createdImages[$index] . '"';
-
-                    $content = str_replace($oldString, $newString, $content);
-                }
-            }
+            $content = $this->globalService->updateContent($content, $model);
             $model->content = $content;
             $model->save();
             DB::commit();
@@ -53,7 +44,7 @@ class AnnouncementsService
     public function getAnnouncements()
     {
         try {
-            $annoucements = Announcement::orderBy('position', 'asc')->where('isVisible', true)->select(['uuid', 'title', 'description', 'image_id'])->get();
+            $annoucements = Announcement::orderBy('position', 'asc')->where('isVisible', true)->select(['uuid', 'title', 'description', 'preview_image_id'])->get();
             return AnnoucementsResource::collection($annoucements);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -64,7 +55,7 @@ class AnnouncementsService
     {
         try {
             $announcements = Announcement::orderBy('position', 'asc')
-                ->select(['uuid', 'title', 'description', 'position', 'image_id', 'created_at', 'isVisible', 'content'])
+                ->select(['uuid', 'title', 'description', 'position', 'preview_image_id', 'created_at', 'isVisible', 'content'])
                 ->when(!empty($search), function ($query) use ($search) {
                     $query->where('title', 'LIKE', "%{$search}%")
                         ->orWhere('description', 'LIKE', "%{$search}%");
@@ -100,18 +91,7 @@ class AnnouncementsService
                         $image->delete($image->id);
                     }
                 }
-                $this->globalService->createImagesFromBase64($content, $announcement);
-                preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
-                if (!empty($matches[2])) {
-                    $createdImages = $this->globalService->createImagesFromBase64($content, $announcement);
-                    dd($createdImages);
-                    foreach ($matches[2] as $index => $base64Data) {
-                        $oldString = "data:image/{$matches[1][$index]};base64,{$base64Data}\"";
-                        $newString = config('filesystems.storage_path') . 'images/' . $createdImages[$index] . '"';
-
-                        $content = str_replace($oldString, $newString, $content);
-                    }
-                }
+                $updateArray['content'] = $this->globalService->updateContent($content, $announcement);
             }
             $announcement->update($updateArray);
             DB::commit();
@@ -168,7 +148,7 @@ class AnnouncementsService
             // if (!Str::isUuid($uuid)) {
             //     return HttpStatusEnum::BAD_REQUEST;
             // }
-            $announcement = Announcement::select(['uuid', 'title', 'image_id', 'created_at', 'content'])->where('uuid', $uuid)->first();
+            $announcement = Announcement::select(['uuid', 'title', 'preview_image_id', 'created_at', 'content'])->where('uuid', $uuid)->first();
             if (is_null($announcement)) {
                 return HttpStatusEnum::NOT_FOUND;
             }
