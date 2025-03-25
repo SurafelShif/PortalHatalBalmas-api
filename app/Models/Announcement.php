@@ -11,6 +11,10 @@ class Announcement extends Model
     {
         return $this->hasOne(Image::class, 'id', 'image_id');
     }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
     protected static function boot()
     {
         parent::boot();

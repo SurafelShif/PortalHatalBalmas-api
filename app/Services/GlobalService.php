@@ -10,6 +10,7 @@ use App\Models\Image;
 use App\Models\Information;
 use App\Models\Post;
 use App\Models\Site;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +20,7 @@ use Illuminate\Support\Str;
 
 class GlobalService
 {
-
+    public function __construct(private ImageService $imageService) {}
     public function search(?string $search, ?int $limit)
     {
         try {
@@ -99,4 +100,25 @@ class GlobalService
             return HttpStatusEnum::ERROR;
         }
     }
+    public function createImagesFromBase64(string $content, Model $model)
+    {
+        $created_images = [];
+        try {
+            preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
+            $images = $matches[2];
+            $types = $matches[1];
+            foreach ($images as $index => $image) {
+                $created_image = $this->imageService->uploadStringImage(base64_decode($image), $types[$index], $model);
+                $created_images[] = $created_image->image_name;
+            }
+            return $created_images;
+        } catch (\Exception $e) {
+            foreach ($created_images as $image) {
+                $this->imageService->deleteImage($image);
+            }
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
+    public function updateContent() {}
 }

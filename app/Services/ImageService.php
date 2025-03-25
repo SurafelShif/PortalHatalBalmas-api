@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\HttpStatusEnum;
+use App\Models\Announcement;
 use App\Models\Image;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
@@ -79,13 +80,12 @@ class ImageService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function uploadStringImage(string $image, $extension)
+    public function uploadStringImage(string $image, $extension, Announcement $model)
     {
         try {
             $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
             Storage::disk(config('filesystems.storage_service'))->put('images/' . $randomFileName, $image);
-            Storage::disk(config('filesystems.storage_service'))->url('images/' . $randomFileName);
-            return Image::create([
+            return $model->images()->create([
                 'image_name' => $randomFileName,
                 'image_path' => 'images/' . $randomFileName,
                 'image_type' => $extension,

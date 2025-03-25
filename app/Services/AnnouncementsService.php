@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\HttpStatusEnum;
 use App\Http\Resources\AnnoucementsResource;
 use App\Models\Announcement;
+use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\HttpFoundation\Response;
 
 use Illuminate\Http\UploadedFile;
@@ -13,17 +14,23 @@ use Illuminate\Support\Facades\Log;
 
 class AnnouncementsService
 {
-    public function __construct(private ImageService $imageService) {}
+    public function __construct(private ImageService $imageService, private GlobalService $globalService) {}
     public function createAnnouncement(string $title, string $description, string $content, UploadedFile $image)
     {
         $createdImages = [];
-
         try {
             DB::beginTransaction();
+            $createdImage = $this->imageService->uploadImage($image);
+            $createdImages[] = $createdImage->image_name;
+            $model = Announcement::create([
+                'title' => $title,
+                'description' => $description,
+                'content' => "",
+                'image_id' => $createdImage->id
+            ]);
             preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
             if (!empty($matches[2])) {
-                $createdImages = $this->createImages($matches[2], $matches[1]);
-
+                $createdImages = $this->globalService->createImagesFromBase64($content, $model);
                 foreach ($matches[2] as $index => $base64Data) {
                     $oldString = "data:image/{$matches[1][$index]};base64,{$base64Data}\"";
                     $newString = config('filesystems.storage_path') . 'images/' . $createdImages[$index] . '"';
@@ -31,15 +38,8 @@ class AnnouncementsService
                     $content = str_replace($oldString, $newString, $content);
                 }
             }
-
-            $createdImage = $this->imageService->uploadImage($image);
-            $createdImages[] = $createdImage->image_name;
-            Announcement::create([
-                'title' => $title,
-                'description' => $description,
-                'content' => $content,
-                'image_id' => $createdImage->id
-            ]);
+            $model->content = $content;
+            $model->save();
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -82,6 +82,7 @@ class AnnouncementsService
     {
 
         try {
+
             DB::beginTransaction();
             $announcement = Announcement::where('uuid', $uuid)->first();
             if (is_null($announcement)) {
@@ -91,6 +92,26 @@ class AnnouncementsService
                 $this->imageService->updateImage($announcement->image->id, $updateArray['image']);
                 unset($updateArray['image']);
                 $announcement->refresh();
+            }
+            if (array_key_exists('content', $updateArray)) {
+                $content = $updateArray['content'];
+                foreach ($announcement->images as $image) {
+                    if (!str_contains($content, $image->image_name)) {
+                        $image->delete($image->id);
+                    }
+                }
+                $this->globalService->createImagesFromBase64($content, $announcement);
+                preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
+                if (!empty($matches[2])) {
+                    $createdImages = $this->globalService->createImagesFromBase64($content, $announcement);
+                    dd($createdImages);
+                    foreach ($matches[2] as $index => $base64Data) {
+                        $oldString = "data:image/{$matches[1][$index]};base64,{$base64Data}\"";
+                        $newString = config('filesystems.storage_path') . 'images/' . $createdImages[$index] . '"';
+
+                        $content = str_replace($oldString, $newString, $content);
+                    }
+                }
             }
             $announcement->update($updateArray);
             DB::commit();
@@ -168,19 +189,6 @@ class AnnouncementsService
             }
 
             return Response::HTTP_OK;
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => 'Something went wrong'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-    private function createImages(array $images, array $types)
-    {
-        try {
-            foreach ($images as $index => $image) {
-                $created_image = $this->imageService->uploadStringImage(base64_decode($image), $types[$index]);
-                $created_images[] = $created_image->image_name;
-            }
-            return $created_images;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => 'Something went wrong'], Response::HTTP_INTERNAL_SERVER_ERROR);

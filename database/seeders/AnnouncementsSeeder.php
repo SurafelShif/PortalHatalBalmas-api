@@ -22,7 +22,6 @@ class AnnouncementsSeeder extends Seeder
                 "image_path" => "images/moon.jpg",
                 "image_file_name" => "moon.jpg"
             ]);
-
             Announcement::create([
                 'image_id' => $image->id,
                 'title' => $faker->sentence(6),
