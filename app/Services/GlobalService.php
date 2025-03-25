@@ -120,7 +120,7 @@ class GlobalService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function updateContent($content, $model)
+    public function updateContent($content, Model $model)
     {
         preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
         if (!empty($matches[2])) {

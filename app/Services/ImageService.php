@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Enums\HttpStatusEnum;
-use App\Models\Announcement;
 use App\Models\Image;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -80,7 +80,7 @@ class ImageService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function uploadStringImage(string $image, $extension, Announcement $model)
+    public function uploadStringImage(string $image, $extension, Model $model)
     {
         try {
             $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;

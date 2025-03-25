@@ -15,7 +15,7 @@ use RuntimeException;
 
 class PostsService
 {
-    public function __construct(private ImageService $imageService) {}
+    public function __construct(private ImageService $imageService, private GlobalService $globalService) {}
     public function getPosts(string | null $category_uuid, int | null $limit, int $page, string| null $search)
     {
         try {
@@ -86,13 +86,16 @@ class PostsService
             DB::beginTransaction();
             $createdImage = $this->imageService->uploadImage($image);
             $category_id = Category::where('uuid', $category_uuid)->first()->id;
-            Post::create([
+            $post = Post::create([
                 'title' => $title,
                 'description' => $description,
-                'content' => $content,
+                'content' => "",
                 'category_id' => $category_id,
                 'preview_image_id' => $createdImage->id
             ]);
+            $content = $this->globalService->updateContent($content, $post);
+            $post->content = $content;
+            $post->save();
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -127,9 +130,15 @@ class PostsService
                 unset($updateArray['image']);
                 $post->refresh();
             }
-            // if (array_key_exists('content', $updateArray)) {
-            //     $updateArray['content'] = json_decode($updateArray['content'], 1);
-            // }
+            if (array_key_exists('content', $updateArray)) {
+                $content = $updateArray['content'];
+                foreach ($post->images as $image) {
+                    if (!str_contains($content, $image->image_name)) {
+                        $image->delete($image->id);
+                    }
+                }
+                $updateArray['content'] = $this->globalService->updateContent($content, $post);
+            }
             $post->update($updateArray);
             return new PostResource($post);
         } catch (\Exception $e) {

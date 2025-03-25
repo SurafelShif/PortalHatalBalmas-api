@@ -27,7 +27,12 @@ class Announcement extends Model
             $model->position = 1;
         });
         static::deleting(function ($announcement) {
-            $announcement->image()->delete();
+            if ($announcement->image) {
+                $announcement->image->delete();
+            }
+            $announcement->images->each(function ($image) {
+                $image->delete();
+            });
         });
     }
     protected $fillable = [

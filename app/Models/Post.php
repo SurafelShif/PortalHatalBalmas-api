@@ -11,6 +11,10 @@ class Post extends Model
     {
         return $this->hasOne(Image::class, 'id', 'preview_image_id');
     }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
@@ -26,9 +30,13 @@ class Post extends Model
             }
         });
         static::deleting(function ($post) {
+
             if ($post->image) {
                 $post->image->delete();
             }
+            $post->images->each(function ($image) {
+                $image->delete();
+            });
         });
     }
     protected $fillable = [
