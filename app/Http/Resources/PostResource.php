@@ -20,9 +20,7 @@ class PostResource extends JsonResource
             'description' => $this->description,
             'category' => $this->category ? ["name" => $this->category->name, "uuid" => $this->category->uuid] : null,
             'content' =>  $this->content,
-            'image' => optional($this->image)->image_path
-                ?  config('filesystems.storage_path') . $this->image->image_path
-                : null,
+            'image' => $this->image->image_path ? config('filesystems.storage_path') . $this->image->image_path : null,
             'image_name' => $this->image->image_path ? $this->image->image_file_name : null,
             "created_at" => $this->created_at ? $this->created_at->format('H:i d/m/Y') : null,
 

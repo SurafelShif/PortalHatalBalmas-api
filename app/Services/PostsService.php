@@ -19,7 +19,7 @@ class PostsService
     public function getPosts(string | null $category_uuid, int | null $limit, int $page, string| null $search)
     {
         try {
-            $query = Post::with('category')->latest()->select(['image_id', 'title', 'uuid', "description", "category_id"]);
+            $query = Post::with('category')->latest()->select(['preview_image_id', 'title', 'uuid', "description", "category_id"]);
             if (!is_null($category_uuid)) {
                 $query->whereHas('category', function ($q) use ($category_uuid) {
                     $q->where('uuid', $category_uuid);
@@ -42,7 +42,7 @@ class PostsService
     public function getAdminPosts(string | null $category_uuid, int | null $limit, int $page, string| null $search)
     {
         try {
-            $query = Post::with('category')->latest()->select(['image_id', 'title', 'uuid', "description", "category_id", "content"]);
+            $query = Post::with('category')->latest()->select(['preview_image_id', 'title', 'uuid', "description", "category_id", "content"]);
             if (!is_null($category_uuid)) {
                 $query->whereHas('category', function ($q) use ($category_uuid) {
                     $q->where('uuid', $category_uuid);
@@ -69,7 +69,7 @@ class PostsService
             // if (!Str::isUuid($uuid)) {
             //     return HttpStatusEnum::BAD_REQUEST;
             // }
-            $post = Post::select(['image_id', 'title', 'uuid', 'category_id', 'content', 'created_at'])->where('uuid', $uuid)->first();
+            $post = Post::select(['preview_image_id', 'title', 'uuid', 'category_id', 'content', 'created_at'])->where('uuid', $uuid)->first();
             if (is_null($post)) {
                 return HttpStatusEnum::NOT_FOUND;
             }
@@ -91,7 +91,7 @@ class PostsService
                 'description' => $description,
                 'content' => $content,
                 'category_id' => $category_id,
-                'image_id' => $createdImage->id
+                'preview_image_id' => $createdImage->id
             ]);
             DB::commit();
         } catch (\Exception $e) {

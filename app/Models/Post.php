@@ -9,7 +9,7 @@ class Post extends Model
 {
     public function image()
     {
-        return $this->hasOne(Image::class, 'id', 'image_id');
+        return $this->hasOne(Image::class, 'id', 'preview_image_id');
     }
     public function category()
     {
@@ -26,14 +26,16 @@ class Post extends Model
             }
         });
         static::deleting(function ($post) {
-            $post->image()->delete();
+            if ($post->image) {
+                $post->image->delete();
+            }
         });
     }
     protected $fillable = [
         'title',
         'description',
         'content',
-        'image_id',
+        'preview_image_id',
         'category_id',
     ];
     protected $hidden = ['updated_at', 'id'];
