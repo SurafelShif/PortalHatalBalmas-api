@@ -19,7 +19,7 @@ class UpdateSiteRequest extends FormRequest
             'name' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'string'],
             'link' => ['sometimes', 'url'],
-            'icon_name' => ['sometimes', 'string'],
+            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
     }
 
@@ -28,7 +28,9 @@ class UpdateSiteRequest extends FormRequest
         return [
             'name.string' => 'שם האפליקציה אינו בפורמט',
             'link.url' => 'הלינק אינו בפוורמט הנכון.',
-            'icon_name.string' => 'שם האייקון אינו בפורמט הנכון'
+            'image.image' => 'הקובץ חייב להיות תמונה.',
+            'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
+            'image.max' => 'התמונה חייבת להיות עד 2MB.',
         ];
     }
     protected function failedValidation(Validator $validator)

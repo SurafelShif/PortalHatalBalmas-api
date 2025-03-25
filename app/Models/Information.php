@@ -8,6 +8,10 @@ use Illuminate\Support\Str;
 class Information extends Model
 {
     protected $table = 'informations';
+    public function image()
+    {
+        return $this->hasOne(Image::class, 'id', 'preview_image_id');
+    }
     protected static function boot()
     {
         parent::boot();
@@ -17,11 +21,15 @@ class Information extends Model
                 $model->uuid = (string) Str::uuid();
             }
         });
+        static::deleting(function ($post) {
+            $post->image()->delete();
+        });
     }
     protected $fillable = [
         'title',
         'content',
         'icon_name',
+        'preview_image_id',
     ];
     protected $hidden = ['updated_at', 'created_at', 'id'];
 }

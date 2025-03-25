@@ -84,7 +84,7 @@ class SiteController extends Controller
 
     public function createSite(CreateSiteRequest $request)
     {
-        $result = $this->sitesService->createSite($request->name, $request->description, $request->link, $request->icon_name);
+        $result = $this->sitesService->createSite($request->name, $request->description, $request->link, $request->image);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

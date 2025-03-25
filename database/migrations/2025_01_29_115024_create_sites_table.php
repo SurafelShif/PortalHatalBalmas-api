@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('description');
             $table->string('link');
-            $table->string('icon_name');
+            $table->unsignedBigInteger('preview_image_id');
+            $table->foreign('preview_image_id')->references('id')->on('images')->onDelete('cascade');
             $table->timestamps();
         });
     }

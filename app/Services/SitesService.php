@@ -6,7 +6,7 @@ use App\Enums\HttpStatusEnum;
 use App\Http\Resources\SitesResource;
 use App\Models\Site;
 use Symfony\Component\HttpFoundation\Response;
-
+use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 
@@ -32,14 +32,16 @@ class SitesService
         }
     }
 
-    public function createSite(string $name, string $description, string $link, string $icon_name)
+    public function createSite(string $name, string $description, string $link, UploadedFile $image)
     {
+
         try {
+            $image = $this->imageService->uploadImage($image);
             Site::create([
                 'name' => $name,
                 'description' => $description,
                 'link' => $link,
-                'icon_name' => $icon_name
+                'preview_image_id' => $image->id
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -67,6 +69,11 @@ class SitesService
             $site = Site::where('uuid', $uuid)->first();
             if (is_null($site)) {
                 return HttpStatusEnum::NOT_FOUND;
+            }
+            if (array_key_exists('image', $updateArray)) {
+                $this->imageService->updateImage($site->image->id, $updateArray['image']);
+                unset($updateArray['image']);
+                $site->refresh();
             }
             $site->update($updateArray);
             return new SitesResource($site);

@@ -82,7 +82,7 @@ class InformationController extends Controller
      */
     public function createInformation(CreateInformationRequest $request)
     {
-        $result = $this->InformationsService->createInformation($request->title, $request->content, $request->icon_name);
+        $result = $this->InformationsService->createInformation($request->title, $request->content, $request->image, $request->icon_name);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),

@@ -17,12 +17,19 @@ class Site extends Model
                 $model->uuid = (string) Str::uuid();
             }
         });
+        static::deleting(function ($site) {
+            $site->image()->delete();
+        });
+    }
+    public function image()
+    {
+        return $this->hasOne(Image::class, 'id', 'preview_image_id');
     }
     protected $fillable = [
         "name",
         "description",
         "link",
-        "icon_name"
+        "preview_image_id"
     ];
     protected $hidden = [
         "created_at",
