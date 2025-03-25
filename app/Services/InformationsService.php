@@ -6,12 +6,14 @@ use App\Enums\HttpStatusEnum;
 use App\Http\Resources\InformationResource;
 use App\Models\Information;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class InformationsService
 {
-    public function __construct(private ImageService $imageService) {}
+    public function __construct(private ImageService $imageService, private GlobalService $globalService) {}
+
 
     public function getInformations()
     {
@@ -26,14 +28,20 @@ class InformationsService
     public function createInformation(string $title, string $content, UploadedFile $image, string $icon_name)
     {
         try {
+            DB::beginTransaction();
             $image = $this->imageService->uploadImage($image);
-            Information::create([
+            $model = Information::create([
                 'title' => $title,
-                'content' => $content,
+                'content' => "",
                 'icon_name' => $icon_name,
                 'preview_image_id' => $image->id
             ]);
+            $content = $this->globalService->updateContent($content, $model);
+            $model->content = $content;
+            $model->save();
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }
@@ -63,6 +71,15 @@ class InformationsService
                 $this->imageService->updateImage($information->image->id, $updateArray['image']);
                 unset($updateArray['image']);
                 $information->refresh();
+            }
+            if (array_key_exists('content', $updateArray)) {
+                $content = $updateArray['content'];
+                foreach ($information->images as $image) {
+                    if (!str_contains($content, $image->image_name)) {
+                        $image->delete($image->id);
+                    }
+                }
+                $updateArray['content'] = $this->globalService->updateContent($content, $information);
             }
             $information->update($updateArray);
             return new InformationResource($information);

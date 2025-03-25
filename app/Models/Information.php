@@ -12,6 +12,10 @@ class Information extends Model
     {
         return $this->hasOne(Image::class, 'id', 'preview_image_id');
     }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
     protected static function boot()
     {
         parent::boot();
@@ -21,8 +25,14 @@ class Information extends Model
                 $model->uuid = (string) Str::uuid();
             }
         });
-        static::deleting(function ($post) {
-            $post->image()->delete();
+        static::deleting(function ($information) {
+
+            if ($information->image) {
+                $information->image->delete();
+            }
+            $information->images->each(function ($image) {
+                $image->delete();
+            });
         });
     }
     protected $fillable = [
