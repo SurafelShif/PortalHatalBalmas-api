@@ -26,7 +26,7 @@ class UpdateInformationRequest extends FormRequest
         return [
             'title' => ['sometimes', 'string', 'max:255'],
             'content' => ['sometimes', 'string'],
-            'icon_name' => ['required', 'string'],
+            'icon_name' => ['sometimes', 'string'],
             'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
         ];
     }
@@ -52,7 +52,6 @@ class UpdateInformationRequest extends FormRequest
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
             'image.max' => 'התמונה חייבת להיות עד 2MB.',
-            'icon_name.required' => 'חובה לעלות אייקון',
             'icon_name.string' => 'אייקון אינו בפורמט הנכון'
         ];
     }
