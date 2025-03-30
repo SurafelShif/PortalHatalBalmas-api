@@ -27,7 +27,7 @@ class UpdateInformationRequest extends FormRequest
             'title' => ['sometimes', 'string', 'max:255'],
             'content' => ['sometimes', 'string'],
             'icon_name' => ['sometimes', 'string'],
-            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
+            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:7168'],
         ];
     }
 
@@ -51,14 +51,14 @@ class UpdateInformationRequest extends FormRequest
             'content.string' => 'תוכן הכתבה אינו בפורמט הנכון.',
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
-            'image.max' => 'התמונה חייבת להיות עד 2MB.',
+            'image.max' => 'התמונה חייבת להיות עד 7MB.',
             'icon_name.string' => 'אייקון אינו בפורמט הנכון'
         ];
     }
     protected function failedValidation(Validator $validator)
     {
         $errors = collect($validator->errors()->messages())
-            ->map(fn($messages) => $messages[0]); // Get only the first error message per field
+            ->map(fn($messages) => $messages[0]);
 
         throw new HttpResponseException(response()->json([
             'errors' => $errors

@@ -28,7 +28,7 @@ class UpdatePostRequest extends FormRequest
             'description' => ['sometimes', 'string'],
             'content' => ['sometimes', 'string'],
             'category_id' => ['sometimes', 'exists:categories,id'],
-            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
+            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:7168'],
         ];
     }
 
@@ -58,7 +58,7 @@ class UpdatePostRequest extends FormRequest
 
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
-            'image.max' => 'התמונה חייבת להיות עד 2MB.',
+            'image.max' => 'התמונה חייבת להיות עד 7MB.',
         ];
     }
     protected function failedValidation(Validator $validator)

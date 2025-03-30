@@ -43,7 +43,7 @@ class CategoryRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         $errors = collect($validator->errors()->messages())
-            ->map(fn($messages) => $messages[0]); // Get only the first error message per field
+            ->map(fn($messages) => $messages[0]);
 
         throw new HttpResponseException(response()->json([
             'errors' => $errors

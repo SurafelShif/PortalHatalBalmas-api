@@ -18,8 +18,8 @@ class CreateSiteRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'link' => ['required', 'url'],
-            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
+            'link' => ['required'],
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:7168'],
         ];
     }
 
@@ -28,12 +28,11 @@ class CreateSiteRequest extends FormRequest
         return [
             'name.required' => 'כותרת הכתבה היא חובה.',
             'link.required' => 'כותרת הכתבה היא חובה.',
-            'link.url' => 'הלינק אינו בפוורמט הנכון.',
             'description.required' => 'תיאור הכתבה הוא חובה.',
             'image.required' => 'חובה להעלות תמונה.',
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
-            'image.max' => 'התמונה חייבת להיות עד 2MB.',
+            'image.max' => 'התמונה חייבת להיות עד 7MB.',
         ];
     }
     protected function failedValidation(Validator $validator)

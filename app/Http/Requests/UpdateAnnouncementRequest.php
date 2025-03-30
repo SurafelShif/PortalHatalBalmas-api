@@ -27,7 +27,7 @@ class UpdateAnnouncementRequest extends FormRequest
             'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'string'],
             'content' => ['sometimes', 'string'],
-            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:2048'],
+            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:7168'],
         ];
     }
 
@@ -43,7 +43,7 @@ class UpdateAnnouncementRequest extends FormRequest
             'content.string' => 'תוכן הכתבה אינו בפורמט הנכון.',
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
-            'image.max' => 'התמונה חייבת להיות עד 2MB.',
+            'image.max' => 'התמונה חייבת להיות עד 7MB.',
         ];
     }
 
