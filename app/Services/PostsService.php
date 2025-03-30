@@ -139,6 +139,10 @@ class PostsService
                 }
                 $updateArray['content'] = $this->globalService->updateContent($content, $post);
             }
+            if (array_key_exists('category_uuid', $updateArray)) {
+                $category_id = Category::where('uuid', $updateArray['category_uuid'])->first()->id;
+                $post->category_id = $category_id;
+            }
             $post->update($updateArray);
             return new PostResource($post);
         } catch (\Exception $e) {
