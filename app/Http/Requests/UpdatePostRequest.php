@@ -27,7 +27,7 @@ class UpdatePostRequest extends FormRequest
             'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'string'],
             'content' => ['sometimes', 'string'],
-            'category_id' => ['sometimes', 'exists:categories,id'],
+            'category_uuid' => ['sometimes', 'exists:categories,uuid'],
             'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:7168'],
         ];
     }
@@ -54,7 +54,7 @@ class UpdatePostRequest extends FormRequest
 
             'content.string' => 'תוכן הכתבה אינו בפורמט הנכון.',
 
-            'category_id.exists' => 'הקטגוריה שסיפקת אינה קיימת.',
+            'category_uuid.exists' => 'הקטגוריה שסיפקת אינה קיימת.',
 
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
