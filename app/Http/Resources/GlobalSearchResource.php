@@ -16,7 +16,7 @@ class GlobalSearchResource extends JsonResource
             'type' => $this->type,
             'name' => $this->name,
             'link' => $this->link ? $this->link : null,
-            'category' => $this->category ? ["name" => $this->category->name, "id" => $this->category->id] : null,
+            'category' => $this->category ? ["name" => $this->category->name, "id" => $this->category->uuid] : null,
             'image' => optional($this->image)->image_path
                 ?  config('filesystems.storage_path') . $this->image->image_path
                 : null,
