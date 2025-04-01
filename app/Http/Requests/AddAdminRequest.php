@@ -24,7 +24,7 @@ class AddAdminRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fullName' => 'required|min:2',
+            'full_name' => 'required|min:2',
             'personal_id' => 'required|integer|regex:/^\d{9}$/',
         ];
     }
@@ -32,8 +32,8 @@ class AddAdminRequest extends FormRequest
     public function messages()
     {
         return [
-            'fullName.required' => 'שם המשתמש חסר',
-            'fullName.min' => 'שם המשתמש צריך להיות לפחות שני תווים',
+            'full_name.required' => 'שם המשתמש חסר',
+            'full_name.min' => 'שם המשתמש צריך להיות לפחות שני תווים',
             'personal_id.required' => 'תעודת הזהות חסרה',
             'personal_id.integer' => 'תעודת הזהות אינה בפורמט הנכון',
             'personal_id.regex' => 'תעודת הזהות צריכה להיות 9 תווים',

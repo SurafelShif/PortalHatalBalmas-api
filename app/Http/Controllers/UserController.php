@@ -90,7 +90,7 @@ class UserController extends Controller
      */
     public function addAdmin(AddAdminRequest $request)
     {
-        $result = $this->usersService->addAdmin($request->fullName, $request->personal_id);
+        $result = $this->usersService->addAdmin($request->full_name, $request->personal_id);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
@@ -146,6 +146,7 @@ class UserController extends Controller
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
                 HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::USER_NOT_FOUND], Response::HTTP_NOT_FOUND),
                 HttpStatusEnum::FORBIDDEN => response()->json(["message" => ResponseMessages::SELF_REMOVAL], Response::HTTP_FORBIDDEN),
+                HttpStatusEnum::CONFLICT => response()->json(["message" => ResponseMessages::NOT_ADMIN], Response::HTTP_CONFLICT),
             };
         }
         return response()->json([
@@ -182,5 +183,56 @@ class UserController extends Controller
             };
         }
         return response()->json($result, Response::HTTP_OK);
+    }
+    /**
+     * @OA\Get(
+     *      path="/api/users/{personal_id}",
+     *      operationId="getUserByPersonalNumber",
+     *      tags={"Users"},
+     *      summary="Retrieve user by personal number excluding admins",
+     *      description="מחזיר משתמש על ידי מספר אישי",
+     *      @OA\Parameter(
+     *          name="personal_id",
+     *          in="path",
+     *          required=true,
+     *          description="User personal id",
+     *          @OA\Schema(
+     *              type="integer",
+     *              example=111111111
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="הפעולה התבצעה בהצלחה",
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="בקשה לא תקינה",
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="משתמש לא נמצא",
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="אירעה שגיאה",
+     *      ),
+     * )
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUserByPersonalNumber($personal_number)
+    {
+        $result = $this->usersService->getUserByPersonalNumber($personal_number);
+        if ($result instanceof HttpStatusEnum) {
+            return match ($result) {
+                HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
+                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::USER_NOT_FOUND], Response::HTTP_NOT_FOUND),
+            };
+        }
+        return response()->json([
+            'data' => $result,
+
+        ], Response::HTTP_OK);
     }
 }

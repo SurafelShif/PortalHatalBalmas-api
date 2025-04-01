@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Permission;
 use App\Enums\Role;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class UsersSeeder extends Seeder
@@ -14,25 +14,26 @@ class UsersSeeder extends Seeder
      */
     public function run(): void
     {
+        $admins = [
+            ['personal_id' => '122345671', 'full_name' => 'מנהל מערכת 1'],
+            ['personal_id' => '112345678', 'full_name' => 'מנהל מערכת 2'],
+            ['personal_id' => '123456789', 'full_name' => 'מנהל מערכת 3'],
+        ];
 
-        $admin1 = User::create([
-            'personal_id' => '12234567',
-            'full_name' => 'מנהל מערכת 1',
+        foreach ($admins as $adminData) {
+            $admin = User::create($adminData);
+            $admin->assignRole(Role::ADMIN);
+            $admin->givePermissionTo(Permission::MANAGE_USERS);
+        }
 
-        ]);
-        $admin1->assignRole(Role::ADMIN);
+        $users = [
+            ['personal_id' => '987654321', 'full_name' => 'משתמש רגיל 1'],
+            ['personal_id' => '876543210', 'full_name' => 'משתמש רגיל 2'],
+            ['personal_id' => '765432109', 'full_name' => 'משתמש רגיל 3'],
+        ];
 
-        $admin2 = User::create([
-            'personal_id' => '112345678',
-            'full_name' => 'מנהל מערכת 2',
-        ]);
-        $admin2->assignRole(Role::ADMIN);
-
-        // admin 3
-        $admin3 = User::create([
-            'personal_id' => '123456789',
-            'full_name' => 'מנהל מערכת 3',
-        ]);
-        $admin3->assignRole(Role::ADMIN);
+        foreach ($users as $userData) {
+            User::create($userData);
+        }
     }
 }

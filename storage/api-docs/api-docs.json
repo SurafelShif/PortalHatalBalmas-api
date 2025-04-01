@@ -1521,6 +1521,42 @@
                     }
                 }
             }
+        },
+        "/api/users/{personal_id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Retrieve user by personal number excluding admins",
+                "description": "מחזיר משתמש על ידי מספר אישי",
+                "operationId": "getUserByPersonalNumber",
+                "parameters": [
+                    {
+                        "name": "personal_id",
+                        "in": "path",
+                        "description": "User personal id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 111111111
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "הפעולה התבצעה בהצלחה"
+                    },
+                    "400": {
+                        "description": "בקשה לא תקינה"
+                    },
+                    "404": {
+                        "description": "משתמש לא נמצא"
+                    },
+                    "500": {
+                        "description": "אירעה שגיאה"
+                    }
+                }
+            }
         }
     },
     "components": {
