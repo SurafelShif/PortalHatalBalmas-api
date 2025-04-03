@@ -229,7 +229,10 @@ class UserController extends Controller
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
                 HttpStatusEnum::NOT_FOUND => response()->json(["errors" => ["personal_id" => ResponseMessages::USER_NOT_FOUND]], Response::HTTP_NOT_FOUND),
-                HttpStatusEnum::BAD_REQUEST => response()->json(["message" => ResponseMessages::BAD_REQUEST], Response::HTTP_BAD_REQUEST),
+                HttpStatusEnum::BAD_REQUEST => response()->json(
+                    ["errors" => ["personal_id" => ResponseMessages::BAD_REQUEST]],
+                    Response::HTTP_BAD_REQUEST
+                ),
             };
         }
         return response()->json([
