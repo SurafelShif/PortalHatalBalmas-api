@@ -95,7 +95,7 @@ class UserController extends Controller
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
-                HttpStatusEnum::CONFLICT => response()->json(["message" => ResponseMessages::ALREADY_ADMIN], Response::HTTP_CONFLICT),
+                HttpStatusEnum::CONFLICT => response()->json(["errors" => ["personal_id" => ResponseMessages::ALREADY_ADMIN]], Response::HTTP_CONFLICT),
             };
         }
         return response()->json([
@@ -146,8 +146,8 @@ class UserController extends Controller
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
                 HttpStatusEnum::NOT_FOUND => response()->json(["errors" => ["uuid" => ResponseMessages::USER_NOT_FOUND]], Response::HTTP_NOT_FOUND),
-                HttpStatusEnum::FORBIDDEN => response()->json(["message" => ResponseMessages::SELF_REMOVAL], Response::HTTP_FORBIDDEN),
-                HttpStatusEnum::CONFLICT => response()->json(["message" => ResponseMessages::NOT_ADMIN], Response::HTTP_CONFLICT),
+                HttpStatusEnum::FORBIDDEN => response()->json(["errors" => ["personal_id" => ResponseMessages::SELF_REMOVAL]], Response::HTTP_FORBIDDEN),
+                HttpStatusEnum::CONFLICT => response()->json(["errors" => ["personal_id" => ResponseMessages::NOT_ADMIN]], Response::HTTP_CONFLICT),
             };
         }
         return response()->json([
