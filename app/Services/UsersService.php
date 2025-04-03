@@ -89,10 +89,7 @@ class UsersService
             // if ($personal_id && preg_match('/^\d{9}$/', $personal_id) !== 1) {
             //     return HttpStatusEnum::BAD_REQUEST;
             // }
-            $user = User::whereDoesntHave('roles', function ($query) {
-                $query->where('name', 'admin');
-            })
-                ->where('personal_id', $personal_id)->where('is_deleted', false)->first();
+            $user = User::where('personal_id', $personal_id)->where('is_deleted', false)->first();
             if (is_null($user)) {
                 return HttpStatusEnum::NOT_FOUND;
             }
