@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\HttpStatusEnum;
 use App\Enums\ResponseMessages;
 use App\Http\Requests\AddAdminRequest;
+use App\Http\Requests\getUserByIdRequest;
 use App\Services\UsersService;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -144,7 +145,7 @@ class UserController extends Controller
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
-                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::USER_NOT_FOUND], Response::HTTP_NOT_FOUND),
+                HttpStatusEnum::NOT_FOUND => response()->json(["errors" => ["uuid" => ResponseMessages::USER_NOT_FOUND]], Response::HTTP_NOT_FOUND),
                 HttpStatusEnum::FORBIDDEN => response()->json(["message" => ResponseMessages::SELF_REMOVAL], Response::HTTP_FORBIDDEN),
                 HttpStatusEnum::CONFLICT => response()->json(["message" => ResponseMessages::NOT_ADMIN], Response::HTTP_CONFLICT),
             };
@@ -221,13 +222,14 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getUserByPersonalNumber($personal_number)
+    public function getUserById($personal_id)
     {
-        $result = $this->usersService->getUserByPersonalNumber($personal_number);
+        $result = $this->usersService->getUserById($personal_id);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
-                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::USER_NOT_FOUND], Response::HTTP_NOT_FOUND),
+                HttpStatusEnum::NOT_FOUND => response()->json(["errors" => ["personal_id" => ResponseMessages::USER_NOT_FOUND]], Response::HTTP_NOT_FOUND),
+                HttpStatusEnum::BAD_REQUEST => response()->json(["message" => ResponseMessages::BAD_REQUEST], Response::HTTP_BAD_REQUEST),
             };
         }
         return response()->json([
