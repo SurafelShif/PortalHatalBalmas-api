@@ -2,70 +2,218 @@
 
 namespace App\Services;
 
-use Alancting\Microsoft\JWT\AzureAd\AzureAdAccessTokenJWT;
-use Alancting\Microsoft\JWT\AzureAd\AzureAdConfiguration;
-use Alancting\Microsoft\JWT\AzureAd\AzureAdIdTokenJWT;
-use App\Enums\HttpStatusEnum;
-use App\Http\Resources\UserResource;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
+use Carbon\Carbon;
+use Lcobucci\JWT\Encoding\JoseEncoder;
+use Lcobucci\JWT\Token\Parser;
+
 
 class AuthService
 {
 
-    public function login($request)
+
+
+
+    public function authenticateAzure(string $idToken, string $accessToken): array|null
     {
         try {
-            if (!isset($request->personal_id)  || preg_match('/^\d{9}$/', $request->personal_id) !== 1) {
-                return HttpStatusEnum::BAD_REQUEST;
+
+            if (!$this->validateToken($idToken) || !$this->validateToken($accessToken)) {
+                return null;
             }
-            $user = User::where('personal_id', $request->personal_id)->first();
-            if (is_null($user)) {
-                return HttpStatusEnum::NOT_FOUND;
+
+            if (!$this->verifyJwtSignature($idToken)) {
+                Log::error('Invalid JWT signature for the ID token.');
+                return null;
             }
-            $tokenName = config('auth.access_token_name');
-            $token = $user->createToken($tokenName);
-            return ["token" => $token, "tokenName" => $tokenName, "user" => $user];
+
+            return $this->getUserDetails($idToken);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return HttpStatusEnum::ERROR;
+            Log::error('Error in AuthService: authenticateAzure function: ' . $e->getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * Verify the JWT signature using Microsoft's public key.
+     *
+     * @param string $jwt
+     * @return bool
+     */
+    public function verifyJwtSignature(string $jwt): bool
+    {
+        try {
+
+            // Step 1: Validate the JWT.
+            if (!$this->decodeJwtHeader($jwt)) {
+                return false;
+            }
+
+            // Step 2: Extract the Key ID from the JWT header.
+            $kid = (new Parser(new JoseEncoder()))->parse($jwt)
+                ->headers()
+                ->get('kid') ?? null;
+
+
+            if (!$kid) {
+                Log::error('JWT does not contain a valid kid.');
+                return false;
+            }
+
+            // Step 3: Retrieve the Microsoft JWKS
+            $jwks = $this->getMicrosoftPublicKeys();
+
+            // Step 4: Find the matching key using the kid from the token.
+            $key = $this->getKeyFromJWKS($kid, $jwks);
+
+            if (!$key) {
+                Log::error('No matching public key found for kid');
+                return false;
+            }
+
+            // Step 5: Extract the public key from the JWKS.
+            $publicKey = $this->getPublicKeyFromJWKS($key);
+            if (!$publicKey) {
+                Log::error('Public key not found in JWKS.');
+                return false;
+            }
+
+            // Step 6:verify the JWT using the public key.
+            JWT::decode($jwt, new Key($publicKey, 'RS256'));
+            return true;
+        } catch (\Exception $e) {
+            Log::error('Error in AuthService: verifyJwtSignature function: ' . $e->getMessage());
+            return false;
         }
     }
-    public function authenticateAzure(string $idToken, string $accessToken)
+
+
+    /**
+     * Get the public key from the JWKS data.
+     *
+     * @param array $key
+     * @return string
+     */
+    private function getPublicKeyFromJWKS(array $key): string|bool
     {
-        $config_options = [
-            'tenant' => config('auth.azure.tenant'),
-            'tenant_id' => config('auth.azure.tenant_id'),
-            'client_id' => config('auth.azure.client_id')
-        ];
-        $config = new AzureAdConfiguration($config_options);
-        $audience = config('auth.azure.audience');
-        try {
-            /**
-             * If id token is invalid, exception will be thrown.
-             * You could also pass $audience if needed
-             */
-            $idTokenJWT = new AzureAdIdTokenJWT($config, $idToken, $audience);
-            /**
-             * If id token is invalid, exception will be thrown.
-             * To validate and decode access token jwt, you need to pass $audience (scope name of your app)
-             */
-            $accessTokenJWT = new AzureAdAccessTokenJWT($config, $accessToken, $audience);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return abort(Response::HTTP_FORBIDDEN);
+        if (isset($key['x5c'][0])) {
+            return "-----BEGIN CERTIFICATE-----\n" .
+                chunk_split($key['x5c'][0], 64, "\n") .
+                "-----END CERTIFICATE-----\n";
         }
-        /**
-         * To check whether the access token and id token are expired, simply call
-         */
-        abort_if($idTokenJWT->isExpired() || $accessTokenJWT->isExpired(), Response::HTTP_FORBIDDEN);
-        $personalId = strtok($idTokenJWT->getPayload()->preferred_username, '@');
-        $name = $idTokenJWT->getPayload()->name;
-        return (object) [
-            'personalId' => $personalId,
-            'name' => $name
-        ];
+        return false;
+    }
+
+    /**
+     * Decode the JWT header to extract the Key ID (kid).
+     *
+     * @param string $jwt
+     * @return array
+     */
+    private function decodeJwtHeader(string $jwt): array|bool
+    {
+
+        $tokenParts = explode('.', $jwt);
+
+        if (count($tokenParts) !== 3) {
+            Log::error('Invalid JWT format');
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Retrieve the JWKS (JSON Web Key Set) from Microsoft's URL
+     *
+     * @return array
+     */
+    private function getMicrosoftPublicKeys(): array
+    {
+        try {
+            $response = Http::withoutVerifying()->get(config('auth.azure.microsoft_url'));
+            if ($response->successful()) {
+                $data = $response->json();
+                return $data['keys'] ?? [];
+            }
+        } catch (\Exception $e) {
+            Log::error('Error in AuthService: getMicrosoftPublicKeys function: ' . $e->getMessage());
+        }
+        return [];
+    }
+
+    /**
+     * Get the key from the JWKS using the kid from the token.
+     *
+     * @param string $kid
+     * @param array $jwks
+     * @return array|null
+     */
+    private function getKeyFromJWKS(string $kid, array $jwks): ?array
+    {
+        foreach ($jwks as $key) {
+            if ($key['kid'] === $kid) {
+                return $key;
+            }
+        }
+        return null;
+    }
+
+    private function getUserDetails(string $idToken): array|null
+    {
+        try {
+
+            $claims = (new Parser(new JoseEncoder()))->parse($idToken)->claims();
+            $personalId = explode('@', $claims->get('preferred_username'))[0];
+            $name = $claims->get('name');
+
+            return [
+                'personal_id' => $personalId,
+                'name' => $name,
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error in AuthService: getUserDetails function: ' . $e->getMessage());
+        }
+
+        return null;
+    }
+
+    private function validateToken(string $token): bool
+    {
+
+        $token = (new Parser(new JoseEncoder()))->parse($token);
+
+        if (!$token->hasBeenIssuedBy($this->getRequiredIssuer())) {
+            return false;
+        }
+
+        if (!$token->isPermittedFor($this->getRequiredAudience())) {
+            return false;
+        }
+
+        if ($token->isExpired(Carbon::now())) {
+            return false;
+        }
+
+        if (!$token->isMinimumTimeBefore(Carbon::now())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function getRequiredIssuer(): string
+    {
+        $tenantId = config('auth.azure.tenant_id');
+        return "https://login.microsoftonline.com/$tenantId/v2.0";
+    }
+
+    private function getRequiredAudience(): string
+    {
+        return config('auth.azure.audience');
     }
 }
