@@ -50,22 +50,26 @@ class UpdateAnnouncementRequest extends FormRequest
     /**
      * Apply custom validation logic.
      */
+
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
             if ($this->all() === []) {
                 $validator->errors()->add('general', 'יש להזין לפחות שדה אחד לעדכון.');
             }
+            $isEmptyContent = $this['content'] === "<p></p>";
+            if ($isEmptyContent) {
+                $validator->errors()->add("content", "תוכן ההכרזה הינו חובה");
+            }
         });
     }
-
     /**
      * Handle failed validation response.
      */
     protected function failedValidation(Validator $validator)
     {
         $errors = collect($validator->errors()->messages())
-            ->map(fn($messages) => $messages[0]); // Get only the first error message per field
+            ->map(fn($messages) => $messages[0]);
 
         throw new HttpResponseException(response()->json([
             'errors' => $errors

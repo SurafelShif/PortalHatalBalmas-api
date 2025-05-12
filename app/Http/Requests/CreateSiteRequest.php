@@ -26,9 +26,9 @@ class CreateSiteRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'כותרת הכתבה היא חובה.',
-            'link.required' => 'כותרת הכתבה היא חובה.',
-            'description.required' => 'תיאור הכתבה הוא חובה.',
+            'name.required' => 'כותרת הקישור היא חובה.',
+            'link.required' => 'הקישור הוא חובה.',
+            'description.required' => 'תיאור הקישור הוא חובה.',
             'image.required' => 'חובה להעלות תמונה.',
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',

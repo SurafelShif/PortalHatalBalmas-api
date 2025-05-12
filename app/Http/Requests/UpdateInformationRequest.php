@@ -37,6 +37,10 @@ class UpdateInformationRequest extends FormRequest
             if (empty($this->all())) {
                 $validator->errors()->add('general', 'חייב לשלוח לפחות שדה אחד לעדכון.');
             }
+            $isEmptyContent = $this['content'] === "<p></p>";
+            if ($isEmptyContent) {
+                $validator->errors()->add("content", "תוכן כתבת המידע הינו חובה");
+            }
         });
     }
 
@@ -46,9 +50,9 @@ class UpdateInformationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'title.string' => 'כותרת הכתבה חייבת להיות מחרוזת.',
-            'title.max' => 'כותרת הכתבה יכולה להכיל עד 255 תווים.',
-            'content.string' => 'תוכן הכתבה אינו בפורמט הנכון.',
+            'title.string' => 'כותרת כתבת המידע חייבת להיות מחרוזת.',
+            'title.max' => 'כותרת כתבת המידע יכולה להכיל עד 255 תווים.',
+            'content.string' => 'תוכן כתבת המידע אינו בפורמט הנכון.',
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
             'image.max' => 'התמונה חייבת להיות עד 7MB.',

@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+
 class CreateAnnouncementRequest extends FormRequest
 {
 
@@ -24,7 +25,15 @@ class CreateAnnouncementRequest extends FormRequest
         ];
     }
 
-
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $isEmptyContent = $this['content'] === "<p></p>";
+            if ($isEmptyContent) {
+                $validator->errors()->add("content", "תוכן ההכררזה הינו חובה");
+            }
+        });
+    }
     public function messages()
     {
 

@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+
 class CreatePostRequest extends FormRequest
 {
     public function authorize()
@@ -23,7 +24,15 @@ class CreatePostRequest extends FormRequest
             'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:7168'],
         ];
     }
-
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $isEmptyContent = $this['content'] === "<p></p>";
+            if ($isEmptyContent) {
+                $validator->errors()->add("content", "תוכן הכתבה הינו חובה");
+            }
+        });
+    }
     public function messages()
     {
         return [

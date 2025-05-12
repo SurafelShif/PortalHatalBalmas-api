@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+
 class CreateInformationRequest extends FormRequest
 {
     public function authorize()
@@ -23,7 +24,15 @@ class CreateInformationRequest extends FormRequest
         ];
     }
 
-
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $isEmptyContent = $this['content'] === "<p></p>";
+            if ($isEmptyContent) {
+                $validator->errors()->add("content", "תוכן כתבת המידע הינו חובה");
+            }
+        });
+    }
     public function messages()
     {
         return [

@@ -38,6 +38,10 @@ class UpdatePostRequest extends FormRequest
             if (empty($this->all())) {
                 $validator->errors()->add('general', 'חייב לשלוח לפחות שדה אחד לעדכון.');
             }
+            $isEmptyContent = $this['content'] === "<p></p>";
+            if ($isEmptyContent) {
+                $validator->errors()->add("content", "תוכן הכתבה הינו חובה");
+            }
         });
     }
 

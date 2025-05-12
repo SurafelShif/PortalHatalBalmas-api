@@ -18,7 +18,7 @@ class UpdateSiteRequest extends FormRequest
         return [
             'name' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'string'],
-            'link' => ['sometimes'],
+            'link' => ['sometimes', 'string'],
             'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:7168'],
         ];
     }
@@ -26,7 +26,9 @@ class UpdateSiteRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.string' => 'שם האפליקציה אינו בפורמט',
+            'name.string' => ' שם הקישור אינו בפורמט הנכון',
+            'description.string' => 'תיאור הקישור אינו בפורמט הנכון',
+            'link.string' => ' הקישור אינו בפורמט הנכון',
             'image.image' => 'הקובץ חייב להיות תמונה.',
             'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
             'image.max' => 'התמונה חייבת להיות עד 7MB.',
