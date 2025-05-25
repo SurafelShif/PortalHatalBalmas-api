@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string("image_path")->nullable();
             $table->string("image_type")->nullable();
             $table->string("image_file_name")->nullable();
+            $table->boolean("is_commited")->default(false);
             $table->timestamps();
         });
     }

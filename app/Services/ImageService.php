@@ -28,12 +28,15 @@ class ImageService
     }
     public function saveImage(Model $model, array $createdImage)
     {
-        $model->previewImage()->create([
+        $previewImage = $model->previewImage()->create([
             'image_name' => $createdImage['randomFileName'],
             'image_path' =>  $createdImage['imagePath'],
             'image_type' => $createdImage['extension'],
             'image_file_name' => $createdImage['originalName']
         ]);
+
+        $previewImage->is_commited = true;
+        $previewImage->save();
     }
     public function uploadImage(UploadedFile $image)
     {

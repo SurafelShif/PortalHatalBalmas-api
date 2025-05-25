@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\HttpStatusEnum;
 use App\Enums\ResponseMessages;
+use App\Http\Requests\SaveImageRequest;
 use App\Services\GlobalService;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ImageController extends Controller
 {
     public function __construct(private ImageService $imageService) {}
-    public function save(Request $request)
+    public function save(SaveImageRequest $request)
     {
         $result = $this->imageService->uploadImage($request->image);
         if ($result instanceof HttpStatusEnum) {
@@ -21,7 +22,7 @@ class ImageController extends Controller
             };
         }
         return response()->json([
-            'data' => $result,
+            'data' =>  config('filesystems.storage_path') . $result->image_path,
 
         ], Response::HTTP_CREATED);
     }
