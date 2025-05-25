@@ -7,10 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    public function image()
-    {
-        return $this->hasOne(Image::class, 'id', 'preview_image_id');
-    }
     public function previewImage()
     {
         return $this->morphOne(Image::class, 'imageable');
@@ -35,8 +31,8 @@ class Post extends Model
         });
         static::deleting(function ($post) {
 
-            if ($post->image) {
-                $post->image->delete();
+            if ($post->previewImage) {
+                $post->previewImage->delete();
             }
             $post->images->each(function ($image) {
                 $image->delete();

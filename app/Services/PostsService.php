@@ -19,7 +19,7 @@ class PostsService
     public function getPosts(string | null $category_uuid, int | null $limit, int $page, string| null $search)
     {
         try {
-            $query = Post::with('category')->latest()->select(['preview_image_id', 'title', 'uuid', "description", "category_id"]);
+            $query = Post::with('category')->latest()->select(['id', 'title', 'uuid', "description", "category_id"]);
             if (!is_null($category_uuid)) {
                 $query->whereHas('category', function ($q) use ($category_uuid) {
                     $q->where('uuid', $category_uuid);
@@ -42,7 +42,7 @@ class PostsService
     public function getAdminPosts(string | null $category_uuid, int | null $limit, int $page, string| null $search)
     {
         try {
-            $query = Post::with('category')->latest()->select(['preview_image_id', 'title', 'uuid', "description", "category_id", "content"]);
+            $query = Post::with('category')->latest()->select(['id', 'title', 'uuid', "description", "category_id", "content"]);
             if (!is_null($category_uuid)) {
                 $query->whereHas('category', function ($q) use ($category_uuid) {
                     $q->where('uuid', $category_uuid);
@@ -69,7 +69,7 @@ class PostsService
             // if (!Str::isUuid($uuid)) {
             //     return HttpStatusEnum::BAD_REQUEST;
             // }
-            $post = Post::select(['preview_image_id', 'title', 'uuid', 'category_id', 'content', 'created_at'])->where('uuid', $uuid)->first();
+            $post = Post::select(['id', 'title', 'uuid', 'category_id', 'content', 'created_at'])->where('uuid', $uuid)->first();
             if (is_null($post)) {
                 return HttpStatusEnum::NOT_FOUND;
             }
@@ -84,22 +84,22 @@ class PostsService
         $createdImage = null;
         try {
             DB::beginTransaction();
-            $createdImage = $this->imageService->uploadImage($image);
+            $createdImage = $this->imageService->storeImage($image);
             $category_id = Category::where('uuid', $category_uuid)->first()->id;
             $post = Post::create([
                 'title' => $title,
                 'description' => $description,
                 'content' => "",
                 'category_id' => $category_id,
-                'preview_image_id' => $createdImage->id
             ]);
+            $this->imageService->saveImage($post, $createdImage);
             $content = $this->globalService->updateContent($content, $post);
             $post->content = $content;
             $post->save();
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->imageService->deleteImage($createdImage->image_name);
+            $this->imageService->deleteImage($createdImage['image_name']);
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }
@@ -126,7 +126,7 @@ class PostsService
                 return HttpStatusEnum::NOT_FOUND;
             }
             if (array_key_exists('image', $updateArray)) {
-                $this->imageService->updateImage($post->image->id, $updateArray['image']);
+                $this->imageService->updateImage($post->previewImage->id, $updateArray['image']);
                 unset($updateArray['image']);
                 $post->refresh();
             }
