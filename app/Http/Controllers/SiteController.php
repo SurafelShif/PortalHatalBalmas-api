@@ -190,7 +190,7 @@ class SiteController extends Controller
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {
                 HttpStatusEnum::ERROR => response()->json(["message" => ResponseMessages::ERROR_OCCURRED], Response::HTTP_INTERNAL_SERVER_ERROR),
-                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::POST_NOT_FOUND], Response::HTTP_NOT_FOUND),
+                HttpStatusEnum::NOT_FOUND => response()->json(["message" => ResponseMessages::SITE_NOT_FOUND], Response::HTTP_NOT_FOUND),
             };
         }
         return response()->json([

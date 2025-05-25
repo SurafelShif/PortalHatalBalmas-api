@@ -12,6 +12,7 @@ enum ResponseMessages: string
     const USERS_NOT_FOUND = 'המשתמשים לא נמצאו';
     const CATEGORY_NOT_FOUND = 'קטגוריה לא נמצאה';
     const POST_NOT_FOUND = 'כתבה לא נמצאה';
+    const SITE_NOT_FOUND = 'קישור לא נמצא';
     const ANNOUNCEMENT_NOT_FOUND = 'הכרזה לא נמצאה';
     const MISSING_ROLE = 'לא נמצא תפקיד';
     const NOT_ADMIN = 'המשתמש אינו מנהל מערכת';

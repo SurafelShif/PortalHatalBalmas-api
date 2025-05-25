@@ -18,22 +18,17 @@ class Site extends Model
             }
         });
         static::deleting(function ($site) {
-            $site->image()->delete();
+            $site->previewImage->delete();
         });
     }
     public function previewImage()
     {
         return $this->morphOne(Image::class, 'imageable');
     }
-    public function image()
-    {
-        return $this->hasOne(Image::class, 'id', 'preview_image_id');
-    }
     protected $fillable = [
         "name",
         "description",
         "link",
-        "preview_image_id"
     ];
     protected $hidden = [
         "created_at",

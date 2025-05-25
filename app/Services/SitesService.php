@@ -36,15 +36,16 @@ class SitesService
     {
 
         try {
-            $image = $this->imageService->uploadImage($image);
-            Site::create([
+            $image = $this->imageService->storeImage($image);
+            $model = Site::create([
                 'name' => $name,
                 'description' => $description,
                 'link' => $link,
-                'preview_image_id' => $image->id
             ]);
+            $this->imageService->saveImage($model, $image);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $this->imageService->deleteImage($image['randomFileName']);
             return HttpStatusEnum::ERROR;
         }
     }
@@ -71,7 +72,7 @@ class SitesService
                 return HttpStatusEnum::NOT_FOUND;
             }
             if (array_key_exists('image', $updateArray)) {
-                $this->imageService->updateImage($site->image->id, $updateArray['image']);
+                $this->imageService->updateImage($site->previewImage->id, $updateArray['image']);
                 unset($updateArray['image']);
                 $site->refresh();
             }
