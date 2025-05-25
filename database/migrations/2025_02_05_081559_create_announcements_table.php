@@ -19,8 +19,6 @@ return new class extends Migration
             $table->text('content');
             $table->integer('position')->nullable();
             $table->boolean('isVisible')->default(true);
-            $table->unsignedBigInteger('preview_image_id');
-            $table->foreign('preview_image_id')->references('id')->on('images')->onDelete('cascade');
             $table->timestamps();
         });
     }

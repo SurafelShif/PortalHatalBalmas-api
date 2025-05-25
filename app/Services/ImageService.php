@@ -26,6 +26,15 @@ class ImageService
             "imagePath" => $imagePath
         ];
     }
+    public function saveImage(Model $model, array $createdImage)
+    {
+        $model->previewImage()->create([
+            'image_name' => $createdImage['randomFileName'],
+            'image_path' =>  $createdImage['imagePath'],
+            'image_type' => $createdImage['extension'],
+            'image_file_name' => $createdImage['originalName']
+        ]);
+    }
     public function uploadImage(UploadedFile $image)
     {
         try {
@@ -68,7 +77,6 @@ class ImageService
                 $extension = null;
                 $originalName = null;
             }
-            dd($oldImage);
             $this->deleteImage($oldImage->image_name);
             $oldImage->image_path = $imagePath;
             $oldImage->image_name = $randomFileName;

@@ -20,14 +20,14 @@ class AnnouncementsService
         $createdImages = [];
         try {
             DB::beginTransaction();
-            $createdImage = $this->imageService->uploadImage($image);
-            $createdImages[] = $createdImage->image_name;
+            $createdImage = $this->imageService->storeImage($image);
+            $createdImages[] = $createdImage['randomFileName'];
             $model = Announcement::create([
                 'title' => $title,
                 'description' => $description,
                 'content' => "",
-                'preview_image_id' => $createdImage->id
             ]);
+            $this->imageService->saveImage($model, $createdImage);
             $content = $this->globalService->updateContent($content, $model);
             $model->content = $content;
             $model->save();
@@ -44,7 +44,7 @@ class AnnouncementsService
     public function getAnnouncements()
     {
         try {
-            $annoucements = Announcement::orderBy('position', 'asc')->where('isVisible', true)->select(['uuid', 'title', 'description', 'preview_image_id'])->get();
+            $annoucements = Announcement::select(['id', 'uuid', 'title', 'description'])->with('previewImage')->orderBy('position', 'asc')->where('isVisible', true)->get();
             return AnnoucementsResource::collection($annoucements);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -55,7 +55,7 @@ class AnnouncementsService
     {
         try {
             $announcements = Announcement::orderBy('position', 'asc')
-                ->select(['uuid', 'title', 'description', 'position', 'preview_image_id', 'created_at', 'isVisible', 'content'])
+                ->select(['id', 'uuid', 'title', 'description', 'position', 'created_at', 'isVisible', 'content'])
                 ->when(!empty($search), function ($query) use ($search) {
                     $query->where('title', 'LIKE', "%{$search}%")
                         ->orWhere('description', 'LIKE', "%{$search}%");
@@ -80,7 +80,7 @@ class AnnouncementsService
                 return HttpStatusEnum::NOT_FOUND;
             }
             if (array_key_exists('image', $updateArray)) {
-                $this->imageService->updateImage($announcement->image->id, $updateArray['image']);
+                $this->imageService->updateImage($announcement->previewImage->id, $updateArray['image']);
                 unset($updateArray['image']);
                 $announcement->refresh();
             }
@@ -148,7 +148,7 @@ class AnnouncementsService
             // if (!Str::isUuid($uuid)) {
             //     return HttpStatusEnum::BAD_REQUEST;
             // }
-            $announcement = Announcement::select(['uuid', 'title', 'preview_image_id', 'created_at', 'content'])->where('uuid', $uuid)->first();
+            $announcement = Announcement::select(['id', 'uuid', 'title', 'created_at', 'content'])->where('uuid', $uuid)->first();
             if (is_null($announcement)) {
                 return HttpStatusEnum::NOT_FOUND;
             }

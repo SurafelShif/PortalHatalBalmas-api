@@ -7,10 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Announcement extends Model
 {
-    public function image()
-    {
-        return $this->hasOne(Image::class, 'id', 'preview_image_id');
-    }
     public function previewImage()
     {
         return $this->morphOne(Image::class, 'imageable');
@@ -31,8 +27,8 @@ class Announcement extends Model
             $model->position = 1;
         });
         static::deleting(function ($announcement) {
-            if ($announcement->image) {
-                $announcement->image->delete();
+            if ($announcement->previewImage) {
+                $announcement->previewImage->delete();
             }
             $announcement->images->each(function ($image) {
                 $image->delete();
@@ -43,7 +39,6 @@ class Announcement extends Model
         'title',
         'description',
         'content',
-        'preview_image_id',
         'isVisible',
         'position',
     ];
