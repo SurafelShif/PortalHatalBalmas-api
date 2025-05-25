@@ -36,8 +36,9 @@ class InformationsService
                 'icon_name' => $icon_name,
             ]);
             $this->imageService->saveImage($model, $image);
-            $content = $this->globalService->updateContent($content, $model);
-            $model->content = $content;
+            // $content = $this->globalService->updateContent($content, $model);
+            // $model->content = $content;
+            $this->globalService->commitImages($model, $content);
             $model->save();
             DB::commit();
         } catch (\Exception $e) {

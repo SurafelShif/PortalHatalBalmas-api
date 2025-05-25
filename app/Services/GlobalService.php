@@ -134,9 +134,20 @@ class GlobalService
         }
         return $content;
     }
-    public function saveImage(UploadedFile $image)
+    public function commitImages(Model $model, string $content)
     {
         try {
+            preg_match_all('/<img[^>]+src="([^">]+)"/i', $content, $matches);
+
+
+            foreach ($matches[1] as $src) {
+                $imageName = basename(parse_url($src, PHP_URL_PATH));
+                if (Storage::disk(config('filesystems.storage_service'))->exists('images/' . $imageName)) {
+                    $image = Image::where("image_name", $imageName)->get();
+                    $image->is_commited = true;
+                    $image->save();
+                }
+            }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
