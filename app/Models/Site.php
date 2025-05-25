@@ -21,6 +21,10 @@ class Site extends Model
             $site->image()->delete();
         });
     }
+    public function previewImage()
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
     public function image()
     {
         return $this->hasOne(Image::class, 'id', 'preview_image_id');

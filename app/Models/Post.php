@@ -11,6 +11,10 @@ class Post extends Model
     {
         return $this->hasOne(Image::class, 'id', 'preview_image_id');
     }
+    public function previewImage()
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');

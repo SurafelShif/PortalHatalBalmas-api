@@ -27,8 +27,8 @@ class Information extends Model
         });
         static::deleting(function ($information) {
 
-            if ($information->image) {
-                $information->image->delete();
+            if ($information->previewImage) {
+                $information->previewImage->delete();
             }
             $information->images->each(function ($image) {
                 $image->delete();
@@ -39,7 +39,6 @@ class Information extends Model
         'title',
         'content',
         'icon_name',
-        'preview_image_id',
     ];
     protected $hidden = ['updated_at', 'created_at', 'id'];
 }

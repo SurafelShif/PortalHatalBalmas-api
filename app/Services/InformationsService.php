@@ -18,7 +18,7 @@ class InformationsService
     public function getInformations()
     {
         try {
-            $informations = Information::select(['uuid', 'title', 'icon_name', 'content', 'preview_image_id'])->orderBy('created_at', 'desc')->get();
+            $informations = Information::select(['uuid', 'title', 'icon_name', 'content'])->orderBy('created_at', 'desc')->get();
             return InformationResource::collection($informations);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -37,7 +37,7 @@ class InformationsService
             ]);
             $model->previewImage()->create([
                 'image_name' => $image['randomFileName'],
-                'image_path' => 'images/' . $image['imagePath'],
+                'image_path' =>  $image['imagePath'],
                 'image_type' => $image['extension'],
                 'image_file_name' => $image['originalName']
             ]);
@@ -73,7 +73,7 @@ class InformationsService
                 return HttpStatusEnum::NOT_FOUND;
             }
             if (array_key_exists('image', $updateArray)) {
-                $this->imageService->updateImage($information->image->id, $updateArray['image']);
+                $newIMage = $this->imageService->updateImage($information->previewImage->id, $updateArray['image']);
                 unset($updateArray['image']);
                 $information->refresh();
             }

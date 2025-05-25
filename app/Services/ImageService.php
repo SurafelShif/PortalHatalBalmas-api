@@ -46,7 +46,7 @@ class ImageService
         }
     }
 
-    public function updateImage($associatedimageId, UploadedFile $newImage = null)
+    public function updateImage($associatedimageId, UploadedFile | null $newImage)
     {
         try {
 
@@ -68,6 +68,7 @@ class ImageService
                 $extension = null;
                 $originalName = null;
             }
+            dd($oldImage);
             $this->deleteImage($oldImage->image_name);
             $oldImage->image_path = $imagePath;
             $oldImage->image_name = $randomFileName;
