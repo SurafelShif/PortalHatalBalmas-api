@@ -19,6 +19,10 @@ class Image extends Model
             }
         });
     }
+    public function image()
+    {
+        return $this->morphTo();
+    }
     public function imageable()
     {
         return $this->morphTo();

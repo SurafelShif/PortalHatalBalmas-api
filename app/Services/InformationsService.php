@@ -29,12 +29,17 @@ class InformationsService
     {
         try {
             DB::beginTransaction();
-            $image = $this->imageService->uploadImage($image);
+            $image = $this->imageService->storeImage($image);
             $model = Information::create([
                 'title' => $title,
                 'content' => "",
                 'icon_name' => $icon_name,
-                'preview_image_id' => $image->id
+            ]);
+            $model->previewImage()->create([
+                'image_name' => $image['randomFileName'],
+                'image_path' => 'images/' . $image['imagePath'],
+                'image_type' => $image['extension'],
+                'image_file_name' => $image['originalName']
             ]);
             $content = $this->globalService->updateContent($content, $model);
             $model->content = $content;

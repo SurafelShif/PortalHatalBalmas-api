@@ -134,4 +134,12 @@ class GlobalService
         }
         return $content;
     }
+    public function saveImage(UploadedFile $image)
+    {
+        try {
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
+    }
 }

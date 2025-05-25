@@ -4,6 +4,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\GlobalController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SiteController;
@@ -106,4 +107,7 @@ Route::controller(SiteController::class)->prefix('sites')->group(function () {
     Route::post('/{uuid}', 'updateSite');
     Route::delete('/{uuid}', 'deleteSite');
     Route::get('/', 'getSites');
+});
+Route::controller(ImageController::class)->prefix('images')->group(function () {
+    Route::post("/", 'save');
 });

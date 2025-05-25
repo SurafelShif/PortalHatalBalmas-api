@@ -8,9 +8,9 @@ use Illuminate\Support\Str;
 class Information extends Model
 {
     protected $table = 'informations';
-    public function image()
+    public function previewImage()
     {
-        return $this->hasOne(Image::class, 'id', 'preview_image_id');
+        return $this->morphOne(Image::class, 'imageable');
     }
     public function images()
     {

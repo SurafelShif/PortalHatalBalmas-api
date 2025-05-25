@@ -356,49 +356,6 @@
                 }
             }
         },
-        "/api/login": {
-            "post": {
-                "tags": [
-                    "Authentication"
-                ],
-                "summary": "Login user",
-                "description": "Authenticate and login user based on personal id",
-                "operationId": "login",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "personal_id"
-                                ],
-                                "properties": {
-                                    "personal_id": {
-                                        "type": "string",
-                                        "example": "123456789"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "הפעולה התבצעה בהצלחה"
-                    },
-                    "400": {
-                        "description": "בקשה לא תקינה"
-                    },
-                    "404": {
-                        "description": "משתמש אינו נמצא"
-                    },
-                    "500": {
-                        "description": "אירעה שגיאה"
-                    }
-                }
-            }
-        },
         "/api/categories/{type}": {
             "get": {
                 "tags": [
@@ -1574,10 +1531,6 @@
         {
             "name": "Announcements",
             "description": "Announcements"
-        },
-        {
-            "name": "Authentication",
-            "description": "Authentication"
         },
         {
             "name": "Categories",
