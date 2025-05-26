@@ -32,11 +32,11 @@ class InformationsService
             $image = $this->imageService->storeImage($image);
             $model = Information::create([
                 'title' => $title,
-                'content' => "",
+                'content' => $content,
                 'icon_name' => $icon_name,
             ]);
-            $this->imageService->saveImage($model, $image);
-            $this->globalService->commitContentImages($content);
+            $this->imageService->saveImage($model, $image, 'preview');
+            $this->globalService->commitContentImages($model, $content);
             $model->save();
             DB::commit();
         } catch (\Exception $e) {
@@ -72,7 +72,7 @@ class InformationsService
                 $information->refresh();
             }
             if (array_key_exists('content', $updateArray)) {
-                $this->globalService->commitContentImages($updateArray['content']);
+                $this->globalService->commitContentImages($information, $updateArray['content']);
             }
             $information->update($updateArray);
             return new InformationResource($information);

@@ -32,6 +32,14 @@ class Image extends Model
         'image_type',
         'image_path',
         'image_file_name',
+        'is_commited',
+        'imageable_id',
+        'imageable_type',
+        'type'
+    ];
+
+    protected $casts = [
+        'is_commited' => 'boolean',
     ];
     protected $hidden = [
         'created_at',

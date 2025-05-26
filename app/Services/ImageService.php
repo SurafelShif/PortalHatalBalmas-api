@@ -26,17 +26,16 @@ class ImageService
             "imagePath" => $imagePath
         ];
     }
-    public function saveImage(Model $model, array $createdImage)
+    public function saveImage(Model $model, array $createdImage, string $type)
     {
-        $previewImage = $model->previewImage()->create([
+        $model->previewImage()->create([
             'image_name' => $createdImage['randomFileName'],
             'image_path' =>  $createdImage['imagePath'],
             'image_type' => $createdImage['extension'],
-            'image_file_name' => $createdImage['originalName']
+            'image_file_name' => $createdImage['originalName'],
+            'is_commited' => true,
+            'type' => $type
         ]);
-
-        $previewImage->is_commited = true;
-        $previewImage->save();
     }
     public function uploadImage(UploadedFile $image)
     {
@@ -50,7 +49,8 @@ class ImageService
                 'image_name' => $randomFileName,
                 'image_path' => $imagePath,
                 'image_type' => $image->getMimeType(),
-                'image_file_name' => $originalName
+                'image_file_name' => $originalName,
+                'type' => "content"
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
