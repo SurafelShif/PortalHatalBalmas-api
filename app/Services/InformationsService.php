@@ -36,9 +36,7 @@ class InformationsService
                 'icon_name' => $icon_name,
             ]);
             $this->imageService->saveImage($model, $image);
-            // $content = $this->globalService->updateContent($content, $model);
-            // $model->content = $content;
-            $this->globalService->commitImages($model, $content);
+            $this->globalService->commitContentImages($content);
             $model->save();
             DB::commit();
         } catch (\Exception $e) {
@@ -74,13 +72,7 @@ class InformationsService
                 $information->refresh();
             }
             if (array_key_exists('content', $updateArray)) {
-                $content = $updateArray['content'];
-                foreach ($information->images as $image) {
-                    if (!str_contains($content, $image->image_name)) {
-                        $image->delete($image->id);
-                    }
-                }
-                $updateArray['content'] = $this->globalService->updateContent($content, $information);
+                $this->globalService->commitContentImages($updateArray['content']);
             }
             $information->update($updateArray);
             return new InformationResource($information);
