@@ -73,6 +73,7 @@ class InformationsService
             }
             if (array_key_exists('content', $updateArray)) {
                 $this->globalService->commitContentImages($information, $updateArray['content']);
+                $this->globalService->removeCommitedContentImages($information, $updateArray['content']);
             }
             $information->update($updateArray);
             return new InformationResource($information);

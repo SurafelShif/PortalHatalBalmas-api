@@ -137,10 +137,10 @@ class GlobalService
     public function commitContentImages(Model $model, string $content)
     {
         try {
-            preg_match_all('/<img[^>]+src="([^">]+)"/i', $content, $matches);
+            $matches = $this->getImageNamesFromContent($content);
 
 
-            foreach ($matches[1] as $src) {
+            foreach ($matches as $src) {
                 $imageName = basename(parse_url($src, PHP_URL_PATH));
                 if (!Storage::disk(config('filesystems.storage_service'))->exists('images/' . $imageName))
                     continue;
@@ -157,5 +157,20 @@ class GlobalService
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }
+    }
+    public function removeCommitedContentImages(Model $model, string $content)
+    {
+        $sources = $this->getImageNamesFromContent($content);
+        $existingImages = $model->images()->where('is_commited', true)->get();
+        foreach ($existingImages as $image) {
+            if (!in_array($image->image_name, $sources)) {
+                $image->delete();
+            }
+        }
+    }
+    private function getImageNamesFromContent(string $content)
+    {
+        preg_match_all('/<img[^>]+src="[^">]+\/([^\/">]+)"/i', $content, $matches);
+        return  $matches[1];
     }
 }
