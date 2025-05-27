@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\HttpStatusEnum;
+use App\Enums\ImageTypeEnum;
 use App\Http\Resources\AnnoucementsResource;
 use App\Models\Announcement;
 use Illuminate\Database\Eloquent\Model;
@@ -25,12 +26,10 @@ class AnnouncementsService
             $model = Announcement::create([
                 'title' => $title,
                 'description' => $description,
-                'content' => "",
+                'content' => $content,
             ]);
-            $this->imageService->saveImage($model, $createdImage);
-            $content = $this->globalService->updateContent($content, $model);
-            $model->content = $content;
-            $model->save();
+            $this->imageService->saveImage($model, $createdImage, ImageTypeEnum::PREVIEW_IMAGE->value);
+            $this->globalService->commitContentImages($model, $content);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -85,13 +84,8 @@ class AnnouncementsService
                 $announcement->refresh();
             }
             if (array_key_exists('content', $updateArray)) {
-                $content = $updateArray['content'];
-                foreach ($announcement->images as $image) {
-                    if (!str_contains($content, $image->image_name)) {
-                        $image->delete($image->id);
-                    }
-                }
-                $updateArray['content'] = $this->globalService->updateContent($content, $announcement);
+                $this->globalService->commitContentImages($announcement, $updateArray['content']);
+                $this->globalService->removeCommitedContentImages($announcement, $updateArray['content']);
             }
             $announcement->update($updateArray);
             DB::commit();

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ImageTypeEnum;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,11 +10,11 @@ class Announcement extends Model
 {
     public function previewImage()
     {
-        return $this->morphOne(Image::class, 'imageable');
+        return $this->morphOne(Image::class, 'imageable')->where('type', ImageTypeEnum::PREVIEW_IMAGE->value);
     }
     public function images()
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->morphMany(Image::class, 'imageable')->where('type', ImageTypeEnum::CONTENT_IMAGE->value);
     }
     protected static function boot()
     {
