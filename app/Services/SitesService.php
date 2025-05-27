@@ -42,7 +42,7 @@ class SitesService
                 'description' => $description,
                 'link' => $link,
             ]);
-            $this->imageService->saveImage($model, $image);
+            $this->imageService->saveImage($model, $image, "preview");
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             $this->imageService->deleteImage($image['randomFileName']);
