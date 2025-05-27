@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\HttpStatusEnum;
+use App\Enums\ImageTypeEnum;
 use App\Http\Resources\SitesResource;
 use App\Models\Site;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,7 +43,7 @@ class SitesService
                 'description' => $description,
                 'link' => $link,
             ]);
-            $this->imageService->saveImage($model, $image, "preview");
+            $this->imageService->saveImage($model, $image, ImageTypeEnum::PREVIEW_IMAGE->value);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             $this->imageService->deleteImage($image['randomFileName']);

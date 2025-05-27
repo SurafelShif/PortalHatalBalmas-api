@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ImageTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,7 @@ return new class extends Migration
             $table->string("image_type")->nullable();
             $table->string("image_file_name")->nullable();
             $table->boolean("is_commited")->default(false);
-            $table->string('type')->default('content');
+            $table->string('type')->default(ImageTypeEnum::CONTENT_IMAGE->value);
             $table->timestamps();
         });
     }

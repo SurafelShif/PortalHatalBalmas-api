@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\HttpStatusEnum;
+use App\Enums\ImageTypeEnum;
 use App\Http\Resources\InformationResource;
 use App\Models\Information;
 use Illuminate\Http\UploadedFile;
@@ -35,7 +36,7 @@ class InformationsService
                 'content' => $content,
                 'icon_name' => $icon_name,
             ]);
-            $this->imageService->saveImage($model, $image, 'preview');
+            $this->imageService->saveImage($model, $image, ImageTypeEnum::PREVIEW_IMAGE->value);
             $this->globalService->commitContentImages($model, $content);
             $model->save();
             DB::commit();

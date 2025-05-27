@@ -16,7 +16,7 @@ class SaveImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:7168'],
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif,webp', 'max:7168'],
         ];
     }
     public function messages(): array

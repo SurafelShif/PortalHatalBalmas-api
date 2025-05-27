@@ -21,7 +21,7 @@ class CreatePostRequest extends FormRequest
             'description' => ['required', 'string'],
             'content' => ['required', 'string'],
             'category_uuid' => ['required', 'exists:categories,uuid'],
-            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:7168'],
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif,webp', 'max:7168'],
         ];
     }
     public function withValidator($validator)
@@ -44,7 +44,7 @@ class CreatePostRequest extends FormRequest
             'category_uuid.exists' => 'הקטגוריה שסיפקת אינה קיימת.',
             'image.required' => 'חובה להעלות תמונה.',
             'image.image' => 'הקובץ חייב להיות תמונה.',
-            'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
+            'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif,webp.',
             'image.max' => 'התמונה חייבת להיות עד 7MB.',
         ];
     }

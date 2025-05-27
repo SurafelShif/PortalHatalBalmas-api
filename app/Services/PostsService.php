@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\HttpStatusEnum;
+use App\Enums\ImageTypeEnum;
 use App\Http\Resources\PostResource;
 use App\Models\Category;
 use App\Models\Post;
@@ -89,12 +90,11 @@ class PostsService
             $post = Post::create([
                 'title' => $title,
                 'description' => $description,
-                'content' => "",
+                'content' => $content,
                 'category_id' => $category_id,
             ]);
-            $this->imageService->saveImage($post, $createdImage);
-            $content = $this->globalService->updateContent($content, $post);
-            $post->content = $content;
+            $this->imageService->saveImage($post, $createdImage, ImageTypeEnum::PREVIEW_IMAGE->value);
+            $this->globalService->commitContentImages($post, $content);
             $post->save();
             DB::commit();
         } catch (\Exception $e) {
@@ -131,13 +131,8 @@ class PostsService
                 $post->refresh();
             }
             if (array_key_exists('content', $updateArray)) {
-                $content = $updateArray['content'];
-                foreach ($post->images as $image) {
-                    if (!str_contains($content, $image->image_name)) {
-                        $image->delete($image->id);
-                    }
-                }
-                $updateArray['content'] = $this->globalService->updateContent($content, $post);
+                $this->globalService->commitContentImages($post, $updateArray['content']);
+                $this->globalService->removeCommitedContentImages($post, $updateArray['content']);
             }
             if (array_key_exists('category_uuid', $updateArray)) {
                 $category_id = Category::where('uuid', $updateArray['category_uuid'])->first()->id;

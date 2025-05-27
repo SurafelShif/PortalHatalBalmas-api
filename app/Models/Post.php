@@ -9,11 +9,11 @@ class Post extends Model
 {
     public function previewImage()
     {
-        return $this->morphOne(Image::class, 'imageable');
+        return $this->morphOne(Image::class, 'imageable')->where('type', 'preview');
     }
     public function images()
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->morphMany(Image::class, 'imageable')->where('type', 'content');
     }
     public function category()
     {

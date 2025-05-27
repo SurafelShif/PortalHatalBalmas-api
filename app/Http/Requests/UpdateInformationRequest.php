@@ -27,7 +27,7 @@ class UpdateInformationRequest extends FormRequest
             'title' => ['sometimes', 'string', 'max:255'],
             'content' => ['sometimes', 'string'],
             'icon_name' => ['sometimes', 'string'],
-            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:7168'],
+            'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,jfif,webp', 'max:7168'],
         ];
     }
 
@@ -54,7 +54,7 @@ class UpdateInformationRequest extends FormRequest
             'title.max' => 'כותרת כתבת המידע יכולה להכיל עד 255 תווים.',
             'content.string' => 'תוכן כתבת המידע אינו בפורמט הנכון.',
             'image.image' => 'הקובץ חייב להיות תמונה.',
-            'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
+            'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif,webp.',
             'image.max' => 'התמונה חייבת להיות עד 7MB.',
             'icon_name.string' => 'אייקון אינו בפורמט הנכון'
         ];

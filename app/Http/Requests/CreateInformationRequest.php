@@ -20,7 +20,7 @@ class CreateInformationRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'icon_name' => ['required', 'string'],
-            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif', 'max:7168'],
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,jfif,webp', 'max:7168'],
         ];
     }
 
@@ -41,7 +41,7 @@ class CreateInformationRequest extends FormRequest
             'content.string' => 'תוכן הכתבה אינו בפורמט הנכון.',
             'image.required' => 'חובה להעלות תמונה.',
             'image.image' => 'הקובץ חייב להיות תמונה.',
-            'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif.',
+            'image.mimes' => 'התמונה חייבת להיות בפורמט: jpeg, png, jpg, jfif,webp.',
             'image.max' => 'התמונה חייבת להיות עד 7MB.',
             'icon_name.required' => 'חובה לעלות אייקון',
             'icon_name.string' => 'אייקון אינו בפורמט הנכון'
