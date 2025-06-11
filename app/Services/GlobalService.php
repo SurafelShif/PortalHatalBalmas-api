@@ -74,40 +74,8 @@ class GlobalService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function createImagesFromBase64(string $content, Model $model)
-    {
-        $created_images = [];
-        try {
-            preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
-            $images = $matches[2];
-            $types = $matches[1];
-            foreach ($images as $index => $image) {
-                $created_image = $this->imageService->uploadStringImage(base64_decode($image), $types[$index], $model);
-                $created_images[] = $created_image->image_name;
-            }
-            return $created_images;
-        } catch (\Exception $e) {
-            foreach ($created_images as $image) {
-                $this->imageService->deleteImage($image);
-            }
-            Log::error($e->getMessage());
-            return HttpStatusEnum::ERROR;
-        }
-    }
-    public function updateContent($content, Model $model)
-    {
-        preg_match_all('/data:image\/(.*?);base64,(.*?)"/', $content, $matches);
-        if (!empty($matches[2])) {
-            $createdImages = $this->createImagesFromBase64($content, $model);
-            foreach ($matches[2] as $index => $base64Data) {
-                $oldString = "data:image/{$matches[1][$index]};base64,{$base64Data}\"";
-                $newString = config('filesystems.storage_path') . 'images/' . $createdImages[$index] . '"';
 
-                $content = str_replace($oldString, $newString, $content);
-            }
-        }
-        return $content;
-    }
+
     public function commitContentImages(Model $model, string $content)
     {
         try {

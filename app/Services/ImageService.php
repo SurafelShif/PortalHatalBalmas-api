@@ -105,20 +105,4 @@ class ImageService
             return HttpStatusEnum::ERROR;
         }
     }
-    public function uploadStringImage(string $image, $extension, Model $model)
-    {
-        try {
-            $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
-            Storage::disk(config('filesystems.storage_service'))->put('images/' . $randomFileName, $image);
-            return $model->images()->create([
-                'image_name' => $randomFileName,
-                'image_path' => 'images/' . $randomFileName,
-                'image_type' => $extension,
-                'image_file_name' => null
-            ]);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return HttpStatusEnum::ERROR;
-        }
-    }
 }
