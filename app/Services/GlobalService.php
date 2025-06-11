@@ -24,76 +24,50 @@ class GlobalService
     public function search(?string $search, ?int $limit)
     {
         try {
-            // Posts Query
-            $postsQuery = Post::with('category')
-                ->select([
-                    'uuid',
-                    'title',
-                    'description',
-                    'preview_image_id',
-                    'category_id',
-                    DB::raw("NULL as link"),
-                    DB::raw("'כתבה' as name"),
-                    DB::raw("'post' as type"),
-                    'created_at',
-                ])
-                ->where(function ($q) use ($search) {
+            $posts = Post::with('category')
+                ->selectRaw("
+        id, uuid, title, description, category_id,
+        NULL as link, 'כתבה' as name, 'post' as type, created_at
+    ")
+                ->when($search, function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%")
                         ->orWhere('description', 'LIKE', "%{$search}%");
-                });
-            $announcementsQuery = Announcement::query()
-                ->select([
-                    'uuid',
-                    'title',
-                    'description',
-                    'preview_image_id',
-                    DB::raw("NULL as category_id"),
-                    DB::raw("NULL as link"),
-                    DB::raw("'הכרזה' as name"),
-                    DB::raw("'announcement' as type"),
-                    'created_at',
-                ])
-                ->where(function ($q) use ($search) {
+                })
+                ->get();
+
+            $announcements = Announcement::with('previewImage')
+                ->selectRaw("
+        id, uuid, title, description, NULL as category_id,
+        NULL as link, 'הכרזה' as name, 'announcement' as type, created_at
+    ")
+                ->when($search, function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%")
                         ->orWhere('description', 'LIKE', "%{$search}%");
-                });
+                })
+                ->get();
 
-
-            $informationQuery = Information::query()->select([
-                'uuid',
-                'title',
-                DB::raw("NULL as description"),
-                'preview_image_id',
-                DB::raw("NULL as category_id"),
-                DB::raw("NULL as link"),
-                DB::raw("'מידע' as name"),
-                DB::raw("'info' as type"),
-                'created_at',
-            ])
-                ->where(function ($q) use ($search) {
+            $information = Information::selectRaw("
+        id, uuid, title, NULL as description, NULL as category_id,
+        NULL as link, 'מידע' as name, 'info' as type, created_at
+    ")
+                ->when($search, function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%");
-                });
+                })
+                ->get();
 
-            $sitesQuery = Site::query()->select([
-                'uuid',
-                DB::raw("name as title"),
-                'description',
-                'preview_image_id',
-                DB::raw("NULL as category_id"),
-                'link',
-                DB::raw("'קישור' as name"),
-                DB::raw("'site' as type"),
-                'created_at',
-            ])
-                ->where(function ($q) use ($search) {
+            $sites = Site::selectRaw("
+        id, uuid, name as title, description, NULL as category_id,
+        link, 'קישור' as name, 'site' as type, created_at
+    ")
+                ->when($search, function ($q) use ($search) {
                     $q->where('name', 'LIKE', "%{$search}%")
                         ->orWhere('description', 'LIKE', "%{$search}%");
-                });
-
-            $results = $postsQuery->union($announcementsQuery)
-                ->union($informationQuery)
-                ->union($sitesQuery)->limit($limit)->orderBy('created_at', 'desc')
+                })
                 ->get();
+
+            $results = $posts->concat($announcements)->concat($information)->concat($sites);
+            $results = $results->sortByDesc('created_at')->take($limit);
+
             return GlobalSearchResource::collection($results);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
