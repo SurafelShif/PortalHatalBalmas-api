@@ -19,7 +19,8 @@ class InformationResource extends JsonResource
             'title' => $this->title,
             'content' => $this->content,
             'icon_name' => $this->icon_name,
-            'image' => $this->previewImage ? config('filesystems.storage_path') . $this->previewImage->image_path : null,
+            'image' => $this->previewImage?->image_path ? config('filesystems.storage_path') . $this->previewImage->image_path : null,
+            'image_name' => $this->previewImage?->image_path ? $this->previewImage->image_file_name : null,
 
 
         ], fn($value) => !is_null($value));
