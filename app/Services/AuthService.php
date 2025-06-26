@@ -3,13 +3,18 @@
 namespace App\Services;
 
 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
+use Lcobucci\Clock\SystemClock;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Encoding\JoseEncoder;
+use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\Token\Parser;
+use Lcobucci\JWT\Validation\Constraint\IssuedBy;
+use Lcobucci\JWT\Validation\Constraint\PermittedFor;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Lcobucci\JWT\Validation\Constraint\StrictValidAt;
 
 
 class AuthService
@@ -17,203 +22,252 @@ class AuthService
 
 
 
+    public function __construct(private LogService $_logService) {}
 
-    public function authenticateAzure(string $idToken, string $accessToken): array|null
+
+    /**
+     * Authenticate the user with Azure using the provided ID token.
+     *
+     * @param string $idToken
+     * @return array|null
+     */
+
+    public function authenticateAzure(string $idToken): ?array
     {
         try {
 
-            if (!$this->validateToken($idToken) || !$this->validateToken($accessToken)) {
-                return null;
-            }
-
-            if (!$this->verifyJwtSignature($idToken)) {
-                Log::error('Invalid JWT signature for the ID token.');
+            if (!$this->validateIdToken($idToken)) {
                 return null;
             }
 
             return $this->getUserDetails($idToken);
         } catch (\Exception $e) {
             Log::error('Error in AuthService: authenticateAzure function: ' . $e->getMessage());
+            $this->_logService->logToS3();
         }
 
         return null;
     }
 
     /**
-     * Verify the JWT signature using Microsoft's public key.
-     *
-     * @param string $jwt
-     * @return bool
-     */
-    public function verifyJwtSignature(string $jwt): bool
-    {
-        try {
-
-            // Step 1: Validate the JWT.
-            if (!$this->decodeJwtHeader($jwt)) {
-                return false;
-            }
-
-            // Step 2: Extract the Key ID from the JWT header.
-            $kid = (new Parser(new JoseEncoder()))->parse($jwt)
-                ->headers()
-                ->get('kid') ?? null;
-
-
-            if (!$kid) {
-                Log::error('JWT does not contain a valid kid.');
-                return false;
-            }
-
-            // Step 3: Retrieve the Microsoft JWKS
-            $jwks = $this->getMicrosoftPublicKeys();
-
-            // Step 4: Find the matching key using the kid from the token.
-            $key = $this->getKeyFromJWKS($kid, $jwks);
-
-            if (!$key) {
-                Log::error('No matching public key found for kid');
-                return false;
-            }
-
-            // Step 5: Extract the public key from the JWKS.
-            $publicKey = $this->getPublicKeyFromJWKS($key);
-            if (!$publicKey) {
-                Log::error('Public key not found in JWKS.');
-                return false;
-            }
-
-            // Step 6:verify the JWT using the public key.
-            JWT::decode($jwt, new Key($publicKey, 'RS256'));
-            return true;
-        } catch (\Exception $e) {
-            Log::error('Error in AuthService: verifyJwtSignature function: ' . $e->getMessage());
-            return false;
-        }
-    }
-
-
-    /**
-     * Get the public key from the JWKS data.
-     *
-     * @param array $key
-     * @return string
-     */
-    private function getPublicKeyFromJWKS(array $key): string|bool
-    {
-        if (isset($key['x5c'][0])) {
-            return "-----BEGIN CERTIFICATE-----\n" .
-                chunk_split($key['x5c'][0], 64, "\n") .
-                "-----END CERTIFICATE-----\n";
-        }
-        return false;
-    }
-
-    /**
-     * Decode the JWT header to extract the Key ID (kid).
-     *
-     * @param string $jwt
-     * @return array
-     */
-    private function decodeJwtHeader(string $jwt): array|bool
-    {
-
-        $tokenParts = explode('.', $jwt);
-
-        if (count($tokenParts) !== 3) {
-            Log::error('Invalid JWT format');
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Retrieve the JWKS (JSON Web Key Set) from Microsoft's URL
-     *
-     * @return array
-     */
-    private function getMicrosoftPublicKeys(): array
-    {
-        try {
-            $response = Http::withoutVerifying()->get(config('auth.azure.microsoft_url'));
-            if ($response->successful()) {
-                $data = $response->json();
-                return $data['keys'] ?? [];
-            }
-        } catch (\Exception $e) {
-            Log::error('Error in AuthService: getMicrosoftPublicKeys function: ' . $e->getMessage());
-        }
-        return [];
-    }
-
-    /**
-     * Get the key from the JWKS using the kid from the token.
-     *
-     * @param string $kid
-     * @param array $jwks
+     * Extract user details from the decoded ID token.
+     * @param string $idToken
      * @return array|null
      */
-    private function getKeyFromJWKS(string $kid, array $jwks): ?array
-    {
-        foreach ($jwks as $key) {
-            if ($key['kid'] === $kid) {
-                return $key;
-            }
-        }
-        return null;
-    }
 
-    private function getUserDetails(string $idToken): array|null
+    private function getUserDetails(string $idToken): ?array
     {
+
         try {
 
             $claims = (new Parser(new JoseEncoder()))->parse($idToken)->claims();
+
             $personalId = explode('@', $claims->get('preferred_username'))[0];
             $name = $claims->get('name');
 
             return [
                 'personal_id' => $personalId,
-                'name' => $name,
+                'name' => $name
             ];
         } catch (\Exception $e) {
             Log::error('Error in AuthService: getUserDetails function: ' . $e->getMessage());
+            $this->_logService->logToS3();
         }
 
         return null;
     }
 
-    private function validateToken(string $token): bool
+    /**
+     * Get the public key associated with the provided Key ID (kid).
+     *
+     * @param string $tokenKid
+     * @return array|null
+     */
+
+    private function getPublicKey(string $tokenKid): ?array
     {
+        $publicKeys = $this->getMicrosoftKeys();
 
-        $token = (new Parser(new JoseEncoder()))->parse($token);
-
-        if (!$token->hasBeenIssuedBy($this->getRequiredIssuer())) {
-            return false;
+        foreach ($publicKeys as $publicKey) {
+            if ($publicKey['kid'] === $tokenKid) {
+                return [
+                    'kid' => $publicKey['kid'],
+                    'x5c' => $publicKey['x5c']
+                ];
+            }
         }
 
-        if (!$token->isPermittedFor($this->getRequiredAudience())) {
-            return false;
-        }
-
-        if ($token->isExpired(Carbon::now())) {
-            return false;
-        }
-
-        if (!$token->isMinimumTimeBefore(Carbon::now())) {
-            return false;
-        }
-
-        return true;
+        return null;
     }
 
+    /**
+     * Retrieve the JWKS from Microsoft's URL.
+     *
+     * @return array
+     */
+    private function getMicrosoftKeys(): array
+    {
+        try {
+
+            $microsoftKeysUrl = $this->getMicrosoftKeysUrl();
+
+            $client = new Client();
+
+            $keys = [];
+
+
+            $res = $client->get($microsoftKeysUrl);
+
+            $body = json_decode($res->getBody()->getContents(), true);
+            if (!array_key_exists('keys', $body)) {
+                return [];
+            }
+
+            $keys = $body['keys'];
+            foreach ($keys as $key) {
+                $keys[] = [
+                    'kid' => $key['kid'],
+                    'x5c' => $key['x5c'],
+
+                ];
+            }
+
+            return $keys;
+        } catch (\Exception $e) {
+            Log::error('Error in AuthService: getMicrosoftKeys function: ' . $e->getMessage());
+            $this->_logService->logToS3();
+        }
+
+        return $keys;
+    }
+
+    /**
+     * Extract the Key ID from the JWT header.
+     * @param string $idToken
+     * @return string|null
+     */
+
+    private function extractKid(string $idToken): ?string
+    {
+        try {
+
+            $token = (new Parser(new JoseEncoder()))->parse($idToken);
+
+            if (!$token->headers()->has('kid')) {
+                return null;
+            }
+
+            return $token->headers()->get('kid');
+        } catch (\Exception $e) {
+            Log::error('Error in AuthService: extractKid function: ' . $e->getMessage());
+            $this->_logService->logToS3();
+        }
+
+        return null;
+    }
+
+    /**
+     * Build the URL for Microsoft's JWKS endpoint based on the tenant ID.
+     *
+     * @return string
+     */
+    private function getMicrosoftKeysUrl(): string
+    {
+        $tenantId = config('auth.azure.tenant_id');
+
+        return "https://login.microsoftonline.com/$tenantId/discovery/v2.0/keys";
+    }
+
+    /**
+     * Get the required issuer for the token verification.
+     *
+     * @return string
+     */
     private function getRequiredIssuer(): string
     {
         $tenantId = config('auth.azure.tenant_id');
         return "https://login.microsoftonline.com/$tenantId/v2.0";
     }
 
+    /**
+     * Get the required audience for the token verification.
+     *
+     * @return string The expected audience for the tokens.
+     */
+
     private function getRequiredAudience(): string
     {
         return config('auth.azure.audience');
+    }
+
+
+    /**
+     * Validate the ID token by checking its claims and verifying it against the public key.
+     *
+     * @param string $idToken
+     * @return bool
+     */
+
+    private function validateIdToken(string $idToken): bool
+    {
+        try {
+
+            $tokenKid = $this->extractKid($idToken);
+            if (is_null($tokenKid)) {
+                return false;
+            }
+
+            $publicKey = $this->getPublicKey($tokenKid);
+
+            if (is_null($publicKey) || empty($publicKey['x5c'])) {
+                return false;
+            }
+
+            $pemKey = InMemory::plainText($this->generatePem($publicKey['x5c'][0]));
+            $signer = new Sha256();
+
+            $config = Configuration::forAsymmetricSigner(
+                signer: $signer,
+                signingKey: $pemKey,
+                verificationKey: $pemKey
+            );
+
+            $token = $config->parser()->parse($idToken);
+            if (!$token->headers()->has('kid')) {
+                return false;
+            }
+
+            $clock = new SystemClock(new \DateTimeZone('UTC'));
+            // 60 seconds difference, in case we are out of sync
+            $leeway = new \DateInterval('PT60S');
+
+            $constraints = [
+                new IssuedBy($this->getRequiredIssuer()), // Validate issuer.
+                new PermittedFor($this->getRequiredAudience()), // Validate audience.
+                new StrictValidAt($clock, $leeway), // Validate expiration.
+                new SignedWith($signer, $pemKey) // Verify the token with the public key.
+            ];
+
+            return $config->validator()->validate($token, ...$constraints);
+        } catch (\Exception $e) {
+            Log::error('Error in AuthService: validateIdToken function: ' . $e->getMessage());
+            $this->_logService->logToS3();
+        }
+
+        return false;
+    }
+
+    /**
+     * Generate a PEM certificate from the x5c certificate string.
+     *
+     * @param string $x5c
+     * @return string
+     */
+
+    private function generatePem(string $x5c): string
+    {
+        return "-----BEGIN CERTIFICATE-----\n" .
+            wordwrap($x5c, 64, "\n", true) .
+            "\n-----END CERTIFICATE-----";
     }
 }

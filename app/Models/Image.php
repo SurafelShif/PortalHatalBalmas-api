@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class Image extends Model
@@ -14,8 +15,11 @@ class Image extends Model
         parent::boot();
 
         static::deleting(function ($image) {
-            if (Storage::disk(config('filesystems.storage_service'))->exists('images/' . $image->image_name)) {
-                Storage::disk(config('filesystems.storage_service'))->delete('images/' . $image->image_name);
+
+            if (Storage::disk(config('filesystems.storage_service'))->exists('public/' . $image->image_name)) {
+                Storage::disk(config('filesystems.storage_service'))->delete('public/' . $image->image_name);
+            } else {
+                Log::info("image was not found");
             }
         });
     }

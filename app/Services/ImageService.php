@@ -18,7 +18,7 @@ class ImageService
         $extension = $image->getClientOriginalExtension();
         $originalName = $image->getClientOriginalName();
         $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
-        $imagePath = $image->storeAs('images', $randomFileName, config('filesystems.storage_service'));
+        $imagePath = $image->storeAs('public', $randomFileName, config('filesystems.storage_service'));
         return [
             "extension" => $extension,
             "originalName" => $originalName,
@@ -44,7 +44,7 @@ class ImageService
             $extension = $image->getClientOriginalExtension();
             $originalName = $image->getClientOriginalName();
             $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
-            $imagePath = $image->storeAs('images', $randomFileName, config('filesystems.storage_service'));
+            $imagePath = $image->storeAs('public', $randomFileName, config('filesystems.storage_service'));
             return Image::create([
                 'image_name' => $randomFileName,
                 'image_path' => $imagePath,
@@ -72,7 +72,7 @@ class ImageService
             if ($newImage !== null) {
                 $extension = $newImage->getClientOriginalExtension();
                 $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
-                $imagePath = $newImage->storeAs('images', $randomFileName, config('filesystems.storage_service'));
+                $imagePath = $newImage->storeAs('public', $randomFileName, config('filesystems.storage_service'));
                 $originalName = $newImage->getClientOriginalName();
             } else {
                 $imagePath = null;
@@ -95,8 +95,8 @@ class ImageService
     public function deleteImage($image_name)
     {
         try {
-            if (Storage::disk(config('filesystems.storage_service'))->exists('images/' . $image_name)) {
-                Storage::disk(config('filesystems.storage_service'))->delete('images/' . $image_name);
+            if (Storage::disk(config('filesystems.storage_service'))->exists('public/' . $image_name)) {
+                Storage::disk(config('filesystems.storage_service'))->delete('public/' . $image_name);
             } else {
                 Log::info("image was not found");
             }
