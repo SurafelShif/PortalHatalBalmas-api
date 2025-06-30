@@ -13,44 +13,44 @@ use Illuminate\Support\Str;
 
 class ImageService
 {
+    private const STORAGE_DIR = 'public';
+    private const DEFAULT_TYPE = 'content';
     public function storeImage(UploadedFile $image)
     {
-        $extension = $image->getClientOriginalExtension();
-        $originalName = $image->getClientOriginalName();
-        $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
-        $imagePath = $image->storeAs('public', $randomFileName, config('filesystems.storage_service'));
-        return [
-            "extension" => $extension,
-            "originalName" => $originalName,
-            "randomFileName" => $randomFileName,
-            "imagePath" => $imagePath
-        ];
+        try {
+            return $this->processImageUpload($image);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
     }
     public function saveImage(Model $model, array $createdImage, string $type)
     {
-        $model->previewImage()->create([
-            'image_name' => $createdImage['randomFileName'],
-            'image_path' =>  $createdImage['imagePath'],
-            'image_type' => $createdImage['extension'],
-            'image_file_name' => $createdImage['originalName'],
-            'is_commited' => true,
-            'type' => $type
-        ]);
+        try {
+            $model->previewImage()->create([
+                'image_name' => $createdImage['randomFileName'],
+                'image_path' =>  $createdImage['imagePath'],
+                'image_type' => $createdImage['extension'],
+                'image_file_name' => $createdImage['originalName'],
+                'is_commited' => true,
+                'type' => $type
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return HttpStatusEnum::ERROR;
+        }
     }
-    public function uploadImage(UploadedFile $image)
+    public function uploadImage(UploadedFile $image): Image|HttpStatusEnum
     {
         try {
+            $data = $this->processImageUpload($image);
 
-            $extension = $image->getClientOriginalExtension();
-            $originalName = $image->getClientOriginalName();
-            $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
-            $imagePath = $image->storeAs('public', $randomFileName, config('filesystems.storage_service'));
             return Image::create([
-                'image_name' => $randomFileName,
-                'image_path' => $imagePath,
-                'image_type' => $image->getMimeType(),
-                'image_file_name' => $originalName,
-                'type' => "content"
+                'image_name'      => $data['randomFileName'],
+                'image_path'      => $data['imagePath'],
+                'image_type'      => $image->getMimeType(),
+                'image_file_name' => $data['originalName'],
+                'type'            => self::DEFAULT_TYPE,
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -58,51 +58,60 @@ class ImageService
         }
     }
 
-    public function updateImage($associatedimageId, UploadedFile | null $newImage)
+    public function updateImage(int $imageId, ?UploadedFile $newImage): Image|HttpStatusEnum|null
     {
         try {
 
-            $oldImage = Image::find($associatedimageId);
-            if (is_null($oldImage) && is_null($newImage)) {
-                return;
+            $existingImage = Image::find($imageId);
+
+            if (is_null($existingImage) && is_null($newImage)) {
+                return null;
             }
-            if (is_null($oldImage)) {
+            if (is_null($existingImage)) {
                 return $this->uploadImage($newImage);
             }
             if ($newImage !== null) {
-                $extension = $newImage->getClientOriginalExtension();
-                $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
-                $imagePath = $newImage->storeAs('public', $randomFileName, config('filesystems.storage_service'));
-                $originalName = $newImage->getClientOriginalName();
-            } else {
-                $imagePath = null;
-                $randomFileName = null;
-                $extension = null;
-                $originalName = null;
+                $data = $this->processImageUpload($newImage);
+
+                $this->deleteImage($existingImage->image_name);
+
+                $existingImage->update([
+                    'image_path'      => $data['imagePath'],
+                    'image_name'      => $data['randomFileName'],
+                    'image_type'      => $data['extension'],
+                    'image_file_name' => $data['originalName'],
+                ]);
             }
-            $this->deleteImage($oldImage->image_name);
-            $oldImage->image_path = $imagePath;
-            $oldImage->image_name = $randomFileName;
-            $oldImage->image_type = $extension;
-            $oldImage->image_file_name = $originalName;
-            $oldImage->save();
-            return $oldImage;
+            return $existingImage;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }
     }
-    public function deleteImage($image_name)
+    public function deleteImage(string $imageName): bool|HttpStatusEnum
     {
         try {
-            if (Storage::disk(config('filesystems.storage_service'))->exists('public/' . $image_name)) {
-                Storage::disk(config('filesystems.storage_service'))->delete('public/' . $image_name);
-            } else {
-                Log::info("image was not found");
+            $fullPath = self::STORAGE_DIR . '/' . $imageName;
+            $disk = Storage::disk(config('filesystems.storage_service'));
+
+            if ($disk->exists($fullPath)) {
+                return $disk->delete($fullPath);
             }
+
+            Log::info("Image not found: {$fullPath}");
+            return false;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return HttpStatusEnum::ERROR;
         }
+    }
+    private function processImageUpload(UploadedFile $image): array
+    {
+        $extension = $image->getClientOriginalExtension();
+        $originalName = $image->getClientOriginalName();
+        $randomFileName = uniqid() . '_' . Str::random(10) . '.' . $extension;
+        $imagePath = $image->storeAs(self::STORAGE_DIR, $randomFileName, config('filesystems.storage_service'));
+
+        return compact('extension', 'originalName', 'randomFileName', 'imagePath');
     }
 }
