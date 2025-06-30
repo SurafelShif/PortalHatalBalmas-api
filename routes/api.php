@@ -23,7 +23,7 @@ Route::get('/user', [UserController::class, 'user'])->middleware(['auth:api']);
 //     Route::delete('/{personal_id}', 'deleteAdmin');
 //     Route::get('/', 'index');
 // });
-Route::controller(UserController::class)->prefix('users')->group(function () {
+Route::controller(UserController::class)->middleware(['throttle:20,1'])->prefix('users')->group(function () {
     Route::post('/', 'addAdmin');
     Route::delete('/{uuid}', 'deleteAdmin');
     Route::get('/', 'index');
@@ -38,7 +38,7 @@ Route::controller(UserController::class)->prefix('users')->group(function () {
 //         Route::get('/{uuid}', 'getPostByUUid');
 //     });
 // });
-Route::controller(PostController::class)->prefix('posts')->group(function () {
+Route::controller(PostController::class)->middleware(['throttle:20,1'])->prefix('posts')->group(function () {
     Route::post('/', 'createPost');
     Route::post('/{uuid}', 'updatePost');
     Route::delete('/{uuid}', 'deletePost');
@@ -58,9 +58,9 @@ Route::controller(PostController::class)->prefix('posts')->group(function () {
 //         Route::get('/{uuid}', 'getAnnouncementByUUid');
 //     });
 // });
-Route::controller(AnnouncementController::class)->prefix('announcements')->group(function () {
+Route::controller(AnnouncementController::class)->middleware(['throttle:20,1'])->prefix('announcements')->group(function () {
     Route::post('/{uuid}', 'updateAnnouncement');
-    Route::middleware("throttle:20,1")->patch('/{uuid}', 'updateAnnouncementVisibility');
+    Route::patch('/{uuid}', 'updateAnnouncementVisibility');
     Route::post('/', 'createAnnouncement');
     Route::delete('/{uuid}', 'deleteAnnouncement');
     Route::get('/admin', 'getAdminAnnouncements');
@@ -77,7 +77,7 @@ Route::controller(AnnouncementController::class)->prefix('announcements')->group
 //         Route::get('/{uuid}', 'getInformationByUUid');
 //     });
 // });
-Route::controller(InformationController::class)->prefix('info')->group(function () {
+Route::controller(InformationController::class)->middleware(['throttle:20,1'])->prefix('info')->group(function () {
     Route::post('/', 'createInformation');
     Route::delete('/{uuid}', 'deleteInformation');
     Route::post('/{uuid}', 'updateInformation');
@@ -90,7 +90,7 @@ Route::controller(InformationController::class)->prefix('info')->group(function 
 //     Route::put('/{categoryId}', 'updateCategory');
 //     Route::withoutMiddleware(['auth:api', 'role:admin'])->get('/', 'getCategories');
 // });
-Route::controller(CategoryController::class)->prefix('categories')->group(function () {
+Route::controller(CategoryController::class)->middleware(['throttle:20,1'])->prefix('categories')->group(function () {
     Route::post('/', 'createCategory');
     Route::delete('/{category_uuid}', 'deleteCategory');
     Route::put('/{category_uuid}', 'updateCategory');
@@ -102,12 +102,12 @@ Route::controller(CategoryController::class)->prefix('categories')->group(functi
 //     Route::delete('/{uuid}', 'deleteSite');
 //     Route::withoutMiddleware(['auth:api', 'role:admin'])->get('/', 'getSites');
 // });
-Route::controller(SiteController::class)->prefix('sites')->group(function () {
+Route::controller(SiteController::class)->middleware(['throttle:20,1'])->prefix('sites')->group(function () {
     Route::post('/', 'createSite');
     Route::post('/{uuid}', 'updateSite');
     Route::delete('/{uuid}', 'deleteSite');
     Route::get('/', 'getSites');
 });
-Route::controller(ImageController::class)->prefix('images')->group(function () {
+Route::controller(ImageController::class)->middleware(['throttle:20,1'])->prefix('images')->group(function () {
     Route::post("/", 'save');
 });
