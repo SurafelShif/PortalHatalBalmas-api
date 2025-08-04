@@ -12,32 +12,20 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)->group(function () {
-    Route::post('/login', 'login');
+    Route::post('/login', 'loginAzure');
 });
 Route::controller(GlobalController::class)->group(function () {
     Route::get('/search', 'search');
 });
 Route::get('/user', [UserController::class, 'user'])->middleware(['auth:api']);
-// Route::controller(UserController::class)->middleware(['auth:api', 'role:admin'])->prefix('users')->group(function () {
-//     Route::post('/', 'addAdmin');
-//     Route::delete('/{personal_id}', 'deleteAdmin');
-//     Route::get('/', 'index');
-// });
+
 Route::controller(UserController::class)->middleware(['throttle:20,1'])->prefix('users')->group(function () {
     Route::post('/', 'addAdmin');
     Route::delete('/{uuid}', 'deleteAdmin');
     Route::get('/', 'index');
     Route::get("/{personal_id}", "getUserById");
 });
-// Route::controller(PostController::class)->middleware(['auth:api', 'role:admin'])->prefix('posts')->group(function () {
-//     Route::post('/', 'createPost');
-//     Route::post('/{uuid}', 'updatePost');
-//     Route::delete('/{uuid}', 'deletePost');
-//     Route::middleware("throttle:20,1")->withoutMiddleware(['auth:api', 'role:admin'])->group(function () {
-//         Route::get('/', 'getPosts');
-//         Route::get('/{uuid}', 'getPostByUUid');
-//     });
-// });
+
 Route::controller(PostController::class)->middleware(['throttle:20,1'])->prefix('posts')->group(function () {
     Route::post('/', 'createPost');
     Route::post('/{uuid}', 'updatePost');
@@ -47,17 +35,6 @@ Route::controller(PostController::class)->middleware(['throttle:20,1'])->prefix(
     Route::get('/{uuid}', 'getPostByUUid');
 });
 
-// Route::controller(AnnouncementController::class)->middleware(['auth:api', 'role:admin'])->prefix('announcements')->group(function () {
-//     Route::post('/update', 'updateAnnouncement');
-//     Route::middleware("throttle:20,1")->patch('/{uuid}', 'updateAnnouncementVisibility');
-//     Route::post('/', 'createAnnouncement');
-//     Route::delete('/{uuid}', 'deleteAnnouncement');
-//     Route::get('/admin', 'getAdminAnnouncements');
-//     Route::withoutMiddleware(['auth:api', 'role:admin'])->group(function () {
-//         Route::get('/', 'getAnnouncements');
-//         Route::get('/{uuid}', 'getAnnouncementByUUid');
-//     });
-// });
 Route::controller(AnnouncementController::class)->middleware(['throttle:20,1'])->prefix('announcements')->group(function () {
     Route::post('/{uuid}', 'updateAnnouncement');
     Route::patch('/{uuid}', 'updateAnnouncementVisibility');
@@ -68,15 +45,7 @@ Route::controller(AnnouncementController::class)->middleware(['throttle:20,1'])-
     Route::get('/{uuid}', 'getAnnouncementByUUid');
     Route::put('/updatePosition', 'updateAnnouncementPosition');
 });
-// Route::controller(InformationController::class)->middleware(['auth:api', 'role:admin'])->prefix('info')->group(function () {
-//     Route::post('/', 'createInformation');
-//     Route::delete('/{uuid}', 'deleteInformation');
-//     Route::post('/{uuid}', 'updateInformation');
-//     Route::withoutMiddleware(['auth:api', 'role:admin'])->group(function () {
-//         Route::get('/', 'getInformations');
-//         Route::get('/{uuid}', 'getInformationByUUid');
-//     });
-// });
+
 Route::controller(InformationController::class)->middleware(['throttle:20,1'])->prefix('info')->group(function () {
     Route::post('/', 'createInformation');
     Route::delete('/{uuid}', 'deleteInformation');
@@ -84,24 +53,14 @@ Route::controller(InformationController::class)->middleware(['throttle:20,1'])->
     Route::get('/', 'getInformations');
     Route::get('/{uuid}', 'getInformationByUUid');
 });
-// Route::controller(CategoryController::class)->middleware(['auth:api', 'role:admin'])->prefix('categories')->group(function () {
-//     Route::post('/', 'createCategory');
-//     Route::delete('/{categoryId}', 'deleteCategory');
-//     Route::put('/{categoryId}', 'updateCategory');
-//     Route::withoutMiddleware(['auth:api', 'role:admin'])->get('/', 'getCategories');
-// });
+
 Route::controller(CategoryController::class)->middleware(['throttle:20,1'])->prefix('categories')->group(function () {
     Route::post('/', 'createCategory');
     Route::delete('/{category_uuid}', 'deleteCategory');
     Route::put('/{category_uuid}', 'updateCategory');
     Route::get('/{type}', 'getCategories');
 });
-// Route::controller(SiteController::class)->middleware(['auth:api', 'role:admin'])->prefix('sites')->group(function () {
-//     Route::post('/', 'createSite');
-//     Route::post('/{uuid}', 'updateSite');
-//     Route::delete('/{uuid}', 'deleteSite');
-//     Route::withoutMiddleware(['auth:api', 'role:admin'])->get('/', 'getSites');
-// });
+
 Route::controller(SiteController::class)->middleware(['throttle:20,1'])->prefix('sites')->group(function () {
     Route::post('/', 'createSite');
     Route::post('/{uuid}', 'updateSite');

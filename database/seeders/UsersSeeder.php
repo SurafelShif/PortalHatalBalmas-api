@@ -15,9 +15,9 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
         $admins = [
-            ['personal_id' => '122345671', 'full_name' => 'מנהל מערכת 1'],
-            ['personal_id' => '112345678', 'full_name' => 'מנהל מערכת 2'],
-            ['personal_id' => '123456789', 'full_name' => 'מנהל מערכת 3'],
+            ['personal_id' => '328701503', 'full_name' => 'סוראפל שיפראוו'],
+            ['personal_id' => '204030373', 'full_name' => 'גל לחגי'],
+            ['personal_id' => '206094468', 'full_name' => 'רועי סחייק'],
         ];
 
         foreach ($admins as $adminData) {
@@ -27,9 +27,8 @@ class UsersSeeder extends Seeder
         }
 
         $users = [
-            ['personal_id' => '987654321', 'full_name' => 'משתמש רגיל 1'],
-            ['personal_id' => '876543210', 'full_name' => 'משתמש רגיל 2'],
-            ['personal_id' => '765432109', 'full_name' => 'משתמש רגיל 3'],
+            ['personal_id' => '315141325', 'full_name' => 'אופיר גולדברג'],
+            ['personal_id' => '325639797', 'full_name' => 'ליאון לב'],
         ];
 
         foreach ($users as $userData) {
