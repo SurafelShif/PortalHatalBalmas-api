@@ -21,8 +21,12 @@ class AuthService
 {
 
 
+    protected $_logService;
 
-    public function __construct(private LogService $_logService) {}
+    public function __construct()
+    {
+        $this->_logService = new LogService();
+    }
 
 
     /**
@@ -39,7 +43,6 @@ class AuthService
             if (!$this->validateIdToken($idToken)) {
                 return null;
             }
-
             return $this->getUserDetails($idToken);
         } catch (\Exception $e) {
             Log::error('Error in AuthService: authenticateAzure function: ' . $e->getMessage());
@@ -71,7 +74,6 @@ class AuthService
             ];
         } catch (\Exception $e) {
             Log::error('Error in AuthService: getUserDetails function: ' . $e->getMessage());
-            $this->_logService->logToS3();
         }
 
         return null;
@@ -87,7 +89,6 @@ class AuthService
     private function getPublicKey(string $tokenKid): ?array
     {
         $publicKeys = $this->getMicrosoftKeys();
-
         foreach ($publicKeys as $publicKey) {
             if ($publicKey['kid'] === $tokenKid) {
                 return [
@@ -96,7 +97,6 @@ class AuthService
                 ];
             }
         }
-
         return null;
     }
 
@@ -111,7 +111,11 @@ class AuthService
 
             $microsoftKeysUrl = $this->getMicrosoftKeysUrl();
 
-            $client = new Client();
+            $client = new Client([
+                'verify' => false
+            ]);
+
+            // $client = new Client();
 
             $keys = [];
 
@@ -135,7 +139,6 @@ class AuthService
             return $keys;
         } catch (\Exception $e) {
             Log::error('Error in AuthService: getMicrosoftKeys function: ' . $e->getMessage());
-            $this->_logService->logToS3();
         }
 
         return $keys;
@@ -160,7 +163,6 @@ class AuthService
             return $token->headers()->get('kid');
         } catch (\Exception $e) {
             Log::error('Error in AuthService: extractKid function: ' . $e->getMessage());
-            $this->_logService->logToS3();
         }
 
         return null;
@@ -174,7 +176,6 @@ class AuthService
     private function getMicrosoftKeysUrl(): string
     {
         $tenantId = config('auth.azure.tenant_id');
-
         return "https://login.microsoftonline.com/$tenantId/discovery/v2.0/keys";
     }
 
@@ -251,7 +252,6 @@ class AuthService
             return $config->validator()->validate($token, ...$constraints);
         } catch (\Exception $e) {
             Log::error('Error in AuthService: validateIdToken function: ' . $e->getMessage());
-            $this->_logService->logToS3();
         }
 
         return false;

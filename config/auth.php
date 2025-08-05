@@ -46,6 +46,18 @@ return [
             'provider' => 'users',
         ],
     ],
+    'token_lifetime' => [
+        'access_token' => (int)env('ACCESS_TOKEN_LIFETIME', 60),  //Minutes
+        'refresh_token' => (int)env('REFRESH_TOKEN_LIFETIME', 72), //Minutes
+        'token_name' => env('ACCESS_TOKEN_NAME', 'access_token'),
+    ],
+
+    //laravel
+    'passport_tokens' => [
+        'access_expires_in' => (int)env('PASSPORT_ACCESS_TOKEN_EXPIRES_IN', 60), //Minutes
+        'refresh_expires_in' => (int) env('PASSPORT_REFRESH_TOKEN_EXPIRES_IN', 72), // 3 Days
+        'password_client_name' => env('PASSPORT_PASSWORD_CLIENT_NAME'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -117,7 +129,11 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
     'access_token_name' => env('ACCESS_TOKEN_NAME'),
-    'azure.tenant' => env('AZURE_TENANT'),
-    'azure.tenant_id' => env('AZURE_TENANT_ID'),
-    'azure.client_id' => env('AZURE_CLIENT_ID'),
+    'azure' => [
+        'tenant' => env('AZURE_TENANT'),
+        'tenant_id' => env('AZURE_TENANT_ID'),
+        'client_id' => env('AZURE_CLIENT_ID'),
+        'audience' => env('AZURE_AUDIENCE')
+    ],
+
 ];

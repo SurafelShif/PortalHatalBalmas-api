@@ -356,6 +356,27 @@
                 }
             }
         },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout user and revoke token",
+                "description": "Logs out the authenticated user and revokes the access token.",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Successful logout"
+                    },
+                    "401": {
+                        "description": "Unauthorized - User is not authenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
         "/api/categories/{type}": {
             "get": {
                 "tags": [
@@ -1531,6 +1552,10 @@
         {
             "name": "Announcements",
             "description": "Announcements"
+        },
+        {
+            "name": "Authentication",
+            "description": "Authentication"
         },
         {
             "name": "Categories",
