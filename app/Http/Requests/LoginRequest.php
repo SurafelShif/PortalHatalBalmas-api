@@ -22,7 +22,6 @@ class LoginRequest extends FormRequest
     {
         return [
             'idToken' => 'required|string',
-            'accessToken' => 'required|string',
         ];
     }
     public function messages(): array
@@ -30,8 +29,6 @@ class LoginRequest extends FormRequest
         return [
             'idToken.required' => 'יש לספק מזהה לטוקן',
             'idToken.string' => 'פורמט אינו תקין',
-            'accessToken.required' => 'יש לספק טוקן',
-            'accessToken.string' => 'פורמט אינו תקין',
         ];
     }
 }
