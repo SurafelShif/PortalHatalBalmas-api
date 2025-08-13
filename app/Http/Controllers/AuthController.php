@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 
-use App\Enums\HttpStatusEnum;
 use App\Services\LogService;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +10,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Log;
-use App\Enums\HttpStatusCodeEnum;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Laravel\Passport\Client;
@@ -29,6 +27,110 @@ class AuthController extends Controller
     }
 
 
+
+
+    /**
+     * @OA\Post(
+     *      path="/api/login-test",
+     *      tags={"Authentication"},
+     *      summary="Login user",
+     *      description="Logs in a user and generates an access token.",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          description="User credentials",
+     *          @OA\JsonContent(
+     *              required={"personal_id"},
+     *              @OA\Property(property="personal_id", type="string", example="315141325"),
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful login",
+     *      ),
+     *      @OA\Response(
+     *          response=409,
+     *          description="Conflict",
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="BadRequest",
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Internal server error",
+     *      ),
+     * )
+     */
+
+    public function login(Request $request)
+    {
+        try {
+
+            $rules = [
+                'personal_id' => 'required|regex:/^[0-9]{9}$/',
+            ];
+
+            $customMessages = [
+                'personal_id.required' => 'חובה לשלוח מספר אישי לאימות.',
+                'personal_id.regex' => 'מספר אישי אינו תקין. יש לפנות למסגרת אמ"ת.',
+            ];
+
+            $validator = Validator::make($request->all(), $rules, $customMessages);
+
+            if ($validator->fails()) {
+                return response()->json(['messages' => $validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $pn = $request->personal_id;
+
+            $user = User::where('personal_id', $pn)
+                ->first();
+
+            if (is_null($user)) {
+                return response()->json(['message' => 'המשתמש לא קיים במערכת, יש לפנות למסגרת אמ"ת.'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Revoke old token
+            $user->tokens()->delete();
+
+            //PasswordGrantClient
+            $client = Client::where('password_client', true)->first();
+            if (is_null($client)) {
+                return response()->json('', Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            $tokenResponse = Http::asForm()->post(config('app.url') . '/oauth/token', [
+                'grant_type' => 'password',
+                'client_id' => $client->id,
+                'client_secret' => $client->secret,
+                'username' => $user->personal_id,
+                'password' => $user->personal_id,
+                'scope' => '',
+            ]);
+
+
+            if ($tokenResponse->failed()) {
+                Log::error('Error from AuthController: loginAzure function: ' . $tokenResponse->json());
+                $this->_logService->logToS3();
+                return response()->json([
+                    'message' => 'קרתה בעיית התחברות. יש לפנות למסגרת אמת.',
+                ], $tokenResponse->status());
+            }
+
+            return response()->json([
+                'name' => $user->full_name,
+                'personal_id' => $user->personal_id,
+            ], Response::HTTP_OK)->withCookie(
+                Cookie::make('access_token', $tokenResponse->json('access_token'), config('auth.token_lifetime.access_token'))
+            )->withCookie(
+                Cookie::make('refresh_token', $tokenResponse->json('refresh_token'), config('auth.token_lifetime.refresh_token'))
+            );
+        } catch (\Exception $e) {
+            Log::error('Error from AuthController: login function: ' . $e->getMessage());
+            $this->_logService->logToS3();
+        }
+        return response()->json(['message' => 'התרחש בעיית שרת יש לנסות שוב מאוחר יותר.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
 
     /**
      * @OA\Post(
@@ -88,6 +190,7 @@ class AuthController extends Controller
 
             $idToken = $request->input('idToken');
             $result = $this->_authService->authenticateAzure($idToken);
+
             if (is_null($result)) {
                 return response()->json(['message' => 'אחד או יותר מהנתונים שנשלחו אינו תקין'], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
@@ -112,6 +215,7 @@ class AuthController extends Controller
             if (is_null($client)) {
                 return response()->json('', Response::HTTP_INTERNAL_SERVER_ERROR);
             }
+
             $tokenResponse = Http::asForm()->post(config('app.url') . '/oauth/token', [
                 'grant_type' => 'password',
                 'client_id' => $client->id,
@@ -120,8 +224,9 @@ class AuthController extends Controller
                 'password' => $idToken, // Passport will call validateForPassportPasswordGrant().
                 'scope' => '',
             ]);
+
             if ($tokenResponse->failed()) {
-                Log::error('Error from AuthController: loginAzure function: ' . $tokenResponse->body(),);
+                Log::error('Error from AuthController: loginAzure function: ' . $tokenResponse->json(),);
                 $this->_logService->logToS3();
                 return response()->json([
                     'message' => 'קרתה בעיית התחברות. יש לפנות למסגרת אמת.',
@@ -129,10 +234,8 @@ class AuthController extends Controller
             }
 
             return response()->json([
-                'user' => [
-                    'name' => $user->full_name,
-                    'personal_id' => $user->personal_id,
-                ]
+                'name' => $user->full_name,
+                'personal_id' => $user->personal_id,
             ], Response::HTTP_OK)->withCookie(
                 Cookie::make('access_token', $tokenResponse->json('access_token'), config('auth.token_lifetime.access_token'))
             )->withCookie(

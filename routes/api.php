@@ -30,8 +30,8 @@ Route::controller(PostController::class)->middleware(['auth:api', 'role:admin'])
     Route::post('/', 'createPost');
     Route::post('/{uuid}', 'updatePost');
     Route::delete('/{uuid}', 'deletePost');
-    Route::get('/', 'getPosts')->withoutMiddleware(['role:admin']);
     Route::get('/admin', 'getAdminPosts');
+    Route::get('/', 'getPosts')->withoutMiddleware(['role:admin']);
     Route::get('/{uuid}', 'getPostByUUid')->withoutMiddleware(['role:admin']);
 });
 

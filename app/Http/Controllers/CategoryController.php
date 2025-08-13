@@ -7,6 +7,7 @@ use App\Enums\ResponseMessages;
 use App\Http\Requests\CategoryRequest;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -40,6 +41,7 @@ class CategoryController extends Controller
      */
     public function getCategories($type)
     {
+        Log::error("sfdd");
         $result = $this->categoryService->getCategories($type);
         if ($result instanceof HttpStatusEnum) {
             return match ($result) {

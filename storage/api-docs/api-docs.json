@@ -356,6 +356,50 @@
                 }
             }
         },
+        "/api/login-test": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login user",
+                "description": "Logs in a user and generates an access token.",
+                "operationId": "b634df6d69be8426a2943e5f88c326be",
+                "requestBody": {
+                    "description": "User credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "personal_id"
+                                ],
+                                "properties": {
+                                    "personal_id": {
+                                        "type": "string",
+                                        "example": "315141325"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful login"
+                    },
+                    "409": {
+                        "description": "Conflict"
+                    },
+                    "400": {
+                        "description": "BadRequest"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
         "/api/logout": {
             "post": {
                 "tags": [
