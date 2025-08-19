@@ -243,7 +243,7 @@ class AuthController extends Controller
             );
         } catch (\Exception $e) {
             Log::error('Error from AuthController: loginAzure function: ' . $e->getMessage());
-            $this->_logService->logToS3();
+            $this->_logServinvce->logToS3();
             return $e->getMessage() === "Expired token" ?
                 response()->json("", Response::HTTP_CONFLICT) :
                 response()->json("", Response::HTTP_INTERNAL_SERVER_ERROR);

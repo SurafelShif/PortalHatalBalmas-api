@@ -18,6 +18,7 @@ class UsersSeeder extends Seeder
             ['personal_id' => '328701503', 'full_name' => 'סוראפל שיפראוו'],
             ['personal_id' => '204030373', 'full_name' => 'גל לחגי'],
             ['personal_id' => '206094468', 'full_name' => 'רועי סחייק'],
+            ['personal_id' => '315552810', 'full_name' => 'נתי אפרים'],
         ];
 
         foreach ($admins as $adminData) {
